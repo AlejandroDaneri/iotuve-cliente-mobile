@@ -1,2 +1,2 @@
 # fiuba-taller-2-cliente-mobile
-App Cliente Mobile
+App Cliente Mobile para Taller 2
