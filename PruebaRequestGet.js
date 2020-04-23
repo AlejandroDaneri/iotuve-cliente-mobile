@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { ActivityIndicator, View, Text } from 'react-native'
-
+import { StyleSheet, FlatList, ActivityIndicator, View, Text } from 'react-native'
+import { List } from 'react-native-paper';
 
 /*
 // No estoy usando esto ahora, TODO: borrar.
@@ -37,8 +37,10 @@ class PruebaRequestGet extends Component {
 
    fetchData = () => {
       console.log("fetchData");
-
-      fetch("https://reactnative.dev/movies.json", {
+      
+      // "https://reactnative.dev/movies.json"
+      // global.endpoint_ping
+      fetch(global.endpoint_ping, {
          method: 'GET'
       })
          .then((response) => response.json())
@@ -65,35 +67,65 @@ class PruebaRequestGet extends Component {
       if (hasData) {
          myOutput = <ActivityIndicator size="large" color="#0000ff" />
       } else {
-         myOutput = <Text style={{ color: 'white', padding: 6, fontSize: 18 }}>Info traida por request:</Text>
+         myOutput = <Text style={{ color: 'black', padding: 6, fontSize: 18 }}>
+            Data via request / endpoint:
+            </Text>
       }
 
       console.log("render method - PruebaRequestGet.js");
       console.log(hasData);
       console.log("DATA");
-      console.log(this.state.data);
-      console.log(this.state.code);
+      console.log(this.state.data.movies);
 
       return (
          <View
-         style={{margin: 20, padding: 20,backgroundColor: "black"}}
+            style={{ margin: 20, padding: 20, backgroundColor: "azure"}}
          >
 
             {myOutput}
 
-            <Text style={{ color: 'white', padding: 6 }}>
-               CODE = {this.state.data.title}
+            <Text style={{ color: 'black', padding: 6 }}>
+               CODE = {this.state.data.code}
             </Text>
-            <Text style={{ color: 'white', padding: 6 }}>
+            <Text style={{ color: 'black', padding: 6 }}>
                MESSAGE = {this.state.data.message}
             </Text>
-            <Text
-               style={{ color: 'white', padding: 6 }}>
+            <Text style={{ color: 'black', padding: 6 }}>
                STATUS = {this.state.data.status}
             </Text>
+
+            {this.state.data.movies != null &&
+            <View
+               style={{ height: 200, backgroundColor: "white" }}
+            >
+               
+               <FlatList
+                  data={this.state.data.movies}
+                  renderItem={({ item }) => <List.Item
+                  title={item.title}
+                  description={item.releaseYear}
+                  left={props => <List.Icon {...props} icon="movie" />}
+               />}
+               />
+
+            </View>}
 
          </View>
       )
    }
 }
+
+const styles = StyleSheet.create({
+   container: {
+      flex: 1,
+      paddingTop: 22
+   },
+   item: {
+      padding: 10,
+      fontSize: 18,
+      height: 44,
+   },
+})
+
+
 export default PruebaRequestGet

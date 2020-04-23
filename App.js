@@ -1,6 +1,7 @@
 import React from 'react';
-import { AppRegistry } from 'react-native';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { AppRegistry, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Button } from 'react-native-paper';
 
 import './Enviroment';
 
@@ -8,6 +9,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LoginScreen } from './LoginScreen';
 import { MuroScreen } from './MuroScreen';
+import { PerfilScreen } from './PerfilScreen';
+import { ChatScreen } from './ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,18 +24,37 @@ export default class HelloWorldApp extends React.Component {
 
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName='Muro'
+          initialRouteName='Login'
           screenOptions={{
             headerShown: false
           }}>
 
           <Stack.Screen
+            options={{ headerShown: false }}
             name="Login"
             component={LoginScreen} />
 
+<Stack.Screen
+            options={{ headerShown: false }}
+            name="Perfil"
+            component={PerfilScreen} />
+
+<Stack.Screen
+            options={{ headerShown: false }}
+            name="Chat"
+            component={ChatScreen} />
+
           <Stack.Screen
             name="Muro"
-            options={{ title: 'Titulo del Muro' }}
+
+            options={{
+              title: 'Muro de Videos',
+              headerStyle: {
+                backgroundColor: 'midnightblue',
+              },
+              headerTintColor: '#fff',
+              headerLeft: null,
+            }}
             component={MuroScreen} />
 
         </Stack.Navigator>

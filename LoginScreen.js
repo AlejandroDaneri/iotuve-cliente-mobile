@@ -6,6 +6,10 @@ import { styles } from './App';
 
 export class LoginScreen extends React.Component {
 
+    static navigationOptions = {
+        header: null
+    }
+    
     constructor(props) {
         super(props);
     }
