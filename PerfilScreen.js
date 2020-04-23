@@ -12,6 +12,10 @@ export class PerfilScreen extends React.Component {
             <Appbar.Header
                 style={{ backgroundColor: 'midnightblue' }}
             >
+                <Appbar.BackAction
+                    onPress={(props) => { this.props.navigation.goBack(null) }}
+                />
+
                 <Appbar.Content
                     title="Mi Perfil"
                 />
