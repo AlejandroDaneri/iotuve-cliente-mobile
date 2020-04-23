@@ -1,6 +1,24 @@
 import React, { Component } from 'react'
 import { ActivityIndicator, View, Text } from 'react-native'
 
+
+/*
+// No estoy usando esto ahora, TODO: borrar.
+
+async function getMoviesFromApiAsync() {
+  try {
+    let response = await fetch('https://reactnative.dev/movies.json');
+    let json = await response.json();
+    console.log("json.movies");
+    console.log(json.movies);
+    return json.movies;
+  } catch (error) {
+    console.error("error");
+    console.error(error);
+  }
+}
+*/
+
 class PruebaRequestGet extends Component {
    state = {
       loading: true,
@@ -20,7 +38,7 @@ class PruebaRequestGet extends Component {
    fetchData = () => {
       console.log("fetchData");
 
-      fetch('https://jsonplaceholder.typicode.com/posts/1', {
+      fetch("https://reactnative.dev/movies.json", {
          method: 'GET'
       })
          .then((response) => response.json())
@@ -50,23 +68,28 @@ class PruebaRequestGet extends Component {
          myOutput = <Text style={{ color: 'white', padding: 6, fontSize: 18 }}>Info traida por request:</Text>
       }
 
-      console.log("render method");
+      console.log("render method - PruebaRequestGet.js");
       console.log(hasData);
+      console.log("DATA");
+      console.log(this.state.data);
+      console.log(this.state.code);
 
       return (
-         <View>
+         <View
+         style={{margin: 20, padding: 20,backgroundColor: "black"}}
+         >
 
             {myOutput}
 
             <Text style={{ color: 'white', padding: 6 }}>
-               ID = {this.state.data.id}
+               CODE = {this.state.data.title}
             </Text>
             <Text style={{ color: 'white', padding: 6 }}>
-               TITLE = {this.state.data.title}
+               MESSAGE = {this.state.data.message}
             </Text>
             <Text
                style={{ color: 'white', padding: 6 }}>
-               BODY = {this.state.data.body}
+               STATUS = {this.state.data.status}
             </Text>
 
          </View>
