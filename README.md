@@ -3,14 +3,14 @@ App Cliente Mobile para Taller 2
 
 ## Dev Mode
 
-## Instalar Dependencias
+### Instalar Dependencias
 npm install
 
-## En una consola
+### En una consola
 npm start
 
-## En otra consola
+### En Linux
 npm run android
 
-## O
+### En Mac
 npm run ios
