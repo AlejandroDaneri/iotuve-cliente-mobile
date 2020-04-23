@@ -6,11 +6,11 @@ App Cliente Mobile para Taller 2
 ### Instalar Dependencias
 npm install
 
-### En una consola
+### Levantar react-native
 npm start
 
-### En Linux
+### Levantar App en Linux
 npm run android
 
-### En Mac
+### Levantar App en Mac
 npm run ios
