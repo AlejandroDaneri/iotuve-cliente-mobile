@@ -1,16 +1,16 @@
 # fiuba-taller-2-cliente-mobile
 App Cliente Mobile para Taller 2
 
-# Dev Mode
+## Dev Mode
 
-# Instalar Dependencias
+## Instalar Dependencias
 npm install
 
-# En una consola
+## En una consola
 npm start
 
-# En otra consola
+## En otra consola
 npm run android
 
-# O
+## O
 npm run ios
