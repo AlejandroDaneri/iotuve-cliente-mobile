@@ -34,12 +34,12 @@ export default class HelloWorldApp extends React.Component {
             name="Login"
             component={LoginScreen} />
 
-<Stack.Screen
+          <Stack.Screen
             options={{ headerShown: false }}
             name="Perfil"
             component={PerfilScreen} />
 
-<Stack.Screen
+          <Stack.Screen
             options={{ headerShown: false }}
             name="Chat"
             component={ChatScreen} />

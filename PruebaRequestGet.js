@@ -37,11 +37,36 @@ class PruebaRequestGet extends Component {
 
    fetchData = () => {
       console.log("fetchData");
-      
+
+      /*
+      {
+         "name": "morpheus",
+         "job": "leader"
+     }
+      */
       // "https://reactnative.dev/movies.json"
+      // https://reqres.in/api/users
       // global.endpoint_ping
+      
+      /*  Ejemplo con POST
+      fetch("https://reqres.in/api/users", {
+         method: 'POST',
+         headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({
+            name: 'guido',
+            job: 'mobile dev',
+         }),
+      })
+      */
       fetch(global.endpoint_ping, {
-         method: 'GET'
+         method: 'GET',
+         headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+         },
       })
          .then((response) => response.json())
          .then((responseJson) => {
@@ -79,7 +104,7 @@ class PruebaRequestGet extends Component {
 
       return (
          <View
-            style={{ margin: 20, padding: 20, backgroundColor: "azure"}}
+            style={{ margin: 20, padding: 20, backgroundColor: "azure" }}
          >
 
             {myOutput}
@@ -95,20 +120,20 @@ class PruebaRequestGet extends Component {
             </Text>
 
             {this.state.data.movies != null &&
-            <View
-               style={{ height: 200, backgroundColor: "white" }}
-            >
-               
-               <FlatList
-                  data={this.state.data.movies}
-                  renderItem={({ item }) => <List.Item
-                  title={item.title}
-                  description={item.releaseYear}
-                  left={props => <List.Icon {...props} icon="movie" />}
-               />}
-               />
+               <View
+                  style={{ height: 200, backgroundColor: "white" }}
+               >
 
-            </View>}
+                  <FlatList
+                     data={this.state.data.movies}
+                     renderItem={({ item }) => <List.Item
+                        title={item.title}
+                        description={item.releaseYear}
+                        left={props => <List.Icon {...props} icon="movie" />}
+                     />}
+                  />
+
+               </View>}
 
          </View>
       )
