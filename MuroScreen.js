@@ -4,6 +4,7 @@ import { Chip, Card, Appbar, Button, Title, Paragraph } from 'react-native-paper
 import PruebaRequestGet from './PruebaRequestGet.js';
 import PruebaPlayVideoFile from './PruebaPlayVideoFile.js';
 import Video from 'react-native-video';
+import VideoEnLista from './VideoEnLista.js';
 
 export class MuroScreen extends React.Component {
 
@@ -56,68 +57,26 @@ export class MuroScreen extends React.Component {
 
                     <ScrollView>
 
-                        <Card elevation={6} style={{ margin: 10 }}>
-                            <Card.Title title="Viaje de pelicula !!" subtitle="by Juan Marcos" />
-                            <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-                            <Card.Actions>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
-                                    <Chip icon="eye" style={{ marginRight: 4 }}>92.2k</Chip>
-                                    <Chip icon="alarm">1:13:54</Chip>
-                                </View>
-                                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                    <Chip icon="heart" style={{ marginRight: 4 }}>115</Chip>
-                                    <Chip icon="heart-broken">1.1k</Chip>
-                                </View>
-                            </Card.Actions>
-                        </Card>
+                        <VideoEnLista
+                            videoTitle="Viaje de pelicula !!" videoAuthor="by Juan Marcos" videoSnapshot="https://picsum.photos/700"
+                            videoLength="15:15" videoViewCount="123.4k" favoritesCount="6" notFavoritesCount="1.1k" />
 
-                        <Card elevation={6} style={{ margin: 10 }}>
-                            <Card.Title title="Viaje de pelicula !!" subtitle="by Juan Marcos" />
-                            <Card.Cover source={{ uri: 'https://picsum.photos/701' }} />
-                            <Card.Actions>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
-                                    <Chip icon="eye" style={{ marginRight: 4 }}>92.2k</Chip>
-                                    <Chip icon="alarm">1:13:54</Chip>
-                                </View>
-                                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                    <Chip icon="heart" style={{ marginRight: 4 }}>115</Chip>
-                                    <Chip icon="heart-broken">1.1k</Chip>
-                                </View>
+                        <VideoEnLista
+                            videoTitle="Viaje de pelicula !!" videoAuthor="by Juan Marcos" videoSnapshot="https://picsum.photos/701"
+                            videoLength="15:15" videoViewCount="123.4k" favoritesCount="6" notFavoritesCount="1.1k" />
 
-                            </Card.Actions>
-                        </Card>
+                        <VideoEnLista
+                            videoTitle="Viaje de pelicula !!" videoAuthor="by Juan Marcos" videoSnapshot="https://picsum.photos/702"
+                            videoLength="15:15" videoViewCount="123.4k" favoritesCount="6" notFavoritesCount="1.1k" />
 
-                        <Card elevation={6} style={{ margin: 10 }}>
-                            <Card.Title title="Viaje de pelicula !!" subtitle="by Juan Marcos" />
-                            <Card.Cover source={{ uri: 'https://picsum.photos/702' }} />
-                            <Card.Actions>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
-                                    <Chip icon="eye" style={{ marginRight: 4 }}>92.2k</Chip>
-                                    <Chip icon="alarm">1:13:54</Chip>
-                                </View>
-                                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                    <Chip icon="heart" style={{ marginRight: 4 }}>115</Chip>
-                                    <Chip icon="heart-broken">1.1k</Chip>
-                                </View>
+                        <VideoEnLista
+                            videoTitle="Viaje de pelicula !!" videoAuthor="by Juan Marcos" videoSnapshot="https://picsum.photos/703"
+                            videoLength="15:15" videoViewCount="123.4k" favoritesCount="6" notFavoritesCount="1.1k" />
 
-                            </Card.Actions>
-                        </Card>
+                        <VideoEnLista
+                            videoTitle="Viaje de pelicula !!" videoAuthor="by Juan Marcos" videoSnapshot="https://picsum.photos/704"
+                            videoLength="15:15" videoViewCount="123.4k" favoritesCount="6" notFavoritesCount="1.1k" />
 
-                        <Card elevation={6} style={{ margin: 10 }}>
-                            <Card.Title title="Viaje de pelicula !!" subtitle="by Juan Marcos" />
-                            <Card.Cover source={{ uri: 'https://picsum.photos/703' }} />
-                            <Card.Actions>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
-                                    <Chip icon="eye" style={{ marginRight: 4 }}>92.2k</Chip>
-                                    <Chip icon="alarm">1:13:54</Chip>
-                                </View>
-                                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                    <Chip icon="heart" style={{ marginRight: 4 }}>115</Chip>
-                                    <Chip icon="heart-broken">1.1k</Chip>
-                                </View>
-
-                            </Card.Actions>
-                        </Card>
 
                         <View style={{ height: 220, backgroundColor: "black", marginVertical: 8 }}>
                             <PruebaPlayVideoFile></PruebaPlayVideoFile>
