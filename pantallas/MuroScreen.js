@@ -1,10 +1,9 @@
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { Chip, Card, Appbar, Button, Title, Paragraph } from 'react-native-paper';
-import PruebaRequestGet from './PruebaRequestGet.js';
-import PruebaPlayVideoFile from './PruebaPlayVideoFile.js';
-import Video from 'react-native-video';
-import VideoEnLista from './VideoEnLista.js';
+import { ScrollView, View } from 'react-native';
+import { Appbar } from 'react-native-paper';
+import PruebaRequestGet from '../PruebaRequestGet.js';
+import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
+import VideoEnLista from '../VideoEnLista.js';
 
 export class MuroScreen extends React.Component {
 

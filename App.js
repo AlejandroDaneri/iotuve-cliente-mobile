@@ -1,16 +1,15 @@
 import React from 'react';
 import { AppRegistry, View } from 'react-native';
 import { StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
 
 import './Enviroment';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { LoginScreen } from './LoginScreen';
-import { MuroScreen } from './MuroScreen';
-import { PerfilScreen } from './PerfilScreen';
-import { ChatScreen } from './ChatScreen';
+import { LoginScreen } from './pantallas/LoginScreen';
+import { MuroScreen } from './pantallas/MuroScreen';
+import { PerfilScreen } from './pantallas/PerfilScreen';
+import { ChatScreen } from './pantallas/ChatScreen';
 
 const Stack = createStackNavigator();
 

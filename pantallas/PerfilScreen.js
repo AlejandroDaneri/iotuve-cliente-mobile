@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { Appbar, Button } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 
-export class ChatScreen extends React.Component {
+export class PerfilScreen extends React.Component {
 
     render() {
 
@@ -17,12 +17,12 @@ export class ChatScreen extends React.Component {
                 />
 
                 <Appbar.Content
-                    title="Mi Chat"
+                    title="Mi Perfil"
                 />
             </Appbar.Header>
 
             <Text style={{ fontSize: 30 }}>
-            Chat Screen
+                Perfil Screen
             </Text>
 
         </View>);

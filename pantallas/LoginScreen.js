@@ -2,8 +2,7 @@ import React from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
 import { Button, TextInput, Provider as PaperProvider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { styles } from './App';
-import Video from 'react-native-video';
+import { styles } from '../App';
 
 export class LoginScreen extends React.Component {
 
