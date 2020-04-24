@@ -9,7 +9,7 @@ class VideoEnLista extends Component {
     render() {
 
         return (
-        <Card elevation={6} style={styles.cardContainer}>
+        <Card elevation={6} style={styles.cardContainer} onPress={ () => {console.log("press Card") }}>
             <Card.Title title={this.props.videoTitle} subtitle={this.props.videoAuthor}/>
             <Card.Cover source={{ uri: this.props.videoSnapshot}} />
             <Card.Actions>
