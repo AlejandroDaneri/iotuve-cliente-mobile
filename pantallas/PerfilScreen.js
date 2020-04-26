@@ -1,30 +1,158 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Badge,
+  Divider,
+  Title,
+  Paragraph,
+  Chip,
+  Card,
+  Appbar,
+} from 'react-native-paper';
+import VideoEnLista from '../VideoEnLista.js';
 
 export class PerfilScreen extends React.Component {
+  render() {
+    const { navigation } = this.props;
+    return (
+      <View style={{ flex: 1 }}>
+        <Appbar.Header style={{ backgroundColor: 'midnightblue' }}>
+          <Appbar.BackAction
+            onPress={(props) => {
+              this.props.navigation.goBack(null);
+            }}
+          />
 
-    render() {
+          <Appbar.Content title="Mi Perfil" />
 
-        const { navigation } = this.props;
-        return (<View style={{ flex: 1, }}>
+          <Appbar.Action
+            icon="pencil"
+            onPress={() => {
+              alert('Editar Mi Perfil');
+            }}
+          />
+        </Appbar.Header>
 
-            <Appbar.Header
-                style={{ backgroundColor: 'midnightblue' }}
-            >
-                <Appbar.BackAction
-                    onPress={(props) => { this.props.navigation.goBack(null) }}
-                />
+        <ScrollView>
+          <View>
+            <Card elevation={6} style={styles.cardContainer}>
+              <Card.Title
+                title="Juan Marcos"
+                subtitle="Campo para otra cosa, descripcion o bla"
+              />
+              <Divider />
+              <Card.Content>
+                <Paragraph style={{ paddingVertical: 10 }}>
+                  Otro contenido
+                </Paragraph>
 
-                <Appbar.Content
-                    title="Mi Perfil"
-                />
-            </Appbar.Header>
+                <Divider />
 
-            <Text style={{ fontSize: 30 }}>
-                Perfil Screen
+                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                  <View style={styles.actionsLeft}>
+                    <Text># Videos publicados:</Text>
+                  </View>
+                  <View style={styles.actionsRight}>
+                    <Chip icon="upload">3660</Chip>
+                  </View>
+                </View>
+
+                <Divider />
+
+                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                  <View style={styles.actionsLeft}>
+                    <Text># Conexiónes con amigos:</Text>
+                  </View>
+                  <View style={styles.actionsRight}>
+                    <Chip icon="account-multiple">12110</Chip>
+                  </View>
+                </View>
+
+                <Divider />
+
+                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                  <View style={styles.actionsLeft}>
+                    <Text># Likes / Unlikes:</Text>
+                  </View>
+                  <View style={styles.actionsRight}>
+                    <Chip icon="heart" style={{ marginRight: 4 }}>
+                      1150
+                    </Chip>
+                    <Chip icon="heart-broken">2230</Chip>
+                  </View>
+                </View>
+              </Card.Content>
+            </Card>
+          </View>
+
+          <View>
+            <Text style={{ fontSize: 30, marginHorizontal: 10 }}>
+              Listado de videos
             </Text>
 
-        </View>);
-    }
+            <View style={{ flex: 1, marginVertical: 10 }}>
+              <VideoEnLista
+                videoTitle="Viaje de pelicula !!"
+                videoAuthor="by Juan Marcos"
+                videoSnapshot="https://picsum.photos/700"
+                videoLength="15:15"
+                videoViewCount="123.4k"
+                favoritesCount="6"
+                notFavoritesCount="1.1k"
+                navigation={this.props.navigation}
+              />
+
+              <VideoEnLista
+                videoTitle="Viaje de pelicula !!"
+                videoAuthor="by Juan Marcos"
+                videoSnapshot="https://picsum.photos/701"
+                videoLength="15:15"
+                videoViewCount="123.4k"
+                favoritesCount="6"
+                notFavoritesCount="1.1k"
+                navigation={this.props.navigation}
+              />
+
+              <VideoEnLista
+                videoTitle="Viaje de pelicula !!"
+                videoAuthor="by Juan Marcos"
+                videoSnapshot="https://picsum.photos/702"
+                videoLength="15:15"
+                videoViewCount="123.4k"
+                favoritesCount="6"
+                notFavoritesCount="1.1k"
+                navigation={this.props.navigation}
+              />
+
+              <VideoEnLista
+                videoTitle="Viaje de pelicula !!"
+                videoAuthor="by Juan Marcos"
+                videoSnapshot="https://picsum.photos/703"
+                videoLength="15:15"
+                videoViewCount="123.4k"
+                favoritesCount="6"
+                notFavoritesCount="1.1k"
+                navigation={this.props.navigation}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 }
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    margin: 10,
+  },
+  actionsLeft: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  actionsRight: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+});

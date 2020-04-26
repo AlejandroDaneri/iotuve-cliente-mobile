@@ -10,42 +10,48 @@ import { LoginScreen } from './pantallas/LoginScreen';
 import { MuroScreen } from './pantallas/MuroScreen';
 import { PerfilScreen } from './pantallas/PerfilScreen';
 import { ChatScreen } from './pantallas/ChatScreen';
+import { VideoScreen } from './pantallas/VideoScreen';
 
 const Stack = createStackNavigator();
 
 export default class HelloWorldApp extends React.Component {
-
   render() {
-    console.log("render - App.js");
+    console.log('render - App.js');
     console.log(global.endpoint_ping);
 
     return (
-
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName='Login'
+          initialRouteName="Login"
           screenOptions={{
-            headerShown: false
+            headerShown: false,
           }}>
-
           <Stack.Screen
             options={{ headerShown: false }}
             name="Login"
-            component={LoginScreen} />
+            component={LoginScreen}
+          />
 
           <Stack.Screen
             options={{ headerShown: false }}
             name="Perfil"
-            component={PerfilScreen} />
+            component={PerfilScreen}
+          />
 
           <Stack.Screen
             options={{ headerShown: false }}
             name="Chat"
-            component={ChatScreen} />
+            component={ChatScreen}
+          />
+
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Video"
+            component={VideoScreen}
+          />
 
           <Stack.Screen
             name="Muro"
-
             options={{
               title: 'Muro de Videos',
               headerStyle: {
@@ -54,13 +60,11 @@ export default class HelloWorldApp extends React.Component {
               headerTintColor: '#fff',
               headerLeft: null,
             }}
-            component={MuroScreen} />
-
+            component={MuroScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
-
-    )
-
+    );
   }
 }
 
@@ -71,16 +75,16 @@ export const styles = StyleSheet.create({
   headerContainer: {
     //flex: 1,
     marginTop: 40,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerText: {
     color: 'white',
     fontSize: 50,
   },
   center: {
-    alignItems: 'center'
-  }
-})
+    alignItems: 'center',
+  },
+});
 
 AppRegistry.registerComponent('main', () => HelloWorldApp);

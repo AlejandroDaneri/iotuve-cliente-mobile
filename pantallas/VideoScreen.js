@@ -1,12 +1,9 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
+import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 
-export class ChatScreen extends React.Component {
-  change(x) {
-    return x * 10;
-  }
-
+export class VideoScreen extends React.Component {
   render() {
     const { navigation } = this.props;
     return (
@@ -18,10 +15,15 @@ export class ChatScreen extends React.Component {
             }}
           />
 
-          <Appbar.Content title="Mi Chat" />
+          <Appbar.Content title="Video" />
         </Appbar.Header>
 
-        <Text style={{ fontSize: 30 }}>Chat Screen</Text>
+        <Text style={{ fontSize: 30 }}>Video Screen</Text>
+
+        <View
+          style={{ height: 220, backgroundColor: 'black', marginVertical: 8 }}>
+          <PruebaPlayVideoFile></PruebaPlayVideoFile>
+        </View>
       </View>
     );
   }

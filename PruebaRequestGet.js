@@ -1,5 +1,11 @@
-import React, { Component } from 'react'
-import { StyleSheet, FlatList, ActivityIndicator, View, Text } from 'react-native'
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  View,
+  Text,
+} from 'react-native';
 import { List } from 'react-native-paper';
 
 /*
@@ -20,35 +26,34 @@ async function getMoviesFromApiAsync() {
 */
 
 class PruebaRequestGet extends Component {
-   state = {
-      loading: true,
-      data: ''
-   }
+  state = {
+    loading: true,
+    data: '',
+  };
 
-   // llamo a fetchData, pero con un delay de unos segundos para mostrar "efecto loading"
-   delayedFetchData = () => setTimeout(() => {
-      console.log("setTimeout");
+  // llamo a fetchData, pero con un delay de unos segundos para mostrar "efecto loading"
+  delayedFetchData = () =>
+    setTimeout(() => {
+      console.log('setTimeout');
 
       this.fetchData();
-      this.setState({ loading: false })
+      this.setState({ loading: false });
+    }, 2000);
 
-   }, 2000)
+  fetchData = () => {
+    console.log('fetchData');
 
-
-   fetchData = () => {
-      console.log("fetchData");
-
-      /*
+    /*
       {
          "name": "morpheus",
          "job": "leader"
      }
       */
-      // "https://reactnative.dev/movies.json"
-      // https://reqres.in/api/users
-      // global.endpoint_ping
-      
-      /*  Ejemplo con POST
+    // "https://reactnative.dev/movies.json"
+    // https://reqres.in/api/users
+    // global.endpoint_ping
+
+    /*  Ejemplo con POST
       fetch("https://reqres.in/api/users", {
          method: 'POST',
          headers: {
@@ -61,96 +66,91 @@ class PruebaRequestGet extends Component {
          }),
       })
       */
-      fetch(global.endpoint_ping, {
-         method: 'GET',
-         headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-         },
+    fetch(global.endpoint_ping, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        this.setState({
+          data: responseJson,
+          loading: false,
+        });
       })
-         .then((response) => response.json())
-         .then((responseJson) => {
-            console.log(responseJson);
-            this.setState({
-               data: responseJson,
-               loading: false,
-            })
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-   }
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-   componentDidMount = () => {
-      this.delayedFetchData();
-   }
+  componentDidMount = () => {
+    this.delayedFetchData();
+  };
 
-   render() {
+  render() {
+    var hasData = this.state.loading != false;
+    let myOutput;
+    if (hasData) {
+      myOutput = <ActivityIndicator size="large" color="#0000ff" />;
+    } else {
+      myOutput = (
+        <Text style={{ color: 'black', padding: 6, fontSize: 18 }}>
+          Data via request / endpoint:
+        </Text>
+      );
+    }
 
-      var hasData = (this.state.loading != false);
-      let myOutput;
-      if (hasData) {
-         myOutput = <ActivityIndicator size="large" color="#0000ff" />
-      } else {
-         myOutput = <Text style={{ color: 'black', padding: 6, fontSize: 18 }}>
-            Data via request / endpoint:
-            </Text>
-      }
+    console.log('render method - PruebaRequestGet.js');
+    console.log(hasData);
+    console.log('DATA');
+    console.log(this.state.data.movies);
 
-      console.log("render method - PruebaRequestGet.js");
-      console.log(hasData);
-      console.log("DATA");
-      console.log(this.state.data.movies);
+    return (
+      <View style={{ margin: 20, padding: 20, backgroundColor: 'azure' }}>
+        {myOutput}
 
-      return (
-         <View
-            style={{ margin: 20, padding: 20, backgroundColor: "azure" }}
-         >
+        <Text style={{ color: 'black', padding: 6 }}>
+          CODE = {this.state.data.code}
+        </Text>
+        <Text style={{ color: 'black', padding: 6 }}>
+          MESSAGE = {this.state.data.message}
+        </Text>
+        <Text style={{ color: 'black', padding: 6 }}>
+          STATUS = {this.state.data.status}
+        </Text>
 
-            {myOutput}
-
-            <Text style={{ color: 'black', padding: 6 }}>
-               CODE = {this.state.data.code}
-            </Text>
-            <Text style={{ color: 'black', padding: 6 }}>
-               MESSAGE = {this.state.data.message}
-            </Text>
-            <Text style={{ color: 'black', padding: 6 }}>
-               STATUS = {this.state.data.status}
-            </Text>
-
-            {this.state.data.movies != null &&
-               <View
-                  style={{ height: 200, backgroundColor: "white" }}
-               >
-
-                  <FlatList
-                     data={this.state.data.movies}
-                     renderItem={({ item }) => <List.Item
-                        title={item.title}
-                        description={item.releaseYear}
-                        left={props => <List.Icon {...props} icon="movie" />}
-                     />}
-                  />
-
-               </View>}
-
-         </View>
-      )
-   }
+        {this.state.data.movies != null && (
+          <View style={{ height: 200, backgroundColor: 'white' }}>
+            <FlatList
+              data={this.state.data.movies}
+              renderItem={({ item }) => (
+                <List.Item
+                  title={item.title}
+                  description={item.releaseYear}
+                  left={(props) => <List.Icon {...props} icon="movie" />}
+                />
+              )}
+            />
+          </View>
+        )}
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-   container: {
-      flex: 1,
-      paddingTop: 22
-   },
-   item: {
-      padding: 10,
-      fontSize: 18,
-      height: 44,
-   },
-})
+  container: {
+    flex: 1,
+    paddingTop: 22,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+});
 
-
-export default PruebaRequestGet
+export default PruebaRequestGet;
