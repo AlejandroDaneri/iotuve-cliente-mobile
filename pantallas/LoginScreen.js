@@ -15,29 +15,39 @@ export class LoginScreen extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      logoColor: "blue",
+    };
+  }
+
+  toggleLogoColor() {
+    var newColor;
+    (this.state.logoColor == "midnightblue") ? (newColor = "blue") : (newColor = "midnightblue");
+    this.setState({
+      logoColor: newColor
+    });
   }
 
   render() {
     const { navigation } = this.props;
     console.log('render - LoginScreen');
+    console.log(this.state.logoColor);
 
     return (
       <PaperProvider>
         <SafeAreaView style={styles.safearea}>
           <View
-            style={{ backgroundColor: 'midnightblue', flex: 1, padding: 20 }}>
+            style={{ backgroundColor: 'midnightblue', flex: 1, paddingHorizontal: 20, paddingTop: 5 }}>
             <View style={styles.headerContainer}>
               <Icon.Button
-                color="midnightblue"
+                color={this.state.logoColor}
                 backgroundColor="white"
-                size={42}
+                size={36}
                 name="play"
-                onPress={() => console.log('Logo clikeado')}></Icon.Button>
+                onPress={() => { this.toggleLogoColor(); console.log('Logo clikeado') }}></Icon.Button>
 
               <Text style={styles.headerText}>ChoTuve</Text>
             </View>
-
-            <View style={{ backgroundColor: 'black', height: 2 }}></View>
 
             <View
               style={{
@@ -71,21 +81,40 @@ export class LoginScreen extends React.Component {
                   }}>
                   Ingresar
                 </Button>
+              </View>
+              <View
+                style={{
+                  margin: 10,
+                  paddingHorizontal: 20,
+                  paddingVertical: 20,
+                  backgroundColor: 'white',
+                }}>
 
                 <Button
-                  style={{ marginTop: 15 }}
-                  color="red"
-                  icon="wall"
-                  mode="contained"
+                  icon="account"
+                  mode="outlined"
                   onPress={() => {
-                    console.log('Navegacion -> Muro'),
-                      navigation.navigate('Muro');
+                    console.log('Navegacion -> Nuevo Usuario'),
+                      navigation.navigate('SignUp');
                   }}>
-                  Navegar al Muro
+                  SOY UN NUEVO USUARIO
                 </Button>
+
               </View>
 
-              <View style={{ backgroundColor: 'black', height: 2 }}></View>
+
+              <Button
+                style={{ marginTop: 15 }}
+                color="grey"
+                icon="wall"
+                compact="true"
+                onPress={() => {
+                  console.log('Navegacion -> Muro'),
+                    navigation.navigate('Muro');
+                }}>
+                Entrar al Muro (debug)
+                </Button>
+
             </View>
           </View>
         </SafeAreaView>

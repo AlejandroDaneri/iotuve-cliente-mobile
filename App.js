@@ -7,6 +7,7 @@ import './Enviroment';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LoginScreen } from './pantallas/LoginScreen';
+import { SignUpScreen } from './pantallas/SignUpScreen';
 import { MuroScreen } from './pantallas/MuroScreen';
 import { PerfilScreen } from './pantallas/PerfilScreen';
 import { ChatScreen } from './pantallas/ChatScreen';
@@ -30,6 +31,12 @@ export default class HelloWorldApp extends React.Component {
             options={{ headerShown: false }}
             name="Login"
             component={LoginScreen}
+          />
+
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="SignUp"
+            component={SignUpScreen}
           />
 
           <Stack.Screen
@@ -80,7 +87,7 @@ export const styles = StyleSheet.create({
   },
   headerText: {
     color: 'white',
-    fontSize: 50,
+    fontSize: 48,
   },
   center: {
     alignItems: 'center',
