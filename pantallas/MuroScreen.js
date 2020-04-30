@@ -21,12 +21,14 @@ export class MuroScreen extends React.Component {
           <Appbar.Content title="Muro" />
           <Appbar.Action
             icon="wall"
+            color="grey"
             onPress={() => {
               console.log('Navegacion -> Login'), navigation.navigate('Login');
             }}
           />
           <Appbar.Action
             icon="network"
+            color="grey"
             onPress={() => {
               this.setState({ showTheRequest: !this.state.showTheRequest });
             }}
@@ -35,6 +37,12 @@ export class MuroScreen extends React.Component {
             icon="chat"
             onPress={() => {
               navigation.navigate('Chat');
+            }}
+          />
+          <Appbar.Action
+            icon="upload"
+            onPress={() => {
+              navigation.navigate('UploadVideo');
             }}
           />
           <Appbar.Action

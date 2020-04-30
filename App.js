@@ -12,6 +12,7 @@ import { MuroScreen } from './pantallas/MuroScreen';
 import { PerfilScreen } from './pantallas/PerfilScreen';
 import { ChatScreen } from './pantallas/ChatScreen';
 import { VideoScreen } from './pantallas/VideoScreen';
+import { UploadVideoScreen } from './pantallas/UploadVideoScreen';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,12 @@ export default class HelloWorldApp extends React.Component {
             options={{ headerShown: false }}
             name="Perfil"
             component={PerfilScreen}
+          />
+
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="UploadVideo"
+            component={UploadVideoScreen}
           />
 
           <Stack.Screen
