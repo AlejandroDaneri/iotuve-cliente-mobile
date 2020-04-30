@@ -9,7 +9,7 @@ class PruebaPlayVideoFile extends Component {
 
     return (
       <Video
-        source={{ uri: 'http://techslides.com/demos/sample-videos/small.mp4' }}
+        source={{ uri: this.props.uri }} 
         ref={(ref) => {
           this.player = ref;
         }}
