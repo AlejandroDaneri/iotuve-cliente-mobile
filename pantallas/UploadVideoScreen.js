@@ -1,8 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { PermissionsAndroid, StyleSheet, Text, View } from 'react-native';
 import { Paragraph, Divider, Card, Chip, Button, Appbar } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
+import AppUtils from '../AppUtils.js';
+
+import firebase from '@react-native-firebase/app';
+import storage from '@react-native-firebase/storage';
+import RNFS from 'react-native-fs';
 
 export class UploadVideoScreen extends React.Component {
 
@@ -10,15 +15,54 @@ export class UploadVideoScreen extends React.Component {
     super(props);
 
     // VIDEOS de muestra
-    //https://pixabay.com/es/videos/fruta-corte-alimentos-saludable-33252/
+    // https://pixabay.com/es/videos/fruta-corte-alimentos-saludable-33252/
 
-    //Initialization of the state to store the selected file related attribute
     this.state = {
-      singleFile: '',
+      selectedFile: '',
+      appHasPermission: null
     };
   }
 
+  async uploadSelectedFile() {
+
+    if (this.state.appHasPermission) {
+
+      // RNFS.DocumentDirectoryPath
+      // RNFS.DownloadDirectoryPath
+      // RNFS.ExternalDirectoryPath
+      // RNFS.ExternalStorageDirectoryPath
+      RNFS.readDir(RNFS.DownloadDirectoryPath).then((result) => {
+        console.log('GOT RESULT: ', result);
+  
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+  
+          const pathFileToUpload = item.path;
+  
+          const reference = firebase.storage().ref('/uploads/videos/test/' + AppUtils.generateRandomNumber() + '_' + item.name);
+          console.log('MUESTRO REFERENCE: ');
+          console.log(reference);
+          reference.putFile({
+            pathFileToUpload
+          }).then((resultFromFirebase) => {
+            console.log('-------- MUESTRO result ---------------');
+            console.log(resultFromFirebase);
+          }).catch((error) => {
+            console.log(error);
+          });
+  
+        }
+  
+      })
+
+    } else {
+      console.log('Dijo que no!');
+    }
+
+  }
+
   async selectOneFile() {
+
     //Opening Document Picker for selection of one file
     try {
       const res = await DocumentPicker.pick({
@@ -30,24 +74,42 @@ export class UploadVideoScreen extends React.Component {
         // DocumentPicker.types.audio
         // DocumentPicker.types.pdf
       });
-      //Printing the log realted to the file
+      
+      //Printing the log related to the file
       console.log('res : ' + JSON.stringify(res));
       console.log('URI : ' + res.uri);
       console.log('Type : ' + res.type);
       console.log('File Name : ' + res.name);
       console.log('File Size : ' + res.size);
+      
       //Setting the state to show single file attributes
-      this.setState({ singleFile: res });
+      this.setState({ selectedFile: res });
+
     } catch (err) {
       //Handling any exception (If any)
       if (DocumentPicker.isCancel(err)) {
-        //If user canceled the document selection
-        alert('Canceled from single doc picker');
+        alert('Accion Canceleda');
       } else {
         //For Unknown Error
-        alert('Unknown Error: ' + JSON.stringify(err));
+        alert('Error desconocido: ' + JSON.stringify(err));
         throw err;
       }
+    }
+  }
+
+  async clickElegirUnVideo() {
+    console.log('clickElegirUnVideo');
+
+    console.log(AppUtils.endpoint_ping);
+
+    var hasPermission = await AppUtils.requestPermissionsAndroid();
+    if (hasPermission) {
+      console.log('hasPermission');
+      this.setState({ appHasPermission: true });
+      //this.selectOneFile();
+    } else {
+      console.log('NO hasPermission');
+      this.setState({ appHasPermission: false });
     }
   }
 
@@ -83,7 +145,7 @@ export class UploadVideoScreen extends React.Component {
                 style={{ marginTop: 15 }}
                 icon="video"
                 mode="contained"
-                onPress={this.selectOneFile.bind(this)}>
+                onPress={this.clickElegirUnVideo.bind(this)}>
                 Elegir un Video
               </Button>
 
@@ -91,7 +153,7 @@ export class UploadVideoScreen extends React.Component {
           </Card>
         </View>
 
-        {this.state.singleFile.uri &&
+        {this.state.selectedFile.uri &&
           <View>
             <Card elevation={6} style={styles.cardContainer}>
               <Card.Title
@@ -101,32 +163,40 @@ export class UploadVideoScreen extends React.Component {
               <Card.Content>
                 {/*Showing the data of selected Single file*/}
                 <Paragraph style={{ paddingVertical: 4 }}>
-                File Name:{' '}
-                  {this.state.singleFile.name ? this.state.singleFile.name : ''}
+                  File Name:{' '}
+                  {this.state.selectedFile.name ? this.state.selectedFile.name : ''}
                 </Paragraph>
 
                 <Paragraph style={{ paddingVertical: 4 }}>
-                Type: {this.state.singleFile.type ? this.state.singleFile.type : ''}
+                  Type: {this.state.selectedFile.type ? this.state.selectedFile.type : ''}
                 </Paragraph>
 
                 <Paragraph style={{ paddingVertical: 4 }}>
-                File Size:{' '}
-                  {this.state.singleFile.size ? this.state.singleFile.size : ''}
+                  File Size:{' '}
+                  {this.state.selectedFile.size ? this.state.selectedFile.size : ''}
                 </Paragraph>
 
                 <Paragraph style={{ paddingVertical: 4 }}>
-                URI: {this.state.singleFile.uri ? this.state.singleFile.uri : ''}
+                  URI: {this.state.selectedFile.uri ? this.state.selectedFile.uri : ''}
                 </Paragraph>
+
+                <Button
+                  style={{ marginTop: 15 }}
+                  icon="upload"
+                  mode="contained"
+                  onPress={this.uploadSelectedFile.bind(this)}>
+                  Subir Video
+              </Button>
 
               </Card.Content>
             </Card>
           </View>
         }
 
-        {this.state.singleFile.uri &&
+        {this.state.selectedFile.uri &&
           <View style={{ height: 220, backgroundColor: 'black', marginVertical: 8 }}>
             <PruebaPlayVideoFile
-              uri={this.state.singleFile.uri ? this.state.singleFile.uri : ''}
+              uri={this.state.selectedFile.uri ? this.state.selectedFile.uri : ''}
             />
           </View>
         }
