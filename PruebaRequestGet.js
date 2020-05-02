@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { List } from 'react-native-paper';
 
+import AppUtils from './AppUtils.js';
+
 /*
 // No estoy usando esto ahora, TODO: borrar.
 
