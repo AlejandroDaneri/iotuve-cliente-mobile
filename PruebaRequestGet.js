@@ -66,7 +66,7 @@ class PruebaRequestGet extends Component {
          }),
       })
       */
-    fetch(global.endpoint_ping, {
+    fetch(AppUtils.endpoint_ping, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

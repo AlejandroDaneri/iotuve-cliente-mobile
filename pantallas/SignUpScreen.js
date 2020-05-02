@@ -36,7 +36,6 @@ export class SignUpScreen extends React.Component {
       */
     // "https://reactnative.dev/movies.json"
     // https://reqres.in/api/users
-    // global.endpoint_ping
 
     fetch("https://reqres.in/api/users", {
       method: 'POST',
