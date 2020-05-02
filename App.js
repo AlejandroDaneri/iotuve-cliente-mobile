@@ -2,7 +2,7 @@ import React from 'react';
 import { AppRegistry, View } from 'react-native';
 import { StyleSheet } from 'react-native';
 
-import './Enviroment';
+import AppUtils from './AppUtils.js';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -19,7 +19,7 @@ const Stack = createStackNavigator();
 export default class HelloWorldApp extends React.Component {
   render() {
     console.log('render - App.js');
-    console.log(global.endpoint_ping);
+    console.log(AppUtils.endpoint_ping);
 
     return (
       <NavigationContainer>
