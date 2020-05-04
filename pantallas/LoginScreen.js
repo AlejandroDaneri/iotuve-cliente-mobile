@@ -5,8 +5,10 @@ import {
   TextInput,
   Provider as PaperProvider,
 } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { styles } from '../App';
+
+
+import { styles } from '../utils/AppStyles';
+import ChotuveLogo from '../ChotuveLogo.js';
 
 export class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -20,14 +22,6 @@ export class LoginScreen extends React.Component {
     };
   }
 
-  toggleLogoColor() {
-    var newColor;
-    (this.state.logoColor == "midnightblue") ? (newColor = "blue") : (newColor = "midnightblue");
-    this.setState({
-      logoColor: newColor
-    });
-  }
-
   render() {
     const { navigation } = this.props;
     console.log('render - LoginScreen');
@@ -38,16 +32,8 @@ export class LoginScreen extends React.Component {
         <SafeAreaView style={styles.safearea}>
           <View
             style={{ backgroundColor: 'midnightblue', flex: 1, paddingHorizontal: 20, paddingTop: 5 }}>
-            <View style={styles.headerContainer}>
-              <Icon.Button
-                color={this.state.logoColor}
-                backgroundColor="white"
-                size={36}
-                name="play"
-                onPress={() => { this.toggleLogoColor(); console.log('Logo clikeado') }}></Icon.Button>
-
-              <Text style={styles.headerText}>ChoTuve</Text>
-            </View>
+            
+            <ChotuveLogo />
 
             <View
               style={{

@@ -1,12 +1,13 @@
 import React from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import {
   Button,
   TextInput,
   Provider as PaperProvider,
 } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { styles } from '../App';
+
+import { styles } from '../utils/AppStyles';
+import ChotuveLogo from '../ChotuveLogo.js';
 
 export class SignUpScreen extends React.Component {
   static navigationOptions = {
@@ -75,16 +76,7 @@ export class SignUpScreen extends React.Component {
           <View
             style={{ backgroundColor: 'midnightblue', flex: 1, paddingHorizontal: 20, paddingTop: 5 }}>
 
-            <View style={styles.headerContainer}>
-              <Icon.Button
-                color="blue"
-                backgroundColor="white"
-                size={36}
-                name="play"
-                onPress={() => console.log('Logo clikeado')}></Icon.Button>
-
-              <Text style={styles.headerText}>ChoTuve</Text>
-            </View>
+            <ChotuveLogo />
 
             <View
               style={{
@@ -131,7 +123,7 @@ export class SignUpScreen extends React.Component {
                 />
 
                 <TextInput
-style={{paddingVertical: 4}}
+                  style={{ paddingVertical: 4 }}
                   dense="true"
                   label="Ingrese su Clave"
                   mode="outlined"
