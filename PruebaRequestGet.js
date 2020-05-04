@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { List } from 'react-native-paper';
 
-import AppUtils from './AppUtils.js';
+import AppUtils from './utils/AppUtils.js';
 
 /*
 // No estoy usando esto ahora, TODO: borrar.
@@ -68,6 +68,29 @@ class PruebaRequestGet extends Component {
          }),
       })
       */
+
+    getPing(
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    ).then((responseJson) => { // status 200 comes here
+      // data => // do something with data.id, data.user
+      console.log(responseJson);
+      this.setState({
+        data: responseJson,
+        loading: false,
+      });
+    })
+      .catch((error) => { // status 400, 500 comes here
+        // error =>  // here error.reason will give me further info, i also want to know whether status was 400 or 500 etc
+        console.error(error);
+      });
+      
+
     fetch(AppUtils.endpoint_ping, {
       method: 'GET',
       headers: {

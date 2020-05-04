@@ -1,47 +1,40 @@
-import React from 'react';
+import AppUtils from '../utils/AppUtils.js';
 
-import axios from 'axios';
-import { AsyncStorage } from 'react-native';
+export default async function myRequest(url, options = {}) {
 
-/**
- * Request Wrapper with default success/error actions
- */
+  console.log('sending api request, url = ' + url)
 
-const request = async function (options, isHeader = true) {
-  let authHeader = null;
-  if (isHeader) {
-    authHeader = await AsyncStorage.getItem('Auth'); /// Add header
+  try {
+    const response = await fetch(url, options);
+    const response_1 = await checkStatus(response);
+    const data = await parseJSON(response_1);
+    return ({ data });
+  }
+  catch (err) {
+    return ({ err });
+  }
+}
+
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
   }
 
-  const client = axios.create({
-    //baseURL: {Config.BASE_URL},
-    headers: { Authorization: authHeader },
-  });
+  const error = new Error(response.statusText);
+  error.response = response;
+  throw error;
+}
 
-  const onSuccess = function (response) {
-    console.debug('Request Successful!', response);
-    return response.data;
-  };
-
-  const onError = function (error) {
-    console.debug('Request Failed:', error.config);
-
-    if (error.response) {
-      // Request was made but server responded with something
-      // other than 2xx
-      console.debug('Status:', error.response.status);
-      console.debug('Data:', error.response.data);
-      console.debug('Headers:', error.response.headers);
-    } else {
-      // Something else happened while setting up the request
-      // triggered the error
-      console.debug('Error Message:', error.message);
+function parseJSON(response) {
+  return response.json().then(json => {
+    return {
+      data: json,
+      status: response.status
     }
+  })
+}
 
-    return Promise.reject(error.response || error.message);
-  };
+function getPing(options) {
+  return myRequest(AppUtils.endpoint_ping, options);
+}
 
-  return client(options).then(onSuccess).catch(onError);
-};
-
-export default request;

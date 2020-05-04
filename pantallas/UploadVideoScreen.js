@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Paragraph, Divider, Card, Button, Appbar } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
-import AppUtils from '../AppUtils.js';
+import AppUtils from '../utils/AppUtils.js';
 
 import firebase from '@react-native-firebase/app';
 import storage from '@react-native-firebase/storage';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { AppRegistry, View } from 'react-native';
-import { StyleSheet } from 'react-native';
 
-import AppUtils from './AppUtils.js';
+import AppUtils from './utils/AppUtils.js';
+import { styles } from './utils/AppStyles.js';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -81,24 +81,5 @@ export default class HelloWorldApp extends React.Component {
     );
   }
 }
-
-export const styles = StyleSheet.create({
-  safearea: {
-    flex: 1,
-  },
-  headerContainer: {
-    //flex: 1,
-    marginTop: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerText: {
-    color: 'white',
-    fontSize: 48,
-  },
-  center: {
-    alignItems: 'center',
-  },
-});
 
 AppRegistry.registerComponent('main', () => HelloWorldApp);
