@@ -38,26 +38,10 @@ export class PerfilScreen extends React.Component {
             <Card elevation={6} style={styles.cardContainer}>
               <Card.Title
                 title="Juan Marcos"
-                subtitle="Campo para otra cosa, descripcion o bla"
+                subtitle="Espacio / Campo para otra cosa, descripción, etc"
               />
               <Divider />
               <Card.Content>
-                <Paragraph style={{ paddingVertical: 10 }}>
-                  Otro contenido
-                </Paragraph>
-
-                <Divider />
-
-                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
-                  <View style={styles.actionsLeft}>
-                    <Text># Videos publicados:</Text>
-                  </View>
-                  <View style={styles.actionsRight}>
-                    <Chip icon="upload">3660</Chip>
-                  </View>
-                </View>
-
-                <Divider />
 
                 <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
                   <View style={styles.actionsLeft}>
@@ -65,6 +49,16 @@ export class PerfilScreen extends React.Component {
                   </View>
                   <View style={styles.actionsRight}>
                     <Chip icon="account-multiple">12110</Chip>
+                  </View>
+                </View>
+
+                <Divider />
+                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                  <View style={styles.actionsLeft}>
+                    <Text># Videos publicados:</Text>
+                  </View>
+                  <View style={styles.actionsRight}>
+                    <Chip icon="upload">3660</Chip>
                   </View>
                 </View>
 
@@ -86,15 +80,15 @@ export class PerfilScreen extends React.Component {
           </View>
 
           <View>
-            <Text style={{ fontSize: 30, marginHorizontal: 10 }}>
-              Listado de videos
+            <Text style={{ fontSize: 30, marginHorizontal: 10, marginTop: 10 }}>
+              Listado de tus videos
             </Text>
 
             <View style={{ flex: 1, marginVertical: 10 }}>
               <VideoEnLista
-                videoTitle="Viaje de pelicula !!"
+                videoTitle="Camino del bosque encantado"
                 videoAuthor="by Juan Marcos"
-                videoSnapshot="https://picsum.photos/700"
+                videoSnapshot="https://picsum.photos/710"
                 videoLength="15:15"
                 videoViewCount="123.4k"
                 favoritesCount="6"
@@ -103,9 +97,9 @@ export class PerfilScreen extends React.Component {
               />
 
               <VideoEnLista
-                videoTitle="Viaje de pelicula !!"
+                videoTitle="Titulo video 2"
                 videoAuthor="by Juan Marcos"
-                videoSnapshot="https://picsum.photos/701"
+                videoSnapshot="https://picsum.photos/711"
                 videoLength="15:15"
                 videoViewCount="123.4k"
                 favoritesCount="6"
@@ -114,9 +108,9 @@ export class PerfilScreen extends React.Component {
               />
 
               <VideoEnLista
-                videoTitle="Viaje de pelicula !!"
+                videoTitle="Titulo video 3"
                 videoAuthor="by Juan Marcos"
-                videoSnapshot="https://picsum.photos/702"
+                videoSnapshot="https://picsum.photos/712"
                 videoLength="15:15"
                 videoViewCount="123.4k"
                 favoritesCount="6"
@@ -125,9 +119,9 @@ export class PerfilScreen extends React.Component {
               />
 
               <VideoEnLista
-                videoTitle="Viaje de pelicula !!"
+                videoTitle="Titulo video 4"
                 videoAuthor="by Juan Marcos"
-                videoSnapshot="https://picsum.photos/703"
+                videoSnapshot="https://picsum.photos/713"
                 videoLength="15:15"
                 videoViewCount="123.4k"
                 favoritesCount="6"

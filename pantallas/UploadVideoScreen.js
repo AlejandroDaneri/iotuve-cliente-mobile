@@ -34,7 +34,18 @@ export class UploadVideoScreen extends React.Component {
       // RNFS.DownloadDirectoryPath
       // RNFS.ExternalDirectoryPath
       // RNFS.ExternalStorageDirectoryPath
-      RNFS.readDir(RNFS.DownloadDirectoryPath).then((result) => {
+
+      console.log("RNFS.DocumentDirectoryPath: " + RNFS.DocumentDirectoryPath);
+      console.log("RNFS.DownloadDirectoryPath: " + RNFS.DownloadDirectoryPath);
+      console.log("RNFS.ExternalDirectoryPath: " + RNFS.ExternalDirectoryPath);
+      console.log("RNFS.ExternalStorageDirectoryPath: " + RNFS.ExternalStorageDirectoryPath);
+      //let pathToVideos = RNFS.ExternalStorageDirectoryPath + "/DCIM/Camera";
+      let pathToVideos = RNFS.DownloadDirectoryPath;
+
+      //RNFS.readDir(RNFS.DocumentDirectoryPath).then((result) => {
+      //RNFS.readDir(RNFS.DownloadDirectoryPath).then((result) => {
+      //RNFS.readDir(RNFS.ExternalDirectoryPath).then((result) => {
+      RNFS.readDir(pathToVideos).then((result) => {
         console.log('GOT RESULT: ', result);
 
         var item = result.find(data => data.name === this.state.selectedFile.name);
@@ -70,6 +81,8 @@ export class UploadVideoScreen extends React.Component {
             });
 
           });
+        } else {
+          console.log("No encuentro el archivo en el directorio");
         }
 
       }).catch((error) => {
@@ -78,7 +91,7 @@ export class UploadVideoScreen extends React.Component {
       });
 
     } else {
-      console.log('Dijo que no!');
+      console.log('Dijo que no a otorgar permisos!');
     }
 
   }
@@ -106,6 +119,26 @@ export class UploadVideoScreen extends React.Component {
 
       //Setting the state to show single file attributes
       this.setState({ selectedFile: res, uploadPhase: 1 });
+
+      /*
+      RNFS.exists(decodeURIComponent(this.state.selectedFile.name)).then((resultExists) => {
+        console.log('*****************');
+        console.log(resultExists);
+        console.log('*****************');
+      }).catch((error) => {
+        console.log('-------- Error RNFS.exists ---------------');
+        console.log(error);
+      });
+
+      RNFS.stat(decodeURIComponent(this.state.selectedFile.name)).then((statResult) => {
+        console.log('*****************');
+        console.log(statResult);
+        console.log('*****************');
+      }).catch((error) => {
+        console.log('-------- Error RNFS.stat ---------------');
+        console.log(error);
+      });
+      */
 
     } catch (err) {
       //Handling any exception (If any)
@@ -233,7 +266,7 @@ export class UploadVideoScreen extends React.Component {
                       style={{ marginTop: 15 }}
                       mode="contained"
                       onPress={() => {
-                          console.log('Navegacion -> Muro'),
+                        console.log('Navegacion -> Muro'),
                           navigation.navigate('Muro');
                       }}>
                       Volver a mi muro

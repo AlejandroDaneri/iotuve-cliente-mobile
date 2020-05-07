@@ -24,8 +24,6 @@ export class LoginScreen extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    console.log('render - LoginScreen');
-    console.log(this.state.logoColor);
 
     return (
       <PaperProvider>
@@ -92,13 +90,13 @@ export class LoginScreen extends React.Component {
               <Button
                 style={{ marginTop: 15 }}
                 color="grey"
-                icon="wall"
+                icon="arrow-right"
                 compact="true"
                 onPress={() => {
                   console.log('Navegacion -> Muro'),
                     navigation.navigate('Muro');
                 }}>
-                Entrar al Muro (debug)
+                Entrar al Muro
                 </Button>
 
             </View>

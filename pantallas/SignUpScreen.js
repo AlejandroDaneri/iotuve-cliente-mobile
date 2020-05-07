@@ -68,7 +68,6 @@ export class SignUpScreen extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    console.log('render - LoginScreen');
 
     return (
       <PaperProvider>
@@ -144,18 +143,24 @@ export class SignUpScreen extends React.Component {
 
               </View>
 
-
-              <Button
-                style={{ marginTop: 15 }}
-                color="grey"
-                icon="play"
-                compact="true"
-                onPress={() => {
-                  console.log('Navegacion -> Login'),
-                    navigation.navigate('Login');
+              <View
+                style={{
+                  margin: 10,
+                  marginTop: 20,
+                  paddingHorizontal: 20,
+                  paddingVertical: 20,
+                  backgroundColor: 'white',
                 }}>
-                Volver a Login (debug)
+                <Button
+                  icon="arrow-left"
+                  mode="outlined"
+                  onPress={() => {
+                    console.log('Navegacion -> Login'),
+                      navigation.navigate('Login');
+                  }}>
+                  Volver a Login
                 </Button>
+              </View>
 
             </View>
           </View>

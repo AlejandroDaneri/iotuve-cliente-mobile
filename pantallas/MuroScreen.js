@@ -20,7 +20,7 @@ export class MuroScreen extends React.Component {
         <Appbar.Header style={{ backgroundColor: 'midnightblue' }}>
           <Appbar.Content title="Muro" />
           <Appbar.Action
-            icon="wall"
+            icon="arrow-left"
             color="grey"
             onPress={() => {
               console.log('Navegacion -> Login'), navigation.navigate('Login');
@@ -29,6 +29,7 @@ export class MuroScreen extends React.Component {
           <Appbar.Action
             icon="network"
             color="grey"
+            disabled="true"
             onPress={() => {
               this.setState({ showTheRequest: !this.state.showTheRequest });
             }}
@@ -36,25 +37,28 @@ export class MuroScreen extends React.Component {
           <Appbar.Action
             icon="chat"
             onPress={() => {
-              navigation.navigate('Chat');
+              console.log('Navegacion -> Chat'),
+                navigation.navigate('Chat');
             }}
           />
           <Appbar.Action
             icon="upload"
             onPress={() => {
-              navigation.navigate('UploadVideo');
+              console.log('Navegacion -> UploadVideo'),
+                navigation.navigate('UploadVideo');
             }}
           />
           <Appbar.Action
             icon="account"
             onPress={() => {
-              navigation.navigate('Perfil');
+              console.log('Navegacion -> Perfil'),
+                navigation.navigate('Perfil');
             }}
           />
           <Appbar.Action
             icon="dots-vertical"
             onPress={() => {
-              alert('Mas Acciones');
+              alert('Mas Acciones, Config, Etc');
             }}
           />
         </Appbar.Header>
@@ -64,7 +68,7 @@ export class MuroScreen extends React.Component {
         <View style={{ flex: 1, marginVertical: 0, backgroundColor: 'white' }}>
           <ScrollView>
             <VideoEnLista
-              videoTitle="Viaje de pelicula !!"
+              videoTitle="Viaje al infinito"
               videoAuthor="by Juan Marcos"
               videoSnapshot="https://picsum.photos/700"
               videoLength="15:15"
@@ -75,7 +79,7 @@ export class MuroScreen extends React.Component {
             />
 
             <VideoEnLista
-              videoTitle="Viaje de pelicula !!"
+              videoTitle="Titulo video 2"
               videoAuthor="by Juan Marcos"
               videoSnapshot="https://picsum.photos/701"
               videoLength="15:15"
@@ -86,7 +90,7 @@ export class MuroScreen extends React.Component {
             />
 
             <VideoEnLista
-              videoTitle="Viaje de pelicula !!"
+              videoTitle="Titulo video 3"
               videoAuthor="by Juan Marcos"
               videoSnapshot="https://picsum.photos/702"
               videoLength="15:15"
@@ -97,9 +101,31 @@ export class MuroScreen extends React.Component {
             />
 
             <VideoEnLista
-              videoTitle="Viaje de pelicula !!"
+              videoTitle="Titulo video 4"
               videoAuthor="by Juan Marcos"
               videoSnapshot="https://picsum.photos/703"
+              videoLength="15:15"
+              videoViewCount="123.4k"
+              favoritesCount="6"
+              notFavoritesCount="1.1k"
+              navigation={this.props.navigation}
+            />
+
+            <VideoEnLista
+              videoTitle="Titulo video 5"
+              videoAuthor="by Juan Marcos"
+              videoSnapshot="https://picsum.photos/704"
+              videoLength="15:15"
+              videoViewCount="123.4k"
+              favoritesCount="6"
+              notFavoritesCount="1.1k"
+              navigation={this.props.navigation}
+            />
+
+            <VideoEnLista
+              videoTitle="Titulo video 6"
+              videoAuthor="by Juan Marcos"
+              videoSnapshot="https://picsum.photos/705"
               videoLength="15:15"
               videoViewCount="123.4k"
               favoritesCount="6"

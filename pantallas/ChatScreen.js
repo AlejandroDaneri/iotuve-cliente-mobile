@@ -18,10 +18,13 @@ export class ChatScreen extends React.Component {
             }}
           />
 
-          <Appbar.Content title="Mi Chat" />
+          <Appbar.Content title="Mis Chats" />
         </Appbar.Header>
+        
+        <View style={{ padding: 30 }}>
+          <Text style={{ fontSize: 30 }}>Chat Screen, por pensar</Text>
+        </View>
 
-        <Text style={{ fontSize: 30 }}>Chat Screen</Text>
       </View>
     );
   }
