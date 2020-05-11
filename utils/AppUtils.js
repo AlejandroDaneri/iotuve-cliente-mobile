@@ -3,10 +3,13 @@ import { PermissionsAndroid } from 'react-native';
 export default class AppUtils {
 
   // Base URL for all endpoints
-  static baseURL = 'https://fiuba-taller-2-auth-server.herokuapp.com';
+  //static baseURL = 'https://fiuba-taller-2-auth-server.herokuapp.com';
+  static baseURL = 'https://fiuba-taller-2-app-server-st.herokuapp.com/api/v1';
 
   // EndPoints --
   static endpoint_ping = AppUtils.baseURL + '/ping';
+  static endpoint_sessions = AppUtils.baseURL + '/sessions';
+  static endpoint_users = AppUtils.baseURL + '/users';
   static endpoint_video_like = AppUtils.baseURL + '/video/like';
   static endpoint_video_unlike = AppUtils.baseURL + '/video/unlike';
 
