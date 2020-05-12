@@ -4,6 +4,8 @@ import { Appbar } from 'react-native-paper';
 import PruebaRequestGet from '../PruebaRequestGet.js';
 import VideoEnLista from '../VideoEnLista.js';
 
+import AppAsyncStorage from '../utils/AppAsyncStorage.js';
+
 export class MuroScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -23,7 +25,9 @@ export class MuroScreen extends React.Component {
             icon="arrow-left"
             color="grey"
             onPress={() => {
-              console.log('Navegacion -> Login'), navigation.navigate('Login');
+              AppAsyncStorage.deleteToken();
+              console.log('Navegacion -> Login'), 
+              navigation.navigate('Login');
             }}
           />
           <Appbar.Action
