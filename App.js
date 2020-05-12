@@ -6,6 +6,7 @@ import { styles } from './utils/AppStyles.js';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { SplashScreen } from './pantallas/SplashScreen';
 import { LoginScreen } from './pantallas/LoginScreen';
 import { SignUpScreen } from './pantallas/SignUpScreen';
 import { MuroScreen } from './pantallas/MuroScreen';
@@ -17,17 +18,24 @@ import { UploadVideoScreen } from './pantallas/UploadVideoScreen';
 const Stack = createStackNavigator();
 
 export default class HelloWorldApp extends React.Component {
+
   render() {
     console.log('render - App.js');
-    console.log(AppUtils.endpoint_ping);
 
     return (
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Splash"
           screenOptions={{
             headerShown: false,
           }}>
+
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Splash"
+            component={SplashScreen}
+          />
+
           <Stack.Screen
             options={{ headerShown: false }}
             name="Login"
@@ -76,6 +84,7 @@ export default class HelloWorldApp extends React.Component {
             }}
             component={MuroScreen}
           />
+
         </Stack.Navigator>
       </NavigationContainer>
     );
