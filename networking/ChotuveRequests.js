@@ -1,8 +1,7 @@
 import AppUtils from '../utils/AppUtils.js';
 
 export default async function myRequest(url, options = {}) {
-
-  console.log('sending api request, url = ' + url)
+  printAPIRequest(url, options);
 
   try {
     const response = await fetch(url, options);
@@ -13,6 +12,13 @@ export default async function myRequest(url, options = {}) {
   catch (err) {
     return ({ err });
   }
+}
+
+function printAPIRequest() {
+  console.log('--- Api request ---');
+  console.log('url = ' + url);
+  console.log('options = ' + options);
+  console.log('--- ----------- ---');
 }
 
 function checkStatus(response) {
@@ -34,7 +40,6 @@ function parseJSON(response) {
   })
 }
 
-function getPing(options) {
+export function requestPing(options) {
   return myRequest(AppUtils.endpoint_ping, options);
 }
-

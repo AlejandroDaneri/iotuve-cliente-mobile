@@ -69,44 +69,58 @@ class PruebaRequestGet extends Component {
       })
       */
 
-    getPing(
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    ).then((responseJson) => { // status 200 comes here
-      // data => // do something with data.id, data.user
-      console.log(responseJson);
-      this.setState({
-        data: responseJson,
-        loading: false,
-      });
-    })
-      .catch((error) => { // status 400, 500 comes here
-        // error =>  // here error.reason will give me further info, i also want to know whether status was 400 or 500 etc
-        console.error(error);
-      });
-      
-
-    fetch(AppUtils.endpoint_ping, {
+    /*
+  getPing(
+    {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
+    }
+  ).then((responseJson) => { // status 200 comes here
+    // data => // do something with data.id, data.user
+    console.log(responseJson);
+    this.setState({
+      data: responseJson,
+      loading: false,
+    });
+  })
+    .catch((error) => { // status 400, 500 comes here
+      // error =>  // here error.reason will give me further info, i also want to know whether status was 400 or 500 etc
+      console.error(error);
+    });
+    */
+
+    var misHeaders = new Headers({
+      //Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-Auth-Token': '4567890',
+    });
+
+    fetch(AppUtils.endpoint_users, {
+      method: 'GET',
+      headers: misHeaders,
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        return response.json();
+      })
       .then((responseJson) => {
+        console.log("----------------------------");
         console.log(responseJson);
+        console.log("----------------------------");
+
+        /*
         this.setState({
           data: responseJson,
           loading: false,
         });
+        */
+
       })
       .catch((error) => {
+        console.log("--------error-------------");
         console.error(error);
       });
   };
