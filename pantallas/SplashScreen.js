@@ -58,7 +58,7 @@ export class SplashScreen extends React.Component {
             <ActivityIndicator style={{paddingTop: 10}} size="large" color="#0000ff" />
 
             <Text style={{color: 'white', paddingVertical: 20}}>
-              Estamos ingresando al sistema
+              Estamos inicializando el sistema...
             </Text>
 
           </View>
