@@ -26,11 +26,20 @@ export class PerfilScreen extends React.Component {
           <Appbar.Content title="Mi Perfil" />
 
           <Appbar.Action
+            icon="account-question"
+            onPress={() => {
+              console.log('Navegacion -> Friend Request'),
+                navigation.navigate('FriendRequest');
+            }}
+          />
+
+          <Appbar.Action
             icon="pencil"
             onPress={() => {
               alert('Editar Mi Perfil');
             }}
           />
+
         </Appbar.Header>
 
         <ScrollView>
