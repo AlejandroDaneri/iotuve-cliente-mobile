@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Paragraph, Divider, Card, Button, Appbar } from 'react-native-paper';
+import { Text, StyleSheet, View } from 'react-native';
+import { List, TextInput, Switch, Paragraph, Divider, Card, Button, Appbar } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 import AppUtils from '../utils/AppUtils.js';
@@ -15,13 +15,15 @@ export class UploadVideoScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    // VIDEOS de muestra
-    // https://pixabay.com/es/videos/fruta-corte-alimentos-saludable-33252/
-
     this.state = {
       selectedFile: '',
       appHasPermission: null,
-      uploadPhase: 0 // 0 = nada, 1 = video seleccionado, 2 = video subiendo, 3 = video subido;
+      uploadPhase: 0, // 0 = nada, 1 = video seleccionado, 2 = video subiendo, 3 = video subido;
+
+      videoPublic: false,
+      videoTitle: '',
+      videoDescription: '',
+      visibilityDescription: 'Privado',
     };
 
   }
@@ -80,13 +82,16 @@ export class UploadVideoScreen extends React.Component {
               uploadPhase: 3,
             });
 
+            // aca tengo que hacer el POST del video al APP-Server
+
+
           });
         } else {
           console.log("No encuentro el archivo en el directorio");
         }
 
       }).catch((error) => {
-        console.log('-------- Error readDir ---------------');
+        console.log('------ Error readDir ------');
         console.log(error);
       });
 
@@ -164,6 +169,11 @@ export class UploadVideoScreen extends React.Component {
     }
   }
 
+  _onToggleSwitch = () => this.setState(state => ({
+    videoPublic: !this.state.videoPublic,
+    visibilityDescription: this.state.videoPublic ? 'Privado' : 'Público',
+  }));
+
   render() {
 
     const { navigation } = this.props;
@@ -181,15 +191,12 @@ export class UploadVideoScreen extends React.Component {
         </Appbar.Header>
 
         <View>
-          <Card elevation={6} style={styles.cardContainer}>
+          <Card elevation={10} style={styles.cardContainer}>
             <Card.Title
               title="Subir un nuevo video"
             />
             <Divider />
             <Card.Content>
-              <Paragraph style={{ paddingVertical: 10 }}>
-                Elegí un video de tu celular para subir a ChoTuve
-                </Paragraph>
 
               <Divider />
 
@@ -208,33 +215,50 @@ export class UploadVideoScreen extends React.Component {
 
         {this.state.selectedFile.uri &&
           <View>
-            <Card elevation={6} style={styles.cardContainer}>
+            <Card elevation={10} style={styles.cardContainer}>
               <Card.Title
                 title="Datos del video"
               />
               <Divider />
               <Card.Content>
+
                 <Paragraph style={{ paddingVertical: 4 }}>
-                  File Name:{' '}
+                  Archivo Seleccionado:{' '}
                   {this.state.selectedFile.name ? this.state.selectedFile.name : ''}
                 </Paragraph>
 
-                <Paragraph style={{ paddingVertical: 4 }}>
-                  Type: {this.state.selectedFile.type ? this.state.selectedFile.type : ''}
-                </Paragraph>
 
-                <Paragraph style={{ paddingVertical: 4 }}>
-                  File Size:{' '}
-                  {this.state.selectedFile.size ? this.state.selectedFile.size : ''}
-                </Paragraph>
+                <TextInput
+                  style={{ paddingVertical: 4 }}
+                  dense="true"
+                  label="Indicar Título del video"
+                  mode="outlined"
+                  value={this.state.videoTitle}
+                  onChangeText={(videoTitle) => this.setState({ videoTitle })}
+                />
 
-                <Paragraph style={{ paddingVertical: 4 }}>
-                  URI: {this.state.selectedFile.uri ? this.state.selectedFile.uri : ''}
-                </Paragraph>
+                <TextInput
+                  style={{ paddingVertical: 4 }}
+                  dense="true"
+                  label="Agregar Descripción"
+                  mode="outlined"
+                  value={this.state.videoDescription}
+                  onChangeText={(videoDescription) => this.setState({ videoDescription })}
+                />
+
+                <List.Item
+                  title="Visibilidad"
+                  description={this.state.visibilityDescription}
+                  left={props => <List.Icon {...props} icon="lock" />}
+                  right={props => <Switch
+                    value={this.state.videoPublic}
+                    onValueChange={this._onToggleSwitch}
+                  />}
+                />
 
                 {this.state.uploadPhase == 1 &&
                   <Button
-                    style={{ marginTop: 15 }}
+                    style={{ marginTop: 10 }}
                     icon="upload"
                     mode="contained"
                     disabled={this.state.uploadInProgress}
