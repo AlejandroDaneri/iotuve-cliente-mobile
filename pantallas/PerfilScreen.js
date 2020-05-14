@@ -1,10 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
-  Badge,
   Divider,
-  Title,
-  Paragraph,
   Chip,
   Card,
   Appbar,
@@ -36,7 +33,9 @@ export class PerfilScreen extends React.Component {
           <Appbar.Action
             icon="pencil"
             onPress={() => {
-              alert('Editar Mi Perfil');
+              //alert('Editar Mi Perfil');
+              console.log('Navegacion -> Editar Perfil'),
+                navigation.navigate('EditProfile');
             }}
           />
 
@@ -44,7 +43,7 @@ export class PerfilScreen extends React.Component {
 
         <ScrollView>
           <View>
-            <Card elevation={6} style={styles.cardContainer}>
+            <Card elevation={10} style={styles.cardContainer}>
               <Card.Title
                 title="Juan Marcos"
                 subtitle="Espacio / Campo para otra cosa, descripción, etc"

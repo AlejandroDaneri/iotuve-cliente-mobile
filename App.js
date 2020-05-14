@@ -13,6 +13,7 @@ import { MuroScreen } from './pantallas/MuroScreen';
 import { PerfilScreen } from './pantallas/PerfilScreen';
 import { FriendRequestScreen } from './pantallas/FriendRequestScreen';
 import { ChatScreen } from './pantallas/ChatScreen';
+import { EditProfileScreen } from './pantallas/EditProfile';
 import { VideoScreen } from './pantallas/VideoScreen';
 import { UploadVideoScreen } from './pantallas/UploadVideoScreen';
 
@@ -53,6 +54,12 @@ export default class HelloWorldApp extends React.Component {
             options={{ headerShown: false }}
             name="Perfil"
             component={PerfilScreen}
+          />
+
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="EditProfile"
+            component={EditProfileScreen}
           />
 
           <Stack.Screen
