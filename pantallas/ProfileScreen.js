@@ -8,7 +8,7 @@ import {
 } from 'react-native-paper';
 import VideoEnLista from '../VideoEnLista.js';
 
-export class PerfilScreen extends React.Component {
+export class ProfileScreen extends React.Component {
   render() {
     const { navigation } = this.props;
     return (
@@ -34,7 +34,7 @@ export class PerfilScreen extends React.Component {
             icon="pencil"
             onPress={() => {
               //alert('Editar Mi Perfil');
-              console.log('Navegacion -> Editar Perfil'),
+              console.log('Navegacion -> EditProfile'),
                 navigation.navigate('EditProfile');
             }}
           />

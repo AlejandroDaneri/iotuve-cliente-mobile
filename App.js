@@ -1,7 +1,6 @@
 import React from 'react';
 import { AppRegistry, View } from 'react-native';
 
-import AppUtils from './utils/AppUtils.js';
 import { styles } from './utils/AppStyles.js';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,7 +9,7 @@ import { SplashScreen } from './pantallas/SplashScreen';
 import { LoginScreen } from './pantallas/LoginScreen';
 import { SignUpScreen } from './pantallas/SignUpScreen';
 import { MuroScreen } from './pantallas/MuroScreen';
-import { PerfilScreen } from './pantallas/PerfilScreen';
+import { ProfileScreen } from './pantallas/ProfileScreen';
 import { FriendRequestScreen } from './pantallas/FriendRequestScreen';
 import { ChatScreen } from './pantallas/ChatScreen';
 import { EditProfileScreen } from './pantallas/EditProfile';
@@ -52,8 +51,8 @@ export default class HelloWorldApp extends React.Component {
 
           <Stack.Screen
             options={{ headerShown: false }}
-            name="Perfil"
-            component={PerfilScreen}
+            name="Profile"
+            component={ProfileScreen}
           />
 
           <Stack.Screen

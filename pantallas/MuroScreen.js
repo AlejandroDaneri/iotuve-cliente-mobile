@@ -55,8 +55,8 @@ export class MuroScreen extends React.Component {
           <Appbar.Action
             icon="account"
             onPress={() => {
-              console.log('Navegacion -> Perfil'),
-                navigation.navigate('Perfil');
+              console.log('Navegacion -> Profile'),
+                navigation.navigate('Profile');
             }}
           />
           <Appbar.Action
