@@ -26,7 +26,7 @@ export class PerfilScreen extends React.Component {
           <Appbar.Content title="Mi Perfil" />
 
           <Appbar.Action
-            icon="account-question"
+            icon="account-star"
             onPress={() => {
               console.log('Navegacion -> Friend Request'),
                 navigation.navigate('FriendRequest');
