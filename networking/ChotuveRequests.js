@@ -1,4 +1,4 @@
-import AppUtils from '../utils/AppUtils.js';
+import EndPoints from '../utils/EndPoints.js';
 
 export default async function myRequest(url, options = {}) {
   printAPIRequest(url, options);
@@ -41,5 +41,5 @@ function parseJSON(response) {
 }
 
 export function requestPing(options) {
-  return myRequest(AppUtils.endpoint_ping, options);
+  return myRequest(EndPoints.ping, options);
 }

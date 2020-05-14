@@ -9,11 +9,11 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { styles } from '../utils/AppStyles';
-import AppUtils from '../utils/AppUtils.js';
 
 import { requestPing } from '../networking/ChotuveRequests.js';
 
 import ChotuveLogo from '../ChotuveLogo.js';
+import EndPoints from '../utils/EndPoints';
 
 export class SignUpScreen extends React.Component {
   static navigationOptions = {
@@ -59,7 +59,7 @@ export class SignUpScreen extends React.Component {
     })
 
     
-    fetch(AppUtils.endpoint_users, {
+    fetch(EndPoints.users, {
       method: 'POST',
       headers: misHeaders,
       body: miBody,

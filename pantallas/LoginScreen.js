@@ -10,8 +10,8 @@ import {
 import { styles } from '../utils/AppStyles';
 import ChotuveLogo from '../ChotuveLogo.js';
 
-import AppUtils from '../utils/AppUtils.js';
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
+import EndPoints from '../utils/EndPoints';
 
 export class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -45,7 +45,7 @@ export class LoginScreen extends React.Component {
       password: this.state.userPassword,
     });
 
-    fetch(AppUtils.endpoint_sessions, {
+    fetch(EndPoints.sessions, {
       method: 'POST',
       headers: misHeaders,
       body: miBody,
