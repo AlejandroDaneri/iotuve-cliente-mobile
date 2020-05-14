@@ -4,6 +4,16 @@ import { Appbar } from 'react-native-paper';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 
 export class VideoScreen extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selectedFile: '',
+    };
+
+  }
+
   render() {
     const { navigation } = this.props;
     return (
@@ -22,8 +32,12 @@ export class VideoScreen extends React.Component {
 
         <View
           style={{ height: 220, backgroundColor: 'black', marginVertical: 8 }}>
-          <PruebaPlayVideoFile></PruebaPlayVideoFile>
+          <PruebaPlayVideoFile
+              uri={this.state.selectedFile.uri ? this.state.selectedFile.uri : 'content://com.android.providers.downloads.documents/document/14'}
+            />
         </View>
+
+
       </View>
     );
   }

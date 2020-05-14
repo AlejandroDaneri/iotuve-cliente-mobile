@@ -10,7 +10,7 @@ class VideoEnLista extends Component {
 
     return (
       <Card
-        elevation={6}
+        elevation={10}
         style={styles.cardContainer}
         onPress={() => {
           console.log('press Card');
