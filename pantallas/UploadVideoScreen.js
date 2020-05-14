@@ -26,6 +26,10 @@ export class UploadVideoScreen extends React.Component {
       visibilityDescription: 'Privado',
     };
 
+    //bindeo de funciones/eventos
+    this.clickElegirUnVideo = this.clickElegirUnVideo.bind(this);
+    this.uploadSelectedFile = this.uploadSelectedFile.bind(this);
+
   }
 
   async uploadSelectedFile() {
@@ -205,7 +209,7 @@ export class UploadVideoScreen extends React.Component {
                 style={{ marginTop: 15 }}
                 icon="video"
                 mode="contained"
-                onPress={this.clickElegirUnVideo.bind(this)}>
+                onPress={this.clickElegirUnVideo}>
                 Elegir un Video
               </Button>
 
@@ -262,7 +266,7 @@ export class UploadVideoScreen extends React.Component {
                     icon="upload"
                     mode="contained"
                     disabled={this.state.uploadInProgress}
-                    onPress={this.uploadSelectedFile.bind(this)}>
+                    onPress={this.uploadSelectedFile}>
                     Subir Video
                 </Button>
                 }
