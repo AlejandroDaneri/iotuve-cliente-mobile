@@ -4,7 +4,7 @@ import { Button, Card, Divider } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-class PedidoAmistad extends Component {
+class Amistad extends Component {
 
   handlePressAccept = () => {
     // Need to check to prevent null exception. 
@@ -35,7 +35,6 @@ class PedidoAmistad extends Component {
               <Text style={{ fontSize: 20, paddingLeft: 16, paddingVertical: 10 }}>{this.props.userName}</Text>
               <Text style={{ fontSize: 14, paddingLeft: 16, color: 'grey' }}>Videos: 12</Text>
               <Text style={{ fontSize: 14, paddingLeft: 16, color: 'grey' }}>Amigos: 112</Text>
-              <Text style={{ fontSize: 14, paddingLeft: 16, color: 'grey' }}>Solicitud: 16-11-1980</Text>
             </View>
 
           </View>
@@ -47,21 +46,10 @@ class PedidoAmistad extends Component {
 
               <Button
                 style={{ marginLeft: 10 }}
-                icon="close"
-                color="red"
+                icon="account"
                 mode="outlined"
-                onPress={this.handlePressReject}
               >
-                Rechazar
-              </Button>
-
-              <Button
-                style={{ marginLeft: 10 }}
-                icon="check"
-                mode="outlined"
-                onPress={this.handlePressAccept}
-              >
-                Aceptar
+                Ver Perfil
               </Button>
 
             </View>
@@ -85,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PedidoAmistad;
+export default Amistad;

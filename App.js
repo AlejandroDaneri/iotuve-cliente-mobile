@@ -10,7 +10,7 @@ import { LoginScreen } from './pantallas/LoginScreen';
 import { SignUpScreen } from './pantallas/SignUpScreen';
 import { MuroScreen } from './pantallas/MuroScreen';
 import { ProfileScreen } from './pantallas/ProfileScreen';
-import { FriendRequestScreen } from './pantallas/FriendRequestScreen';
+import { FriendsScreen } from './pantallas/FriendsScreen';
 import { ChatScreen } from './pantallas/ChatScreen';
 import { EditProfileScreen } from './pantallas/EditProfile';
 import { VideoScreen } from './pantallas/VideoScreen';
@@ -63,8 +63,8 @@ export default class HelloWorldApp extends React.Component {
 
           <Stack.Screen
             options={{ headerShown: false }}
-            name="FriendRequest"
-            component={FriendRequestScreen}
+            name="Friends"
+            component={FriendsScreen}
           />
 
           <Stack.Screen
