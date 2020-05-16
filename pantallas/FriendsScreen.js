@@ -104,7 +104,7 @@ export class FriendsScreen extends React.Component {
 
           <Button
             style={{ marginLeft: 10 }}
-            icon="account-check"
+            icon="voice"
             mode="contained"
             color={this.state.colorTabSolicitudes}
             onPress={this._clickTabSolicitudes}
@@ -114,7 +114,7 @@ export class FriendsScreen extends React.Component {
 
         </View>
 
-        <View style={{ flex: 1, marginVertical: 0, backgroundColor: 'white' }}>
+        <View style={{ flex: 1, marginVertical: 0}}>
 
           {this.state.tabSeleccionada == 'Amigos' &&
             <ScrollView>

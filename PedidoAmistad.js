@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
-import { Button, Card, Divider } from 'react-native-paper';
+import { Chip, Avatar, Button, Card, Divider, Headline } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -28,14 +28,27 @@ class PedidoAmistad extends Component {
         >
 
           <View style={{ flexDirection: 'row', }}>
-            <Icon name="face" size={46} color='midnightblue' />
+            <Avatar.Text size={56} label={this.props.userName.charAt(0)} />
 
             <View style={{ flexDirection: 'column' }}>
 
-              <Text style={{ fontSize: 20, paddingLeft: 16, paddingVertical: 10 }}>{this.props.userName}</Text>
-              <Text style={{ fontSize: 14, paddingLeft: 16, color: 'grey' }}>Videos: 12</Text>
-              <Text style={{ fontSize: 14, paddingLeft: 16, color: 'grey' }}>Amigos: 112</Text>
-              <Text style={{ fontSize: 14, paddingLeft: 16, color: 'grey' }}>Solicitud: 16-11-1980</Text>
+              <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.userName}</Headline>
+
+              <View style={{ flexDirection: 'row', }}>
+                <Chip icon="video" style={{ marginLeft: 10 }}>
+                  12 Videos
+                </Chip>
+
+                <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
+                  154 Amigos
+                </Chip>
+
+              </View>
+
+              <Chip icon="voice" style={{ marginLeft: 10, marginTop: 8 }}>
+                Solicitud: 16-11-1980
+              </Chip>
+
             </View>
 
           </View>
