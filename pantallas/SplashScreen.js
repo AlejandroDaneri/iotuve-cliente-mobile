@@ -40,7 +40,7 @@ export class SplashScreen extends React.Component {
 
   componentDidMount() {
     console.log('Inicio sistema');
-    console.log('Espero 2 segundos para dejar ver splash y luego inicio realmente');
+    console.log('Espero 2 segundos para ver splash, luego inicio realmente');
     this.delayedInit();
   }
 
