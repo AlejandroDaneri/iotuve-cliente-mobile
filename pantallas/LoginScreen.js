@@ -64,6 +64,7 @@ export class LoginScreen extends React.Component {
 
           let myToken = responseJson.data.session_token;
           AppAsyncStorage.saveToken(myToken);
+          AppAsyncStorage.saveSession(responseJson.data);
 
           this.setState({
             data: responseJson.data,
@@ -124,16 +125,29 @@ export class LoginScreen extends React.Component {
                   onChangeText={(userPassword) => this.setState({ userPassword })}
                 />
 
-                <Button
-                  style={{ marginTop: 15 }}
-                  icon="send"
-                  mode="contained"
-                  onPress={() => {
-                    console.log('Click en boton Ingresar en Login');
-                    this.postFormData();
-                  }}>
-                  Ingresar
+                {this.state.processPhase == 0 &&
+                  <Button
+                    style={{ marginTop: 15 }}
+                    icon="send"
+                    mode="contained"
+                    onPress={() => {
+                      console.log('Click en boton Ingresar en Login');
+                      this.postFormData();
+                    }}>
+                    Ingresar
                 </Button>
+                }
+
+                {this.state.processPhase == 1 &&
+                  <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                    <Button
+                      loading="true"
+                      mode="contained">
+                      Ingresando
+                    </Button>
+                  </View>
+                }
+                
               </View>
               <View
                 style={{

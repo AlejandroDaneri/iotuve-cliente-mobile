@@ -1,16 +1,24 @@
 import React from 'react';
 import { Text, View, Keyboard } from 'react-native';
-import { Divider, Card, List, Appbar, Button, TextInput, Colors } from 'react-native-paper';
+import { Divider, Card, List, Appbar, Button, TextInput, Colors, ActivityIndicator } from 'react-native-paper';
 import UserData from '../UserData';
 import AppAsyncStorage from '../utils/AppAsyncStorage';
 import EndPoints from '../utils/EndPoints';
+import AppUtils from '../utils/AppUtils';
+
 
 export class EditProfileScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      initialLoading: true,
       editing: false,
+
+      userFirstName: '',
+      userLastName: '',
+      userEmail: '',
+      userPhone: '',
 
       newUserFirstName: '',
       newUserLastName: '',
@@ -20,6 +28,73 @@ export class EditProfileScreen extends React.Component {
 
     this.postFormData = this.postFormData.bind(this);
     this.postFormDataPassword = this.postFormDataPassword.bind(this);
+    this.requestUserData = this.requestUserData.bind(this);
+    this.updateUserData = this.updateUserData.bind(this);
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount');
+    this.requestUserData();
+  }
+
+  async requestUserData() {
+    const authData = await AppAsyncStorage.getToken();
+    const authToken = JSON.parse(authData).authToken;
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
+
+    //    console.log(authToken);
+    //    console.log(sessionDataJSON.session_data.username);
+
+    var myHeaders = new Headers({
+      'Content-Type': 'application/json',
+      'X-Auth-Token': authToken,
+    });
+
+    //5485b510-9854-11ea-82a6-26a321e492b4  -- GUIDO
+    fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username, {
+      //    fetch(EndPoints.users +'/5eb8be69075ba130c412c074', {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return {
+          data: json,
+          fullResponse: response
+        }
+      }))
+      .then((responseJson) => {
+        //AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+          this.updateUserData(responseJson.data);
+        } else {
+          console.log('>>>>> NOT OK >>>>>');
+          console.log(responseJson.fullResponse);
+        }
+        
+        this.setState({ initialLoading: false })
+
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      });
+
+  }
+
+  updateUserData(data) {
+    this.setState({
+      userFirstName: data.first_name,
+      userLastName: data.last_name,
+      userEmail: data.contact.email,
+      userPhone: data.contact.phone,
+
+      newUserFirstName: data.first_name,
+      newUserLastName: data.last_name,
+      newUserEmail: data.contact.email,
+      newUserPhone: data.contact.phone,
+    })
   }
 
   async postFormDataPassword() {
@@ -44,8 +119,8 @@ export class EditProfileScreen extends React.Component {
         phone: this.state.newUserPhone
       }
     });
-    console.log(myHeaders);
-    console.log(myBody);
+    //console.log(myHeaders);
+    //console.log(myBody);
 
     fetch(EndPoints.users, {
       method: 'PUT',
@@ -59,12 +134,14 @@ export class EditProfileScreen extends React.Component {
         }
       }))
       .then((responseJson) => {
-        console.log(responseJson);
+        //AppUtils.printResponseJson(responseJson);
+
         if (responseJson.fullResponse.ok) {
-          console.log(responseJson.fullResponse);
+          //console.log(responseJson.fullResponse);
+          this.updateUserData(responseJson.data);
         } else {
-          console.log('----------- NOT OK -----------');
-          console.log(responseJson.fullResponse);
+          //console.log('----------- NOT OK -----------');
+          //console.log(responseJson.fullResponse);
         }
       })
       .catch((error) => {
@@ -89,6 +166,8 @@ export class EditProfileScreen extends React.Component {
           <Appbar.Content title="Editar Mis Datos" />
         </Appbar.Header>
 
+        {this.state.initialLoading && <ActivityIndicator style={{ padding: 20 }} />}
+
         <Card elevation={10} style={{ margin: 10, }}>
           <Card.Title title="Datos Actuales" />
           <Card.Content>
@@ -96,7 +175,11 @@ export class EditProfileScreen extends React.Component {
             {this.state.editing == false &&
               <View>
 
-                <UserData firstName="Juan" lastName="Gomez" email="juangomez@gmail.com" phone="5621-2617" />
+                <UserData
+                  firstName={this.state.userFirstName}
+                  lastName={this.state.userLastName}
+                  email={this.state.userEmail}
+                  phone={this.state.userPhone} />
 
                 <Button
                   style={{ margin: 10 }}

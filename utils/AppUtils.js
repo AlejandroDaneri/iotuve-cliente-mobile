@@ -2,6 +2,17 @@ import { PermissionsAndroid } from 'react-native';
 
 export default class AppUtils {
 
+  static printResponseJson(responseJson) {
+    console.log('--------------DEBUG--------------------');
+    console.log(responseJson);
+    console.log('---------------------');
+    console.log('ok:' + responseJson.fullResponse.ok);
+    console.log('status:' + responseJson.fullResponse.status);
+    console.log('---------------------');
+    console.log(responseJson.data);
+    console.log('---------------------------------------');
+  }
+
   static testConsole() {
     console.log('from AppUtils -> testConsole');
   }
