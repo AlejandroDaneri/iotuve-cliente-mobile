@@ -1,11 +1,12 @@
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { Button, Appbar, Snackbar } from 'react-native-paper';
+import { Button, Appbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import PedidoAmistad from '../PedidoAmistad.js';
 import Amistad from '../Amistad.js';
+import { FlatList } from 'react-native-gesture-handler';
 
 export class FriendsScreen extends React.Component {
 
@@ -26,6 +27,9 @@ export class FriendsScreen extends React.Component {
     tabSeleccionada: 'Amigos',
     colorTabAmigos: 'midnightblue',
     colorTabSolicitudes: 'white',
+
+    isLoading: true,
+    data: [],
   };
 
   _clickTabAmigos() {
@@ -61,7 +65,6 @@ export class FriendsScreen extends React.Component {
       snackBarBackgroundColor: color,
       snackBarVisible: !this.state.snackBarVisible,
       snackBarText: texto,
-
     });
   }
 
@@ -69,6 +72,45 @@ export class FriendsScreen extends React.Component {
     this.setState({
       snackBarVisible: false
     });
+  }
+
+  requestFriends = () => {
+    var myHeaders = new Headers({
+      'Content-Type': 'application/json',
+    });
+
+    fetch('https://reqres.in/api/users?delay=3', {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return {
+          data: json,
+          fullResponse: response
+        }
+      }))
+      .then((responseJson) => {
+        console.log(responseJson.fullResponse.status);
+        console.log(responseJson.data);
+
+        if (responseJson.fullResponse.ok) {
+          this.setState({
+            data: responseJson.data.data,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      })
+      .finally(() => {
+        this.setState({ isLoading: false })
+      });
+
+  }
+
+  componentDidMount() {
+    this.requestFriends();
   }
 
   render() {
@@ -114,33 +156,44 @@ export class FriendsScreen extends React.Component {
 
         </View>
 
-        <View style={{ flex: 1, marginVertical: 0}}>
+        <View style={{ flex: 1, marginVertical: 0 }}>
 
-          {this.state.tabSeleccionada == 'Amigos' &&
-            <ScrollView>
+          {this.state.isLoading && <ActivityIndicator style={{ padding: 20 }} />}
 
-              <Amistad
-                userName="Bob Esponja"
-              />
+          {!this.state.isLoading && (this.state.tabSeleccionada == 'Amigos') &&
 
-              <Amistad
-                userName="Patricio"
-              />
-
-              <Amistad
-                userName="Calamardo"
-              />
-
-            </ScrollView>
+            (
+              <View>
+                <FlatList
+                  data={this.state.data}
+                  keyExtractor={({ id }, index) => id}
+                  renderItem={({ item }) => (
+                    <Amistad
+                      friendsCount={item.id}
+                      videoCount={item.id}
+                      userName={item.first_name}
+                    />
+                  )}
+                />
+              </View>
+            )
           }
 
           {this.state.tabSeleccionada == 'Solicitudes' &&
             <ScrollView>
 
               <PedidoAmistad
+                userName="Bob Esponja"
+                onPress={this._onToggleSnackBar} />
+              <PedidoAmistad
+                userName="Patricio Estrella"
+                onPress={this._onToggleSnackBar} />
+              <PedidoAmistad
+                userName="Calamardo"
+                onPress={this._onToggleSnackBar} />
+              <PedidoAmistad
                 userName="Don Cangrejo"
-                onPress={this._onToggleSnackBar}
-              />
+                onPress={this._onToggleSnackBar} />
               <PedidoAmistad
                 userName="Arenita"
                 onPress={this._onToggleSnackBar} />

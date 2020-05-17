@@ -30,20 +30,27 @@ class Amistad extends Component {
           <View style={{ flexDirection: 'row', }}>
             <Avatar.Text size={56} label={this.props.userName.charAt(0)} />
 
-            <View style={{ flexDirection: 'column' }}>
+            <View style={{ flex: 1, flexDirection: 'column' }}>
 
               <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.userName}</Headline>
 
               <View style={{ flexDirection: 'row', }}>
                 <Chip icon="video" style={{ marginLeft: 10 }}>
-                  12 Videos
+                  {this.props.videoCount} Videos
                 </Chip>
 
                 <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
-                  154 Amigos
+                  {this.props.friendsCount} Amigos
                 </Chip>
 
               </View>
+
+              <Divider style={{ marginTop: 14 }}></Divider>
+
+              <Card elevation={1}>
+                <Card.Title title="Ni el loro"/>
+                <Card.Cover source={{ uri: "https://picsum.photos/701" }} />
+              </Card>
 
             </View>
 
