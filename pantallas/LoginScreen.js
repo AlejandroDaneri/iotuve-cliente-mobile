@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, Text, View, Keyboard } from 'react-native';
 import {
   Button,
   TextInput,
@@ -36,19 +36,19 @@ export class LoginScreen extends React.Component {
       processPhase: 1,
     });
 
-    var misHeaders = new Headers({
+    var myHeaders = new Headers({
       'Content-Type': 'application/json',
     });
 
-    var miBody = JSON.stringify({
+    var myBody = JSON.stringify({
       username: this.state.userEmail,
       password: this.state.userPassword,
     });
 
     fetch(EndPoints.sessions, {
       method: 'POST',
-      headers: misHeaders,
-      body: miBody,
+      headers: myHeaders,
+      body: myBody,
     })
       .then((response) => response.json().then(json => {
         return {
