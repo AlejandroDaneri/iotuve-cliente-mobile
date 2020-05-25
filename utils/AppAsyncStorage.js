@@ -13,26 +13,15 @@ export default class AppAsyncStorage {
         const data = await AsyncStorage.getItem('session_data');
         return data;
     }   
+
+    static getTokenFromSession = async () => {
+        const data = await AsyncStorage.getItem('session_data');
+        let json = JSON.parse(data);
+        return json.session_data.session_token;
+    } 
     
     static deleteSession = async (token) => {
         await AsyncStorage.removeItem('session_data');;
-    }
-
-
-    // TOKEN
-    static saveToken = async (token) => {
-        await AsyncStorage.setItem('authentication_data', JSON.stringify({
-            authToken: token,
-        }));
-    }
-    
-    static getToken = async () => {
-        const data = await AsyncStorage.getItem('authentication_data');
-        return data;
-    }
-    
-    static deleteToken = async (token) => {
-        await AsyncStorage.removeItem('authentication_data');;
     }
 
 }

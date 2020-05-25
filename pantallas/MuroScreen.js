@@ -5,6 +5,7 @@ import PruebaRequestGet from '../PruebaRequestGet.js';
 import VideoEnLista from '../VideoEnLista.js';
 
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
+import AppUtils from '../utils/AppUtils.js';
 
 export class MuroScreen extends React.Component {
   constructor(props) {
@@ -12,6 +13,11 @@ export class MuroScreen extends React.Component {
     this.state = {
       showTheRequest: false,
     };
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount (MuroScreen)');
+    //this.requestVideoData();
   }
 
   render() {
@@ -25,7 +31,7 @@ export class MuroScreen extends React.Component {
             icon="arrow-left"
             color="grey"
             onPress={() => {
-              AppAsyncStorage.deleteToken();
+              AppUtils.logout();
               console.log('Navegacion -> Login'), 
               navigation.navigate('Login');
             }}

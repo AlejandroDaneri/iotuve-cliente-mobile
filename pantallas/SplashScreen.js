@@ -1,12 +1,9 @@
 import React from 'react';
 import { SafeAreaView, ActivityIndicator, Text, View } from 'react-native';
 
-import {
-  Provider as PaperProvider,
-} from 'react-native-paper';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import { styles } from '../utils/AppStyles';
-import AppUtils from '../utils/AppUtils.js';
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 
 import ChotuveLogo from '../ChotuveLogo.js';
@@ -20,13 +17,12 @@ export class SplashScreen extends React.Component {
 
   initAuthToken = async () => {
 
-    const authData = await AppAsyncStorage.getToken();
-    console.log('---- AppAsyncStorage getToken -> authData ----');
-    console.log(authData);
+    const sessionData = await AppAsyncStorage.getSession();
+    console.log('---- AppAsyncStorage getSession -> sessionData ----');
+    console.log(sessionData);
 
-    if (authData !== null) {
-      const authDataJson = JSON.parse(authData);
-      //console.log(authDataJson.authToken);
+    if (sessionData !== null) {
+      const authToken = await AppAsyncStorage.getTokenFromSession();
       // tengo token guardado, lo uso para continuar.
 
       //por ahora redirecciono a Muro sin revisar nada.
@@ -40,12 +36,12 @@ export class SplashScreen extends React.Component {
 
   componentDidMount() {
     console.log('Inicio sistema');
-    console.log('Espero 2 segundos para ver splash, luego inicio realmente');
+    console.log('Espero 2 segundos para splash, luego inicio real');
     this.delayedInit();
   }
 
   render() {
-    const { navigation } = this.props;
+
     return (
 
       <PaperProvider>
@@ -55,9 +51,9 @@ export class SplashScreen extends React.Component {
 
             <ChotuveLogo />
 
-            <ActivityIndicator style={{paddingTop: 10}} size="large" color="#0000ff" />
+            <ActivityIndicator style={{ paddingTop: 10 }} size="large" color="#0000ff" />
 
-            <Text style={{color: 'white', paddingVertical: 20}}>
+            <Text style={{ color: 'white', paddingVertical: 20 }}>
               Estamos inicializando el sistema...
             </Text>
 

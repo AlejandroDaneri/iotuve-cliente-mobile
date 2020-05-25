@@ -61,9 +61,6 @@ export class LoginScreen extends React.Component {
         console.log(responseJson.data);
 
         if (responseJson.fullResponse.ok) {
-
-          let myToken = responseJson.data.session_token;
-          AppAsyncStorage.saveToken(myToken);
           AppAsyncStorage.saveSession(responseJson.data);
 
           this.setState({
