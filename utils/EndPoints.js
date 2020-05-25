@@ -8,6 +8,7 @@ export default class EndPoints {
   static ping = EndPoints._baseURL + '/ping';
   static sessions = EndPoints._baseURL + '/sessions';
   static users = EndPoints._baseURL + '/users';
+  static passwordRecovery = EndPoints._baseURL + '/recovery';
   static video_like = EndPoints._baseURL + '/video/like';
   static video_unlike = EndPoints._baseURL + '/video/unlike';
 
