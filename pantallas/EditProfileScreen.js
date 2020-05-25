@@ -97,7 +97,6 @@ export class EditProfileScreen extends React.Component {
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
     var myBody = JSON.stringify({
-      username: sessionDataJSON.session_data.username,
       first_name: this.state.newUserFirstName,
       last_name: this.state.newUserLastName,
       contact: {
@@ -115,10 +114,7 @@ export class EditProfileScreen extends React.Component {
       body: myBody,
     })
       .then((response) => response.json().then(json => {
-        return {
-          data: json,
-          fullResponse: response
-        }
+        return { data: json, fullResponse: response }
       }))
       .then((responseJson) => {
         AppUtils.printResponseJson(responseJson);
@@ -164,7 +160,7 @@ export class EditProfileScreen extends React.Component {
         AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
-//          this.updateUserData(responseJson.data);
+          //          this.updateUserData(responseJson.data);
           this.setState({ editingUserData: false })
         } else {
 
