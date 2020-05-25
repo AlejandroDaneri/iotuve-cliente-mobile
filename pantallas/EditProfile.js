@@ -11,9 +11,13 @@ export class EditProfileScreen extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
+      processPhase: 0,
       initialLoading: true,
-      editing: false,
+
+      editingUserData: false,
+      editingUserPassword: false,
 
       userFirstName: '',
       userLastName: '',
@@ -24,6 +28,7 @@ export class EditProfileScreen extends React.Component {
       newUserLastName: '',
       newUserEmail: '',
       newUserPhone: '',
+      newUserPassword: '',
     };
 
     this.postFormData = this.postFormData.bind(this);
@@ -33,54 +38,41 @@ export class EditProfileScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
+    console.log('componentDidMount (EditProfileScreen)');
     this.requestUserData();
   }
 
   async requestUserData() {
-    const authData = await AppAsyncStorage.getToken();
-    const authToken = JSON.parse(authData).authToken;
     const sessionData = await AppAsyncStorage.getSession();
     const sessionDataJSON = JSON.parse(sessionData);
+    const authToken = await AppAsyncStorage.getTokenFromSession();
 
-    //    console.log(authToken);
-    //    console.log(sessionDataJSON.session_data.username);
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
-    var myHeaders = new Headers({
-      'Content-Type': 'application/json',
-      'X-Auth-Token': authToken,
-    });
-
-    //5485b510-9854-11ea-82a6-26a321e492b4  -- GUIDO
     fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username, {
-      //    fetch(EndPoints.users +'/5eb8be69075ba130c412c074', {
       method: 'GET',
       headers: myHeaders,
     })
       .then((response) => response.json().then(json => {
-        return {
-          data: json,
-          fullResponse: response
-        }
+        return { data: json, fullResponse: response }
       }))
       .then((responseJson) => {
-        //AppUtils.printResponseJson(responseJson);
+        AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
           this.updateUserData(responseJson.data);
         } else {
-          console.log('>>>>> NOT OK >>>>>');
-          console.log(responseJson.fullResponse);
+          if (responseJson.fullResponse.status == 404) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          }
         }
-        
         this.setState({ initialLoading: false })
-
       })
       .catch((error) => {
         console.log('------- error ------');
         console.log(error);
       });
-
   }
 
   updateUserData(data) {
@@ -97,32 +89,27 @@ export class EditProfileScreen extends React.Component {
     })
   }
 
-  async postFormDataPassword() {
-    // TODO: aca iria el PATCH de USERS para cambio de clave.
-  }
-
   async postFormData() {
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
+    const authToken = await AppAsyncStorage.getTokenFromSession();
 
-    const authData = await AppAsyncStorage.getToken();
-    const authToken = JSON.parse(authData).authToken;
-
-    var myHeaders = new Headers({
-      'Content-Type': 'application/json',
-      'X-Auth-Token': authToken,
-    });
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
     var myBody = JSON.stringify({
+      username: sessionDataJSON.session_data.username,
       first_name: this.state.newUserFirstName,
       last_name: this.state.newUserLastName,
       contact: {
         email: this.state.newUserEmail,
         phone: this.state.newUserPhone
-      }
+      },
+      avatar: {
+        url: "http://www.guido.com"
+      },
     });
-    //console.log(myHeaders);
-    //console.log(myBody);
 
-    fetch(EndPoints.users, {
+    fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username, {
       method: 'PUT',
       headers: myHeaders,
       body: myBody,
@@ -134,14 +121,13 @@ export class EditProfileScreen extends React.Component {
         }
       }))
       .then((responseJson) => {
-        //AppUtils.printResponseJson(responseJson);
+        AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
-          //console.log(responseJson.fullResponse);
           this.updateUserData(responseJson.data);
+          this.setState({ editingUserData: false })
         } else {
-          //console.log('----------- NOT OK -----------');
-          //console.log(responseJson.fullResponse);
+
         }
       })
       .catch((error) => {
@@ -149,6 +135,47 @@ export class EditProfileScreen extends React.Component {
         console.log(error);
       });
   }
+
+  async postFormDataPassword() {
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    var myBody = JSON.stringify({
+      op: "replace",
+      path: "/password",
+      value: this.state.newUserPassword,
+    });
+
+    fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username, {
+      method: 'PATCH',
+      headers: myHeaders,
+      body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return {
+          data: json,
+          fullResponse: response
+        }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+//          this.updateUserData(responseJson.data);
+          this.setState({ editingUserData: false })
+        } else {
+
+        }
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      });
+  }
+
 
   render() {
 
@@ -172,9 +199,8 @@ export class EditProfileScreen extends React.Component {
           <Card.Title title="Datos Actuales" />
           <Card.Content>
 
-            {this.state.editing == false &&
+            {this.state.editingUserData == false &&
               <View>
-
                 <UserData
                   firstName={this.state.userFirstName}
                   lastName={this.state.userLastName}
@@ -186,17 +212,16 @@ export class EditProfileScreen extends React.Component {
                   icon="account"
                   mode="outlined"
                   onPress={() => {
-                    this.setState({ editing: true });
+                    this.setState({ editingUserData: true, editingUserPassword: false });
                   }}
                 >
                   Editar Datos
-              </Button>
-
+                </Button>
               </View>
             }
 
 
-            {this.state.editing == true &&
+            {this.state.editingUserData == true &&
               <View>
 
                 <View style={{ flexDirection: 'row' }}>
@@ -239,6 +264,7 @@ export class EditProfileScreen extends React.Component {
 
                   <TextInput
                     style={{ padding: 2, flex: 1 }}
+                    disabled="true"
                     dense="true"
                     //label="Email"
                     mode="outlined"
@@ -265,15 +291,23 @@ export class EditProfileScreen extends React.Component {
 
                 <Button
                   style={{ margin: 10 }}
-                  icon="account"
                   mode="contained"
                   onPress={() => {
-                    this.setState({ editing: true });
                     this.postFormData();
+                    this.setState({ editingUserData: false, editingUserPassword: false });
                   }}>
                   Confirmar Datos
                 </Button>
 
+                <Button
+                  style={{ margin: 10 }}
+                  mode="contained"
+                  color="red"
+                  onPress={() => {
+                    this.setState({ editingUserData: false, editingUserPassword: false });
+                  }}>
+                  Cancelar
+                </Button>
               </View>
             }
 
@@ -281,24 +315,65 @@ export class EditProfileScreen extends React.Component {
         </Card>
 
 
-        {
-          this.state.editing == false &&
+        <Card elevation={10} style={{ margin: 10, }}>
+          <Card.Title title="Cambio de Clave" />
+          <Card.Content>
 
-          <Card elevation={10} style={{ margin: 10, }}>
-            <Card.Title title="Cambio de Clave" />
-            <Card.Content>
+            {this.state.editingUserPassword == false &&
+
               <Button
                 style={{ margin: 10 }}
                 icon="key"
                 mode="outlined"
                 onPress={() => {
-                  this.setState({ editing: true });
+                  this.setState({ editingUserPassword: true, editingUserData: false });
                 }}>
                 Cambiar Mi Clave
               </Button>
-            </Card.Content>
-          </Card>
-        }
+            }
+
+
+            {this.state.editingUserPassword == true &&
+              <View>
+
+                <View style={{ flexDirection: 'row' }}>
+                  <List.Icon color={Colors.blue500} icon="key" />
+
+                  <View style={{ flex: 1, flexDirection: 'row' }}>
+                    <TextInput
+                      style={{ padding: 2, flex: 1 }}
+                      dense="true"
+                      //label="Nombre"
+                      mode="outlined"
+                      onChangeText={(newUserPassword) => this.setState({ newUserPassword })}
+                    />
+                  </View>
+                </View>
+
+                <Button
+                  style={{ margin: 10 }}
+                  mode="contained"
+                  onPress={() => {
+                    this.postFormDataPassword();
+                    this.setState({ editingUserData: false, editingUserPassword: false });
+                  }}>
+                  Confirmar Clave
+                </Button>
+                <Button
+                  style={{ margin: 10 }}
+                  mode="contained"
+                  color="red"
+                  onPress={() => {
+                    this.setState({ editingUserData: false, editingUserPassword: false });
+                  }}>
+                  Cancelar
+                </Button>
+
+              </View >
+            }
+          </Card.Content>
+        </Card>
+
 
       </View >
     );
