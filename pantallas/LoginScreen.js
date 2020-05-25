@@ -110,14 +110,14 @@ export class LoginScreen extends React.Component {
                 }}>
                 <TextInput
                   style={{ m: 15 }}
-                  label="Ingrese su Email"
+                  label="Ingresá tu Email"
                   mode="outlined"
                   onChangeText={(userEmail) => this.setState({ userEmail })}
                 />
 
                 <TextInput
                   style={{ marginTop: 15 }}
-                  label="Ingrese su Clave"
+                  label="Ingresá tu Clave"
                   mode="outlined"
                   secureTextEntry={true}
                   onChangeText={(userPassword) => this.setState({ userPassword })}
