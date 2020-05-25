@@ -8,11 +8,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SplashScreen } from './pantallas/SplashScreen';
 import { LoginScreen } from './pantallas/LoginScreen';
 import { SignUpScreen } from './pantallas/SignUpScreen';
+import { PasswordRecoveryScreen } from './pantallas/PasswordRecoveryScreen';
 import { MuroScreen } from './pantallas/MuroScreen';
 import { ProfileScreen } from './pantallas/ProfileScreen';
 import { FriendsScreen } from './pantallas/FriendsScreen';
 import { ChatScreen } from './pantallas/ChatScreen';
-import { EditProfileScreen } from './pantallas/EditProfile';
+import { EditProfileScreen } from './pantallas/EditProfileScreen';
 import { VideoScreen } from './pantallas/VideoScreen';
 import { UploadVideoScreen } from './pantallas/UploadVideoScreen';
 
@@ -47,6 +48,12 @@ export default class HelloWorldApp extends React.Component {
             options={{ headerShown: false }}
             name="SignUp"
             component={SignUpScreen}
+          />
+
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="PasswordRecovery"
+            component={PasswordRecoveryScreen}
           />
 
           <Stack.Screen

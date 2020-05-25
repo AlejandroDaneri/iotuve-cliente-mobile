@@ -4,6 +4,7 @@ import {
   Button,
   TextInput,
   Provider as PaperProvider,
+  Divider,
 } from 'react-native-paper';
 
 
@@ -12,6 +13,7 @@ import ChotuveLogo from '../ChotuveLogo.js';
 
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 import EndPoints from '../utils/EndPoints';
+import AppUtils from '../utils/AppUtils';
 
 export class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -36,9 +38,7 @@ export class LoginScreen extends React.Component {
       processPhase: 1,
     });
 
-    var myHeaders = new Headers({
-      'Content-Type': 'application/json',
-    });
+    var myHeaders = new Headers({});
 
     var myBody = JSON.stringify({
       username: this.state.userEmail,
@@ -51,14 +51,10 @@ export class LoginScreen extends React.Component {
       body: myBody,
     })
       .then((response) => response.json().then(json => {
-        return {
-          data: json,
-          fullResponse: response
-        }
+        return { data: json, fullResponse: response }
       }))
       .then((responseJson) => {
-        console.log(responseJson.fullResponse.status);
-        console.log(responseJson.data);
+        AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
           AppAsyncStorage.saveSession(responseJson.data);
@@ -83,6 +79,11 @@ export class LoginScreen extends React.Component {
         });
       });
 
+  }
+
+  componentDidMount(){
+    console.log("componentDidMount > LoginScreen");
+    console.log(this.state.processPhase);
   }
 
   render() {
@@ -122,7 +123,7 @@ export class LoginScreen extends React.Component {
                   onChangeText={(userPassword) => this.setState({ userPassword })}
                 />
 
-                {this.state.processPhase == 0 &&
+                {this.state.processPhase != 1 &&
                   <Button
                     style={{ marginTop: 15 }}
                     icon="send"
@@ -144,7 +145,7 @@ export class LoginScreen extends React.Component {
                     </Button>
                   </View>
                 }
-                
+
               </View>
               <View
                 style={{
@@ -155,6 +156,17 @@ export class LoginScreen extends React.Component {
                 }}>
 
                 <Button
+                  icon="key"
+                  mode="outlined"
+                  onPress={() => {
+                    console.log('Navegacion -> PasswordRecovery'),
+                    navigation.navigate('PasswordRecovery');
+                  }}>
+                  OLVIDÉ MI CLAVE
+                </Button>
+
+                <Button
+                  style={{ marginTop: 10 }}
                   icon="account"
                   mode="outlined"
                   onPress={() => {
@@ -176,7 +188,7 @@ export class LoginScreen extends React.Component {
                   console.log('Navegacion -> Muro'),
                     navigation.navigate('Muro');
                 }}>
-                Entrar al Muro
+                Entrar al Muro (debug)
                 </Button>
 
             </View>
