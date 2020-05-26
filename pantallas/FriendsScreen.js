@@ -172,6 +172,7 @@ export class FriendsScreen extends React.Component {
                       friendsCount={item.id}
                       videoCount={item.id}
                       userName={item.first_name}
+                      userAvatar={item.avatar}
                     />
                   )}
                 />
