@@ -28,8 +28,8 @@ class PedidoAmistad extends Component {
         >
 
           <View style={{ flexDirection: 'row', }}>
-            <Avatar.Text size={56} label={this.props.userName.charAt(0)} />
-
+          <Avatar.Image size={56} source={{uri: 'http://2.bp.blogspot.com/-YUV22Vr-eJQ/U90_xPOgBZI/AAAAAAAAAGA/A-s5lx3uMKU/s1600/bob02.png',}} />
+            
             <View style={{ flexDirection: 'column' }}>
 
               <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.userName}</Headline>

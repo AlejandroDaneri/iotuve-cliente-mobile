@@ -28,7 +28,8 @@ class Amistad extends Component {
         >
 
           <View style={{ flexDirection: 'row', }}>
-            <Avatar.Text size={56} label={this.props.userName.charAt(0)} />
+          
+            <Avatar.Image size={56} source={{uri: this.props.userAvatar}} />
 
             <View style={{ flex: 1, flexDirection: 'column' }}>
 
