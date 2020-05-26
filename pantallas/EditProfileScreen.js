@@ -174,7 +174,6 @@ export class EditProfileScreen extends React.Component {
 
 
   render() {
-
     const { navigation } = this.props;
 
     return (
@@ -190,12 +189,13 @@ export class EditProfileScreen extends React.Component {
         </Appbar.Header>
 
         {this.state.initialLoading && <ActivityIndicator style={{ padding: 20 }} />}
-
+        
+        {this.state.editingUserPassword == false &&
         <Card elevation={10} style={{ margin: 10, }}>
           <Card.Title title="Datos Actuales" />
           <Card.Content>
 
-            {this.state.editingUserData == false &&
+            {this.state.editingUserData == false && this.state.editingUserPassword == false &&
               <View>
                 <UserData
                   firstName={this.state.userFirstName}
@@ -309,67 +309,67 @@ export class EditProfileScreen extends React.Component {
 
           </Card.Content>
         </Card>
+        }
 
+        {this.state.editingUserData == false &&
 
-        <Card elevation={10} style={{ margin: 10, }}>
-          <Card.Title title="Cambio de Clave" />
-          <Card.Content>
+          <Card elevation={10} style={{ margin: 10, }}>
+            <Card.Title title="Cambio de Clave" />
+            <Card.Content>
 
-            {this.state.editingUserPassword == false &&
-
-              <Button
-                style={{ margin: 10 }}
-                icon="key"
-                mode="outlined"
-                onPress={() => {
-                  this.setState({ editingUserPassword: true, editingUserData: false });
-                }}>
-                Cambiar Mi Clave
+              {this.state.editingUserPassword == false && this.state.editingUserData == false &&
+                <Button
+                  style={{ margin: 10 }}
+                  icon="key"
+                  mode="outlined"
+                  onPress={() => {
+                    this.setState({ editingUserPassword: true, editingUserData: false });
+                  }}>
+                  Cambiar Mi Clave
               </Button>
-            }
+              }
 
+              {this.state.editingUserPassword == true &&
+                <View>
 
-            {this.state.editingUserPassword == true &&
-              <View>
+                  <View style={{ flexDirection: 'row' }}>
+                    <List.Icon color={Colors.blue500} icon="key" />
 
-                <View style={{ flexDirection: 'row' }}>
-                  <List.Icon color={Colors.blue500} icon="key" />
-
-                  <View style={{ flex: 1, flexDirection: 'row' }}>
-                    <TextInput
-                      style={{ padding: 2, flex: 1 }}
-                      dense="true"
-                      //label="Nombre"
-                      mode="outlined"
-                      onChangeText={(newUserPassword) => this.setState({ newUserPassword })}
-                    />
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                      <TextInput
+                        style={{ padding: 2, flex: 1 }}
+                        dense="true"
+                        //label="Nombre"
+                        mode="outlined"
+                        onChangeText={(newUserPassword) => this.setState({ newUserPassword })}
+                      />
+                    </View>
                   </View>
-                </View>
 
-                <Button
-                  style={{ margin: 10 }}
-                  mode="contained"
-                  onPress={() => {
-                    this.postFormDataPassword();
-                    this.setState({ editingUserData: false, editingUserPassword: false });
-                  }}>
-                  Confirmar Clave
+                  <Button
+                    style={{ margin: 10 }}
+                    mode="contained"
+                    onPress={() => {
+                      this.postFormDataPassword();
+                      this.setState({ editingUserData: false, editingUserPassword: false });
+                    }}>
+                    Confirmar Clave
                 </Button>
-                <Button
-                  style={{ margin: 10 }}
-                  mode="contained"
-                  color="red"
-                  onPress={() => {
-                    this.setState({ editingUserData: false, editingUserPassword: false });
-                  }}>
-                  Cancelar
+                  <Button
+                    style={{ margin: 10 }}
+                    mode="contained"
+                    color="red"
+                    onPress={() => {
+                      this.setState({ editingUserData: false, editingUserPassword: false });
+                    }}>
+                    Cancelar
                 </Button>
 
-              </View >
-            }
-          </Card.Content>
-        </Card>
-
+                </View >
+              }
+            </Card.Content>
+          </Card>
+        }
 
       </View >
     );
