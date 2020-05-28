@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { Button, Appbar, Snackbar, ActivityIndicator } from 'react-native-paper';
+import { Button, Appbar, Snackbar, ActivityIndicator, Headline, Paragraph } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -82,10 +82,10 @@ export class FriendsScreen extends React.Component {
     });
   }
 
-  requestFriends() {
-    var myHeaders = new Headers({
-      'Content-Type': 'application/json',
-    });
+  async requestFriends() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
     fetch('https://reqres.in/api/users?delay=3', {
       method: 'GET',
@@ -117,11 +117,13 @@ export class FriendsScreen extends React.Component {
   }
 
   async requestFriendsRequests() {
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
     const authToken = await AppAsyncStorage.getTokenFromSession();
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
-    fetch(EndPoints.friendships, {
+    fetch(EndPoints.friendships + '?to_user=' + sessionDataJSON.session_data.username, {
       method: 'GET',
       headers: myHeaders,
     })
@@ -183,7 +185,7 @@ export class FriendsScreen extends React.Component {
             backgroundColor="black"
             onPress={this._clickTabAmigos}
           >
-            Amigos (3)
+            Amigos ({this.state.dataFriends.length})
           </Button>
 
           <Button
@@ -193,7 +195,7 @@ export class FriendsScreen extends React.Component {
             color={this.state.colorTabSolicitudes}
             onPress={this._clickTabSolicitudes}
           >
-            Solicitudes (5)
+            Solicitudes ({this.state.dataFriendsRequest.length})
           </Button>
 
         </View>
@@ -202,40 +204,61 @@ export class FriendsScreen extends React.Component {
 
           {(this.state.isLoadingFriends || this.state.isLoadingFriendsRequests) && <ActivityIndicator style={{ padding: 20 }} />}
 
-          {!this.state.isLoadingFriends && (this.state.tabSeleccionada == 'Amigos') &&
+          {!(this.state.isLoadingFriends || this.state.isLoadingFriendsRequests) && (this.state.tabSeleccionada == 'Amigos') &&
 
             (
               <View>
-                <FlatList
-                  data={this.state.dataFriends}
-                  keyExtractor={({ id }, index) => id}
-                  renderItem={({ item }) => (
-                    <Amistad
-                      friendsCount={item.id}
-                      videoCount={item.id}
-                      userName={item.first_name}
-                      userAvatar={item.avatar}
-                    />
-                  )}
-                />
+                {(this.state.dataFriends.length > 0 &&
+                  <FlatList
+                    data={this.state.dataFriends}
+                    keyExtractor={({ id }, index) => id}
+                    renderItem={({ item }) => (
+                      <Amistad
+                        friendsCount={item.id}
+                        videoCount={item.id}
+                        userName={item.first_name}
+                        userAvatar={item.avatar}
+                      />
+                    )}
+                  />
+                )}
+
+                {(this.state.dataFriends.length == 0 &&
+                  <View style={{ textAlign: 'center' }}>
+                    <Headline>No hay amigos en tu lista</Headline>
+                    <Paragraph>Empezá a conectarte con otros usuarios</Paragraph>
+                  </View>
+                )}
+
               </View>
             )
           }
 
-          {!this.state.isLoadingFriendsRequests && (this.state.tabSeleccionada == 'Solicitudes') &&
+          {!(this.state.isLoadingFriends || this.state.isLoadingFriendsRequests) && (this.state.tabSeleccionada == 'Solicitudes') &&
             <View>
-              <FlatList
-                data={this.state.dataFriendsRequest}
-                keyExtractor={({ id }, index) => id}
-                renderItem={({ item }) => (
 
-                  <PedidoAmistad
-                    userName={item.from_user}
-                    onPress={this._onToggleSnackBar}
-                  />
+              {(this.state.dataFriendsRequest.length > 0 &&
+                <FlatList
+                  data={this.state.dataFriendsRequest}
+                  keyExtractor={({ id }, index) => id}
+                  renderItem={({ item }) => (
 
-                )}
-              />
+                    <PedidoAmistad
+                      userName={item.from_user}
+                      onPress={this._onToggleSnackBar}
+                    />
+
+                  )}
+                />
+              )}
+
+              {(this.state.dataFriendsRequest.length == 0 &&
+                <View>
+                  <Headline>No hay solicitudes de amistad pendientes</Headline>
+                  <Text>Cuando otro usuario solicite conectarse con vos, aparecerá aca</Text>
+                </View>
+              )}
+
             </View>
           }
 
