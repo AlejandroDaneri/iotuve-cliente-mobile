@@ -62,9 +62,11 @@ export class EditProfileScreen extends React.Component {
         if (responseJson.fullResponse.ok) {
           this.updateUserData(responseJson.data);
         } else {
-          if (responseJson.fullResponse.status == 404) {
+          if (responseJson.fullResponse.status == 401) {
             AppUtils.logout();
             this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui? algo? nada? bla.');
           }
         }
         this.setState({ initialLoading: false })
@@ -123,7 +125,12 @@ export class EditProfileScreen extends React.Component {
           this.updateUserData(responseJson.data);
           this.setState({ editingUserData: false })
         } else {
-
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui? algo? nada? bla.');
+          }
         }
       })
       .catch((error) => {
@@ -160,9 +167,15 @@ export class EditProfileScreen extends React.Component {
         AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
-          //          this.updateUserData(responseJson.data);
+          // cuando cambio la clave, y estuvo todo OK. hago algo especial?
           this.setState({ editingUserData: false })
         } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui? algo? nada? bla.');
+          }
 
         }
       })

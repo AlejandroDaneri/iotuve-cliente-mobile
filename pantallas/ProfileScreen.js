@@ -106,7 +106,7 @@ export class ProfileScreen extends React.Component {
           <View>
             <Card elevation={10} style={styles.cardContainer}>
               <Card.Title
-                title="Juan Marcos"
+                title="Juan Marcos - usuario1@gmail.com"
                 subtitle="Espacio / Campo para otra cosa, descripción, etc"
               />
               <Divider />
