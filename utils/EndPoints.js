@@ -11,5 +11,11 @@ export default class EndPoints {
   static passwordRecovery = EndPoints._baseURL + '/recovery';
   static video_like = EndPoints._baseURL + '/video/like';
   static video_unlike = EndPoints._baseURL + '/video/unlike';
+  static friendships = EndPoints._baseURL + '/friendships';
 
 }
+
+/*
+guido321: id -> 5ecfc55ac746190fb22fac36
+usuario1: id -> 5ecfc1f6171e9e9e1e2fac36
+*/
