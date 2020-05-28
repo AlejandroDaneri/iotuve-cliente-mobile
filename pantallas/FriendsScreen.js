@@ -7,6 +7,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import PedidoAmistad from '../PedidoAmistad.js';
 import Amistad from '../Amistad.js';
 import { FlatList } from 'react-native-gesture-handler';
+import AppUtils from '../utils/AppUtils.js';
+import EndPoints from '../utils/EndPoints.js';
+import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 
 export class FriendsScreen extends React.Component {
 
@@ -17,6 +20,9 @@ export class FriendsScreen extends React.Component {
     this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
     this._clickTabSolicitudes = this._clickTabSolicitudes.bind(this);
     this._clickTabAmigos = this._clickTabAmigos.bind(this);
+
+    this.requestFriends = this.requestFriends.bind(this);
+    this.requestFriendsRequests = this.requestFriendsRequests.bind(this);
   };
 
   state = {
@@ -28,8 +34,10 @@ export class FriendsScreen extends React.Component {
     colorTabAmigos: 'midnightblue',
     colorTabSolicitudes: 'white',
 
-    isLoading: true,
-    data: [],
+    isLoadingFriends: true,
+    isLoadingFriendsRequests: true,
+    dataFriends: [],
+    dataFriendsRequest: [],
   };
 
   _clickTabAmigos() {
@@ -74,7 +82,7 @@ export class FriendsScreen extends React.Component {
     });
   }
 
-  requestFriends = () => {
+  requestFriends() {
     var myHeaders = new Headers({
       'Content-Type': 'application/json',
     });
@@ -90,12 +98,11 @@ export class FriendsScreen extends React.Component {
         }
       }))
       .then((responseJson) => {
-        console.log(responseJson.fullResponse.status);
-        console.log(responseJson.data);
+        AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
           this.setState({
-            data: responseJson.data.data,
+            dataFriends: responseJson.data.data,
           });
         }
       })
@@ -104,13 +111,48 @@ export class FriendsScreen extends React.Component {
         console.log(error);
       })
       .finally(() => {
-        this.setState({ isLoading: false })
+        this.setState({ isLoadingFriends: false })
+      });
+
+  }
+
+  async requestFriendsRequests() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    fetch(EndPoints.friendships, {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return {
+          data: json,
+          fullResponse: response
+        }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+          this.setState({
+            dataFriendsRequest: responseJson.data.data,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      })
+      .finally(() => {
+        this.setState({ isLoadingFriendsRequests: false })
       });
 
   }
 
   componentDidMount() {
     this.requestFriends();
+    this.requestFriendsRequests();
   }
 
   render() {
@@ -158,14 +200,14 @@ export class FriendsScreen extends React.Component {
 
         <View style={{ flex: 1, marginVertical: 0 }}>
 
-          {this.state.isLoading && <ActivityIndicator style={{ padding: 20 }} />}
+          {(this.state.isLoadingFriends || this.state.isLoadingFriendsRequests) && <ActivityIndicator style={{ padding: 20 }} />}
 
-          {!this.state.isLoading && (this.state.tabSeleccionada == 'Amigos') &&
+          {!this.state.isLoadingFriends && (this.state.tabSeleccionada == 'Amigos') &&
 
             (
               <View>
                 <FlatList
-                  data={this.state.data}
+                  data={this.state.dataFriends}
                   keyExtractor={({ id }, index) => id}
                   renderItem={({ item }) => (
                     <Amistad
@@ -180,35 +222,21 @@ export class FriendsScreen extends React.Component {
             )
           }
 
-          {this.state.tabSeleccionada == 'Solicitudes' &&
-            <ScrollView>
+          {!this.state.isLoadingFriendsRequests && (this.state.tabSeleccionada == 'Solicitudes') &&
+            <View>
+              <FlatList
+                data={this.state.dataFriendsRequest}
+                keyExtractor={({ id }, index) => id}
+                renderItem={({ item }) => (
 
-              <PedidoAmistad
-                userName="Bob Esponja"
-                onPress={this._onToggleSnackBar} />
-              <PedidoAmistad
-                userName="Patricio Estrella"
-                onPress={this._onToggleSnackBar} />
-              <PedidoAmistad
-                userName="Calamardo"
-                onPress={this._onToggleSnackBar} />
-              <PedidoAmistad
-                userName="Don Cangrejo"
-                onPress={this._onToggleSnackBar} />
-              <PedidoAmistad
-                userName="Arenita"
-                onPress={this._onToggleSnackBar} />
-              <PedidoAmistad
-                userName="Plancton"
-                onPress={this._onToggleSnackBar} />
-              <PedidoAmistad
-                userName="Perlita"
-                onPress={this._onToggleSnackBar} />
-              <PedidoAmistad
-                userName="Gary"
-                onPress={this._onToggleSnackBar} />
+                  <PedidoAmistad
+                    userName={item.from_user}
+                    onPress={this._onToggleSnackBar}
+                  />
 
-            </ScrollView>
+                )}
+              />
+            </View>
           }
 
           <Snackbar
