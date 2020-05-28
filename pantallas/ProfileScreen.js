@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
+  Button,
   Divider,
   Chip,
   Card,
@@ -8,7 +9,67 @@ import {
 } from 'react-native-paper';
 import VideoEnLista from '../VideoEnLista.js';
 
+import EndPoints from '../utils/EndPoints';
+import AppUtils from '../utils/AppUtils';
+import AppAsyncStorage from '../utils/AppAsyncStorage.js';
+
+
 export class ProfileScreen extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      requestingFriendship: false,
+    };
+
+    this.requestFriendship = this.requestFriendship.bind(this);
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount (ProfileScreen)');
+    //this.requestUserProfile();
+  }
+
+  async requestFriendship() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    var myBody = JSON.stringify({
+      to_user: "usuario1@gmail.com",
+      message: "mensaje clavado",
+    });
+
+    fetch(EndPoints.friendships, {
+      method: 'POST',
+      headers: myHeaders,
+      body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui? algo? nada? bla.');
+          }
+        }
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      });
+  }
+
+
   render() {
     const { navigation } = this.props;
     return (
@@ -83,6 +144,19 @@ export class ProfileScreen extends React.Component {
                     <Chip icon="heart-broken">2230</Chip>
                   </View>
                 </View>
+
+                <Divider />
+
+                <Button
+                  style={{ margin: 10 }}
+                  mode="contained"
+                  onPress={() => {
+                    this.requestFriendship();
+//                    this.setState({ editing: false, editingUserPassword: false });
+                  }}>
+                  Solicitar Amistad
+                </Button>
+
               </Card.Content>
             </Card>
           </View>
