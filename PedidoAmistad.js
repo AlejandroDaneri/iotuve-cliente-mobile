@@ -45,8 +45,8 @@ class PedidoAmistad extends Component {
 
               </View>
 
-              <Chip icon="voice" style={{ marginLeft: 10, marginTop: 8 }}>
-                Solicitud: 16-11-1980 - 14:55
+              <Chip icon="calendar" style={{ marginLeft: 10, marginTop: 8 }}>
+                {this.props.requestDate}
               </Chip>
 
             </View>

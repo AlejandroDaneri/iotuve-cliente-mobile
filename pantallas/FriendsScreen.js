@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Button, Appbar, Snackbar, ActivityIndicator, Headline, Paragraph } from 'react-native-paper';
-
+import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import PedidoAmistad from '../PedidoAmistad.js';
@@ -238,6 +238,7 @@ export class FriendsScreen extends React.Component {
                   renderItem={({ item }) => (
 
                     <PedidoAmistad
+                      requestDate={moment(item.date_created).format("DD-MM-YYYY  hh:mm:ss")}
                       userName={item.from_user}
                       onPress={this._onToggleSnackBar}
                     />
