@@ -41,11 +41,7 @@ export class SignUpScreen extends React.Component {
       processPhase: 1,
     });
 
-    var misHeaders = new Headers({
-      //Accept: 'application/json',
-      'Content-Type': 'application/json',
-      //'X-Auth-Token': '4567890',
-    });
+    var misHeaders = new Headers({ });
 
     var miBody = JSON.stringify({
       username: this.state.userEmail,
@@ -57,7 +53,6 @@ export class SignUpScreen extends React.Component {
         phone: this.state.userPhone
       }
     })
-
     
     fetch(EndPoints.users, {
       method: 'POST',
@@ -65,10 +60,7 @@ export class SignUpScreen extends React.Component {
       body: miBody,
     })
       .then((response) => response.json().then(json => {
-        return {
-          data: json,
-          fullResponse: response
-        }
+        return { data: json, fullResponse: response }
       }))
       .then((responseJson) => {
         console.log(responseJson.fullResponse.status);
@@ -92,14 +84,6 @@ export class SignUpScreen extends React.Component {
           processPhase: 0,
         });
       });
-
-    /*
-  let respuesta = JSON.stringify({ "avatar": { "url": "https://www.guido.com" }, "contact": { "email": "guido321@gmail.com", "phone": "3456789032" }, "date_created": "2020-05-11T02:54:33.327667", "date_updated": null, "first_name": "Guido", "id": "5eb8be69075ba130c412c074", "last_name": "Laghi", "username": "guido321@gmail.com" });
-  console.log(respuesta);
-  this.setState({
-    data: respuesta,
-  });
-  */
 
   };
 

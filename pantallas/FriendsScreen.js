@@ -92,10 +92,7 @@ export class FriendsScreen extends React.Component {
       headers: myHeaders,
     })
       .then((response) => response.json().then(json => {
-        return {
-          data: json,
-          fullResponse: response
-        }
+        return { data: json, fullResponse: response }
       }))
       .then((responseJson) => {
         AppUtils.printResponseJson(responseJson);
@@ -128,10 +125,7 @@ export class FriendsScreen extends React.Component {
       headers: myHeaders,
     })
       .then((response) => response.json().then(json => {
-        return {
-          data: json,
-          fullResponse: response
-        }
+        return { data: json, fullResponse: response }
       }))
       .then((responseJson) => {
         AppUtils.printResponseJson(responseJson);
