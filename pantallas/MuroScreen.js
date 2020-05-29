@@ -1,4 +1,6 @@
 import React from 'react';
+import { StackActions } from '@react-navigation/native';
+
 import { ScrollView, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import PruebaRequestGet from '../PruebaRequestGet.js';
@@ -32,8 +34,10 @@ export class MuroScreen extends React.Component {
             color="grey"
             onPress={() => {
               AppUtils.logout();
-              console.log('Navegacion -> Login'), 
-              navigation.navigate('Login');
+              console.log('Navegacion -> Login');
+              
+              const replaceAction = StackActions.replace('Login');
+              this.props.navigation.dispatch(replaceAction);
             }}
           />
           <Appbar.Action

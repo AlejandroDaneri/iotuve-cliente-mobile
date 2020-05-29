@@ -1,4 +1,6 @@
 import React from 'react';
+import { StackActions } from '@react-navigation/native';
+
 import { SafeAreaView, Text, View, Keyboard } from 'react-native';
 import {
   Button,
@@ -63,7 +65,8 @@ export class LoginScreen extends React.Component {
             data: responseJson.data,
             processPhase: 2,
           });
-          this.props.navigation.navigate("Muro");
+          const replaceAction = StackActions.replace('Muro');
+          this.props.navigation.dispatch(replaceAction);
 
         } else {
           this.setState({

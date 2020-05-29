@@ -26,74 +26,24 @@ export default class HelloWorldApp extends React.Component {
 
     return (
       <NavigationContainer>
+
         <Stack.Navigator
           initialRouteName="Splash"
           screenOptions={{
             headerShown: false,
           }}>
 
+          <Stack.Screen options={{ headerShown: false }} name="Splash" component={SplashScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUpScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="PasswordRecovery" component={PasswordRecoveryScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="Profile" component={ProfileScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="EditProfile" component={EditProfileScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="Friends" component={FriendsScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="UploadVideo" component={UploadVideoScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="Chat" component={ChatScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="Video" component={VideoScreen} />
           <Stack.Screen
-            options={{ headerShown: false }}
-            name="Splash"
-            component={SplashScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Login"
-            component={LoginScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="SignUp"
-            component={SignUpScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="PasswordRecovery"
-            component={PasswordRecoveryScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Profile"
-            component={ProfileScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="EditProfile"
-            component={EditProfileScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Friends"
-            component={FriendsScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="UploadVideo"
-            component={UploadVideoScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Chat"
-            component={ChatScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Video"
-            component={VideoScreen}
-          />
-
-          <Stack.Screen
-            name="Muro"
             options={{
               title: 'Muro de Videos',
               headerStyle: {
@@ -102,7 +52,7 @@ export default class HelloWorldApp extends React.Component {
               headerTintColor: '#fff',
               headerLeft: null,
             }}
-            component={MuroScreen}
+            name="Muro" component={MuroScreen}
           />
 
         </Stack.Navigator>

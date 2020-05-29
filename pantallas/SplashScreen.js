@@ -1,5 +1,6 @@
 import React from 'react';
 import { SafeAreaView, ActivityIndicator, Text, View } from 'react-native';
+import { StackActions } from '@react-navigation/native';
 
 import { Provider as PaperProvider } from 'react-native-paper';
 
@@ -24,12 +25,12 @@ export class SplashScreen extends React.Component {
     if (sessionData !== null) {
       const authToken = await AppAsyncStorage.getTokenFromSession();
       // tengo token guardado, lo uso para continuar.
-
-      //por ahora redirecciono a Muro sin revisar nada.
-      this.props.navigation.navigate("Muro");
+      const replaceAction = StackActions.replace('Muro');
+      this.props.navigation.dispatch(replaceAction);
     } else {
       // no tengo token, no hago nada. Me quedo en esta pantalla de Login
-      this.props.navigation.navigate("Login");
+      const replaceAction = StackActions.replace('Login');
+      this.props.navigation.dispatch(replaceAction);
     }
 
   }
