@@ -59,7 +59,7 @@ export class ProfileScreen extends React.Component {
             AppUtils.logout();
             this.props.navigation.navigate("Login");
           } else {
-            console.log('que hacer aqui? algo? nada? bla.');
+            console.log('que hacer aqui?');
           }
         }
       })

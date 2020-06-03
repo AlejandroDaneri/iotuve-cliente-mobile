@@ -101,7 +101,15 @@ export class FriendsScreen extends React.Component {
           this.setState({
             dataFriends: responseJson.data.data,
           });
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui?');
+          }
         }
+
       })
       .catch((error) => {
         console.log('------- error ------');
@@ -134,7 +142,15 @@ export class FriendsScreen extends React.Component {
           this.setState({
             dataFriendsRequest: responseJson.data.data,
           });
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui?');
+          }
         }
+
       })
       .catch((error) => {
         console.log('------- error ------');
