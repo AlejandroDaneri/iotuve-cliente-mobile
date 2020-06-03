@@ -6,11 +6,6 @@ export default class AppUtils {
   static printResponseJson(responseJson) {
     console.log('');
     console.log('--------------DEBUG--------------------');
-    console.log('-------------response------------------');
-    console.log(responseJson);
-    console.log('-------------response.data--------------');
-    console.log(responseJson.data);
-    console.log('---------------------------------------');
     if (responseJson.fullResponse.ok == true) {
       console.log('>>>>>>>>>>>>>>> OK >>>>>>>>>>>>>>>>>>>>');
       console.log('ok:' + responseJson.fullResponse.ok);
@@ -19,9 +14,11 @@ export default class AppUtils {
       console.log('ok:' + responseJson.fullResponse.ok);
     }
     console.log('status:' + responseJson.fullResponse.status);
+    //console.log('-------------response------------------');
+    //console.log(responseJson);
+    console.log('-------------response.data--------------');
+    console.log(responseJson.data);
     console.log('---------------------------------------');
-    console.log('---------------------------------------');
-
     console.log('');
   }
 
