@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
-import { List, TextInput, Switch, Paragraph, Divider, Card, Button, Appbar } from 'react-native-paper';
+import { List, TextInput, Switch, Divider, Card, Button, Appbar, Chip } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 import AppUtils from '../utils/AppUtils.js';
@@ -8,6 +8,8 @@ import AppUtils from '../utils/AppUtils.js';
 import firebase from '@react-native-firebase/app';
 import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
+import EndPoints from '../utils/EndPoints.js';
+import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 
 
 export class UploadVideoScreen extends React.Component {
@@ -21,14 +23,69 @@ export class UploadVideoScreen extends React.Component {
       uploadPhase: 0, // 0 = nada, 1 = video seleccionado, 2 = video subiendo, 3 = video subido;
 
       videoPublic: false,
+      visibilityDescription: 'Privado',
       videoTitle: '',
       videoDescription: '',
-      visibilityDescription: 'Privado',
+      videoVisibility: 'private',
     };
 
     //bindeo de funciones/eventos
     this.clickElegirUnVideo = this.clickElegirUnVideo.bind(this);
     this.uploadSelectedFile = this.uploadSelectedFile.bind(this);
+    this.postNewVideo = this.postNewVideo.bind(this);
+  }
+
+  async postNewVideo(uploadMetadata) {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    var myBody = JSON.stringify({
+      title: this.state.videoTitle,
+      description: this.state.videoDescription,
+      visibility: this.state.videoVisibility,
+      media: {
+        "name": uploadMetadata.name,
+        "date_created": uploadMetadata.timeCreated,
+        "size": uploadMetadata.size,
+        "type": uploadMetadata.contentType,
+      },
+      location: {
+        "latitude": -58.416572,
+        "longitude": -34.6024161,
+      },
+    });
+
+    fetch(EndPoints.videos, {
+      method: 'POST',
+      headers: myHeaders,
+      body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+          return responseJson;
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui?');
+          }
+        }
+
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      })
+      .finally(() => {
+        this.setState({ isLoadingFriendsRequests: false })
+      });
 
   }
 
@@ -79,15 +136,18 @@ export class UploadVideoScreen extends React.Component {
             console.log(`${taskSnapshot.bytesTransferred} transferred out of ${item.size}`);
           });
 
-          putFileTask.then((result) => {
+          putFileTask.then((firebaseUploadResult) => {
             console.log('Video uploaded to the bucket!');
-            console.log(result);
-            this.setState({
-              uploadPhase: 3,
+            console.log(firebaseUploadResult);
+
+            this.postNewVideo(firebaseUploadResult.metadata).then((resultAppServer) => {
+              console.log('regreso del metodo del postNewVideo();')
+              console.log('resultAppServer:');
+              console.log(resultAppServer);
+              this.setState({
+                uploadPhase: 3,
+              });
             });
-
-            // aca tengo que hacer el POST del video al APP-Server
-
 
           });
         } else {
@@ -119,15 +179,14 @@ export class UploadVideoScreen extends React.Component {
         // DocumentPicker.types.pdf
       });
 
+      this.setState({ selectedFile: res, uploadPhase: 1 });
+
       //Printing the log related to the file
       console.log('res : ' + JSON.stringify(res));
       console.log('URI : ' + res.uri);
       console.log('Type : ' + res.type);
       console.log('File Name : ' + res.name);
       console.log('File Size : ' + res.size);
-
-      //Setting the state to show single file attributes
-      this.setState({ selectedFile: res, uploadPhase: 1 });
 
       /*
       RNFS.exists(decodeURIComponent(this.state.selectedFile.name)).then((resultExists) => {
@@ -175,6 +234,7 @@ export class UploadVideoScreen extends React.Component {
 
   _onToggleSwitch = () => this.setState(state => ({
     videoPublic: !this.state.videoPublic,
+    videoVisibility: this.state.videoPublic ? 'private' : 'public',
     visibilityDescription: this.state.videoPublic ? 'Privado' : 'Público',
   }));
 
@@ -209,6 +269,7 @@ export class UploadVideoScreen extends React.Component {
                 style={{ marginTop: 15 }}
                 icon="video"
                 mode="contained"
+                disabled={this.state.uploadPhase > 0?"false":""}
                 onPress={this.clickElegirUnVideo}>
                 Elegir un Video
               </Button>
@@ -219,17 +280,19 @@ export class UploadVideoScreen extends React.Component {
 
         {this.state.selectedFile.uri &&
           <View>
+
             <Card elevation={10} style={styles.cardContainer}>
+              <Chip style={{ margin: 10}} icon="check">Bien! Ya elegiste el video.</Chip>
+              <Chip style={{ marginHorizontal: 10,  marginBottom: 10}} icon="more">Ahora agregá más información asociada.</Chip>
+            </Card>
+
+            <Card elevation={10} style={styles.cardContainer}>
+
               <Card.Title
                 title="Datos del video"
               />
               <Divider />
               <Card.Content>
-
-                <Paragraph style={{ paddingVertical: 4 }}>
-                  Archivo Seleccionado:{' '}
-                  {this.state.selectedFile.name ? this.state.selectedFile.name : ''}
-                </Paragraph>
 
 
                 <TextInput
@@ -281,7 +344,7 @@ export class UploadVideoScreen extends React.Component {
                   </View>
                 }
 
-                {this.state.uploadPhase == 3 &&
+                {this.state.uploadPhase == 0 &&
                   <View style={{ paddingTop: 20, paddingBottom: 10 }}>
                     <Button
                       icon="upload"
@@ -289,7 +352,6 @@ export class UploadVideoScreen extends React.Component {
                       Video Subido con éxito
                     </Button>
 
-                    <Paragraph>Nuestro sistema lo está optimizando.</Paragraph>
                     <Button
                       style={{ marginTop: 15 }}
                       mode="contained"
@@ -307,6 +369,7 @@ export class UploadVideoScreen extends React.Component {
           </View>
         }
 
+        {/*
         {this.state.uploadPhase == 1 &&
           <View style={{ height: 220, backgroundColor: 'black', marginVertical: 8 }}>
             <PruebaPlayVideoFile
@@ -314,6 +377,7 @@ export class UploadVideoScreen extends React.Component {
             />
           </View>
         }
+      */}
 
       </View>
     );
