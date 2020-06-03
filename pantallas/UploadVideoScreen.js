@@ -36,6 +36,7 @@ export class UploadVideoScreen extends React.Component {
   }
 
   async postNewVideo(uploadMetadata) {
+
     const authToken = await AppAsyncStorage.getTokenFromSession();
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
@@ -56,37 +57,53 @@ export class UploadVideoScreen extends React.Component {
       },
     });
 
-    fetch(EndPoints.videos, {
-      method: 'POST',
-      headers: myHeaders,
-      body: myBody,
-    })
-      .then((response) => response.json().then(json => {
-        return { data: json, fullResponse: response }
-      }))
-      .then((responseJson) => {
-        AppUtils.printResponseJson(responseJson);
+    console.log('postNewVideo - 1');
 
-        if (responseJson.fullResponse.ok) {
-          return responseJson;
-        } else {
-          if (responseJson.fullResponse.status == 401) {
-            AppUtils.logout();
-            this.props.navigation.navigate("Login");
+    return new Promise((resolve, reject) => {
+
+      fetch(EndPoints.videos, {
+        method: 'POST',
+        headers: myHeaders,
+        body: myBody,
+      })
+        .then((response) => response.json().then(json => {
+          return { data: json, fullResponse: response }
+        }))
+        .then((responseJson) => {
+          console.log('postNewVideo - 2');
+          AppUtils.printResponseJson(responseJson);
+
+          if (responseJson.fullResponse.ok) {
+
+            // aca estoy cuando el app-server me respondio con exito sobre el post del video.
+            this.setState({
+              uploadPhase: 3,
+            });
+
+            resolve(responseJson);
           } else {
-            console.log('que hacer aqui?');
+            if (responseJson.fullResponse.status == 401) {
+              AppUtils.logout();
+              this.props.navigation.navigate("Login");
+            } else {
+              // aca estoy cuando el app-server me respondio con error sobre el post del video.
+              this.setState({
+                uploadPhase: 3,
+              });
+
+              console.log('que hacer aqui?');
+            }
           }
-        }
 
-      })
-      .catch((error) => {
-        console.log('------- error ------');
-        console.log(error);
-      })
-      .finally(() => {
-        this.setState({ isLoadingFriendsRequests: false })
-      });
-
+        })
+        .catch((error) => {
+          console.log('------- error ------');
+          console.log(error);
+        })
+        .finally(() => {
+          this.setState({ isLoadingFriendsRequests: false })
+        });
+    })
   }
 
   async uploadSelectedFile() {
@@ -269,7 +286,7 @@ export class UploadVideoScreen extends React.Component {
                 style={{ marginTop: 15 }}
                 icon="video"
                 mode="contained"
-                disabled={this.state.uploadPhase > 0?"false":""}
+                disabled={this.state.uploadPhase > 0 ? "false" : ""}
                 onPress={this.clickElegirUnVideo}>
                 Elegir un Video
               </Button>
@@ -281,91 +298,95 @@ export class UploadVideoScreen extends React.Component {
         {this.state.selectedFile.uri &&
           <View>
 
-            <Card elevation={10} style={styles.cardContainer}>
-              <Chip style={{ margin: 10}} icon="check">Bien! Ya elegiste el video.</Chip>
-              <Chip style={{ marginHorizontal: 10,  marginBottom: 10}} icon="more">Ahora agregá más información asociada.</Chip>
-            </Card>
+            {this.state.uploadPhase == 1 &&
+              <Card elevation={10} style={styles.cardContainer}>
+                <Chip style={{ margin: 10 }} icon="check">Bien! Ya elegiste el video.</Chip>
+                <Chip style={{ marginHorizontal: 10, marginBottom: 10 }} icon="more">Ahora agregá más información asociada.</Chip>
+              </Card>
+            }
 
-            <Card elevation={10} style={styles.cardContainer}>
+              <Card elevation={10} style={styles.cardContainer}>
 
-              <Card.Title
-                title="Datos del video"
-              />
-              <Divider />
-              <Card.Content>
-
-
-                <TextInput
-                  style={{ paddingVertical: 4 }}
-                  dense="true"
-                  label="Indicar Título del video"
-                  mode="outlined"
-                  value={this.state.videoTitle}
-                  onChangeText={(videoTitle) => this.setState({ videoTitle })}
+                <Card.Title
+                  title="Tu video"
                 />
+                <Divider />
+                <Card.Content>
+                  
+                  {this.state.uploadPhase == 1 &&
+                    <View>
+                      <TextInput
+                        style={{ paddingVertical: 4 }}
+                        dense="true"
+                        label="Indicar Título del video"
+                        mode="outlined"
+                        value={this.state.videoTitle}
+                        onChangeText={(videoTitle) => this.setState({ videoTitle })}
+                      />
 
-                <TextInput
-                  style={{ paddingVertical: 4 }}
-                  dense="true"
-                  label="Agregar Descripción"
-                  mode="outlined"
-                  value={this.state.videoDescription}
-                  onChangeText={(videoDescription) => this.setState({ videoDescription })}
-                />
+                      <TextInput
+                        style={{ paddingVertical: 4 }}
+                        dense="true"
+                        label="Agregar Descripción"
+                        mode="outlined"
+                        value={this.state.videoDescription}
+                        onChangeText={(videoDescription) => this.setState({ videoDescription })}
+                      />
 
-                <List.Item
-                  title="Visibilidad"
-                  description={this.state.visibilityDescription}
-                  left={props => <List.Icon {...props} icon="lock" />}
-                  right={props => <Switch
-                    value={this.state.videoPublic}
-                    onValueChange={this._onToggleSwitch}
-                  />}
-                />
+                      <List.Item
+                        title="Visibilidad"
+                        description={this.state.visibilityDescription}
+                        left={props => <List.Icon {...props} icon="lock" />}
+                        right={props => <Switch
+                          value={this.state.videoPublic}
+                          onValueChange={this._onToggleSwitch}
+                        />}
+                      />
 
-                {this.state.uploadPhase == 1 &&
-                  <Button
-                    style={{ marginTop: 10 }}
-                    icon="upload"
-                    mode="contained"
-                    disabled={this.state.uploadInProgress}
-                    onPress={this.uploadSelectedFile}>
-                    Subir Video
-                </Button>
-                }
+                      <Button
+                        style={{ marginTop: 10 }}
+                        icon="upload"
+                        mode="contained"
+                        disabled={this.state.uploadInProgress}
+                        onPress={this.uploadSelectedFile}>
+                        Subir Video
+                      </Button>
 
-                {this.state.uploadPhase == 2 &&
-                  <View style={{ paddingTop: 20, paddingBottom: 10 }}>
-                    <Button
-                      loading="true"
-                      mode="outlined">
-                      Espera, subiendo tu video
+                    </View>
+                  }
+
+                  {this.state.uploadPhase == 2 &&
+                    <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                      <Button
+                        loading="true"
+                        mode="outlined">
+                        Espera, subiendo tu video
                     </Button>
-                  </View>
-                }
+                    </View>
+                  }
 
-                {this.state.uploadPhase == 0 &&
-                  <View style={{ paddingTop: 20, paddingBottom: 10 }}>
-                    <Button
-                      icon="upload"
-                      mode="outlined">
-                      Video Subido con éxito
+                  {this.state.uploadPhase == 3 &&
+                    <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                      <Button
+                        icon="upload"
+                        mode="outlined">
+                        Video Subido con éxito
                     </Button>
 
-                    <Button
-                      style={{ marginTop: 15 }}
-                      mode="contained"
-                      onPress={() => {
-                        console.log('Navegacion -> Muro'),
-                          navigation.navigate('Muro');
-                      }}>
-                      Volver a mi muro
+                      <Button
+                        style={{ marginTop: 15 }}
+                        mode="contained"
+                        onPress={() => {
+                          console.log('Navegacion -> Muro'),
+                            navigation.navigate('Muro');
+                        }}>
+                        Volver a mi muro
                     </Button>
-                  </View>
-                }
+                    </View>
+                  }
 
-              </Card.Content>
-            </Card>
+                </Card.Content>
+              </Card>
           </View>
         }
 
