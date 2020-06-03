@@ -8,7 +8,7 @@ export default class AppUtils {
     console.log('--------------DEBUG--------------------');
     console.log('-------------response------------------');
     console.log(responseJson);
-    console.log('-------------respons.data--------------');
+    console.log('-------------response.data--------------');
     console.log(responseJson.data);
     console.log('---------------------------------------');
     if (responseJson.fullResponse.ok == true) {
