@@ -9,10 +9,11 @@ export default class EndPoints {
   static sessions = EndPoints._baseURL + '/sessions';
   static users = EndPoints._baseURL + '/users';
   static passwordRecovery = EndPoints._baseURL + '/recovery';
-  static video_like = EndPoints._baseURL + '/video/like';
-  static video_unlike = EndPoints._baseURL + '/video/unlike';
   static friendships = EndPoints._baseURL + '/friendships';
 
+  static videos = EndPoints._baseURL + '/videos';
+  static video_like = EndPoints._baseURL + '/video/like';
+  static video_unlike = EndPoints._baseURL + '/video/unlike';
 }
 
 /*
