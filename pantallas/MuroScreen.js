@@ -1,25 +1,74 @@
 import React from 'react';
 import { StackActions } from '@react-navigation/native';
 
-import { ScrollView, View } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { ScrollView, View, FlatList } from 'react-native';
+import { Appbar, ActivityIndicator } from 'react-native-paper';
 import PruebaRequestGet from '../PruebaRequestGet.js';
 import VideoEnLista from '../VideoEnLista.js';
 
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 import AppUtils from '../utils/AppUtils.js';
+import EndPoints from '../utils/EndPoints.js';
 
 export class MuroScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showTheRequest: false,
+      loadingWallVideos: true,
+      listWallVideosLoaded: false,
+
+      listWallVideos: [],
     };
+
+    this.requestWallVideos = this.requestWallVideos.bind(this);
   }
 
   componentDidMount() {
     console.log('componentDidMount (MuroScreen)');
-    //this.requestVideoData();
+    this.requestWallVideos();
+  }
+
+  async requestWallVideos() {
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+    //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.username, {
+    //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.id, {
+    fetch(EndPoints.videos, {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+          console.log(responseJson.data.data[0]);
+          this.setState({
+            listWallVideos: responseJson.data.data,
+            listWallVideosLoaded: true,
+          });
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui?');
+          }
+        }
+
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      })
+      .finally(() => {
+        this.setState({ loadingWallVideos: false })
+      });
   }
 
   render() {
@@ -35,7 +84,7 @@ export class MuroScreen extends React.Component {
             onPress={() => {
               AppUtils.logout();
               console.log('Navegacion -> Login');
-              
+
               const replaceAction = StackActions.replace('Login');
               this.props.navigation.dispatch(replaceAction);
             }}
@@ -77,75 +126,33 @@ export class MuroScreen extends React.Component {
           />
         </Appbar.Header>
 
-        <View>{this.state.showTheRequest && <PruebaRequestGet />}</View>
-
         <View style={{ flex: 1, marginVertical: 0, backgroundColor: 'white' }}>
           <ScrollView>
-            <VideoEnLista
-              videoTitle="Viaje al infinito"
-              videoAuthor="by Juan Marcos"
-              videoSnapshot="https://picsum.photos/700"
-              videoLength="15:15"
-              videoViewCount="123.4k"
-              favoritesCount="6"
-              notFavoritesCount="1.1k"
-              navigation={this.props.navigation}
-            />
 
-            <VideoEnLista
-              videoTitle="Titulo video 2"
-              videoAuthor="by Juan Marcos"
-              videoSnapshot="https://picsum.photos/701"
-              videoLength="15:15"
-              videoViewCount="123.4k"
-              favoritesCount="6"
-              notFavoritesCount="1.1k"
-              navigation={this.props.navigation}
-            />
+            {this.state.loadingWallVideos && <ActivityIndicator style={{ padding: 20 }} />}
 
-            <VideoEnLista
-              videoTitle="Titulo video 3"
-              videoAuthor="by Juan Marcos"
-              videoSnapshot="https://picsum.photos/702"
-              videoLength="15:15"
-              videoViewCount="123.4k"
-              favoritesCount="6"
-              notFavoritesCount="1.1k"
-              navigation={this.props.navigation}
-            />
+            {(this.state.listWallVideosLoaded && this.state.listWallVideos.length > 0 &&
+              <FlatList
+                data={this.state.listWallVideos}
+                keyExtractor={({ id }, index) => id}
+                renderItem={({ item }) => (
 
-            <VideoEnLista
-              videoTitle="Titulo video 4"
-              videoAuthor="by Juan Marcos"
-              videoSnapshot="https://picsum.photos/703"
-              videoLength="15:15"
-              videoViewCount="123.4k"
-              favoritesCount="6"
-              notFavoritesCount="1.1k"
-              navigation={this.props.navigation}
-            />
+                  <VideoEnLista
+                    videoTitle={item.title}
+                    videoDescription={item.description}
+                    videoAuthor={item.description}
+                    videoSnapshot={item.media.thumb}
+                    videoURI={item.media.url}
+                    videoLength="15:15"
+                    videoViewCount={item.statistics.views.count}
+                    favoritesCount={item.statistics.likes.count}
+                    notFavoritesCount={item.statistics.dislikes.count}
+                    navigation={this.props.navigation}
+                  />
+                )}
+              />
+            )}
 
-            <VideoEnLista
-              videoTitle="Titulo video 5"
-              videoAuthor="by Juan Marcos"
-              videoSnapshot="https://picsum.photos/704"
-              videoLength="15:15"
-              videoViewCount="123.4k"
-              favoritesCount="6"
-              notFavoritesCount="1.1k"
-              navigation={this.props.navigation}
-            />
-
-            <VideoEnLista
-              videoTitle="Titulo video 6"
-              videoAuthor="by Juan Marcos"
-              videoSnapshot="https://picsum.photos/705"
-              videoLength="15:15"
-              videoViewCount="123.4k"
-              favoritesCount="6"
-              notFavoritesCount="1.1k"
-              navigation={this.props.navigation}
-            />
           </ScrollView>
         </View>
       </View>
