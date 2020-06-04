@@ -14,8 +14,8 @@ export default class AppUtils {
       console.log('ok:' + responseJson.fullResponse.ok);
     }
     console.log('status:' + responseJson.fullResponse.status);
-    //console.log('-------------response------------------');
-    //console.log(responseJson);
+    console.log('-------------response------------------');
+    console.log(responseJson);
     console.log('-------------response.data--------------');
     console.log(responseJson.data);
     console.log('---------------------------------------');

@@ -24,6 +24,8 @@ export default class HelloWorldApp extends React.Component {
   render() {
     console.log('render - App.js');
 
+    console.disableYellowBox = true;
+
     return (
       <NavigationContainer>
 

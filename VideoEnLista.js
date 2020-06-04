@@ -15,7 +15,11 @@ class VideoEnLista extends Component {
         onPress={() => {
           console.log('press Card');
           //this.props.navigation.navigate('Video');
-          navigation.navigate('Video');
+          navigation.navigate('Video',{
+            title: this.props.videoTitle,
+            description: this.props.videoDescription,
+            uri: this.props.videoURI
+          });
         }}>
         <Card.Title
           title={this.props.videoTitle}
