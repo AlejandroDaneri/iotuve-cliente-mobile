@@ -45,40 +45,9 @@ export class ProfileScreen extends React.Component {
     const authToken = await AppAsyncStorage.getTokenFromSession();
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
-    /*
-      {
-        "data": [
-          {
-            "id": "379824269sd9382ss7",
-            "title": "One title",
-            "description": "One description",
-            "visibility": "private",
-            "media": {
-              "name": "1282154_Lathe - 4412.mp4",
-              "date_created": "2020-05-30T02:36:53.074Z",
-              "size": 3215421,
-              "type": "video/mp4",
-              "video_id": "5ed5a9d87ec7d6351b6a90e2",
-              "user_id": "testuser",
-              "url": "https://storage.googleapis.com/chotuve-grupo8.appspot.com/uploads/videos/test/1282154_Lathe%20-%204412.mp4.mp4",
-              "thumb": "https://storage.googleapis.com/chotuve-grupo8.appspot.com/uploads/videos/test/1282154_Lathe%20-%204412.mp4.mp4"
-            },
-            "location": {
-              "latitude": -58.416572,
-              "longitude": -34.6024161
-            },
-            "statistics": {},
-            "user": "testuser",
-            "date_created": "2020-06-04T03:08:32Z",
-            "date_updated": "2020-06-04T03:08:32Z"
-          }
-        ]
-      }
-      */
-
-    //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.username, {
+    fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.username, {
     //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.id, {
-    fetch(EndPoints.videos, {
+    //fetch(EndPoints.videos, {
       method: 'GET',
       headers: myHeaders,
     })
@@ -111,7 +80,6 @@ export class ProfileScreen extends React.Component {
       .finally(() => {
         this.setState({ loadingUserVideos: false })
       });
-
   }
 
   async requestFriendship() {
