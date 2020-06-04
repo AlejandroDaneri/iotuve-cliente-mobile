@@ -45,14 +45,14 @@ class Amistad extends Component {
                 </Chip>
 
               </View>
-
+{/*
               <Divider style={{ marginTop: 14 }}></Divider>
 
               <Card elevation={1}>
                 <Card.Title title="Ni el loro"/>
                 <Card.Cover source={{ uri: "https://picsum.photos/701" }} />
               </Card>
-
+*/}
             </View>
 
           </View>
