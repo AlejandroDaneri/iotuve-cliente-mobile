@@ -181,19 +181,6 @@ export class LoginScreen extends React.Component {
 
               </View>
 
-
-              <Button
-                style={{ marginTop: 15 }}
-                color="grey"
-                icon="arrow-right"
-                compact="true"
-                onPress={() => {
-                  console.log('Navegacion -> Muro'),
-                    navigation.navigate('Muro');
-                }}>
-                Entrar al Muro (debug)
-                </Button>
-
             </View>
           </View>
         </SafeAreaView>
