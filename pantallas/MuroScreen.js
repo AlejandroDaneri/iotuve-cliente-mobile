@@ -90,14 +90,6 @@ export class MuroScreen extends React.Component {
             }}
           />
           <Appbar.Action
-            icon="network"
-            color="grey"
-            disabled="true"
-            onPress={() => {
-              this.setState({ showTheRequest: !this.state.showTheRequest });
-            }}
-          />
-          <Appbar.Action
             icon="chat"
             onPress={() => {
               console.log('Navegacion -> Chat'),
