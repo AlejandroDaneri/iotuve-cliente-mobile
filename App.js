@@ -19,7 +19,7 @@ import { UploadVideoScreen } from './pantallas/UploadVideoScreen';
 
 const Stack = createStackNavigator();
 
-export default class HelloWorldApp extends React.Component {
+export default class ChotuveFiubaApp extends React.Component {
 
   render() {
     console.log('render - App.js');
@@ -63,4 +63,4 @@ export default class HelloWorldApp extends React.Component {
   }
 }
 
-AppRegistry.registerComponent('main', () => HelloWorldApp);
+AppRegistry.registerComponent('main', () => ChotuveFiubaApp);
