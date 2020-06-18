@@ -13,27 +13,26 @@ export class VideoScreen extends React.Component {
     super(props);
 
     this.state = {
-      selectedFile: '',
+      videoId: this.props.route.params.id,
     };
 
     this.requestViewVideo = this.requestViewVideo.bind(this);
+    this.requestLikeVideo = this.requestLikeVideo.bind(this);
+    //this.requestDislikeVideo = this.requestDislikeVideo.bind(this);
   }
 
   componentDidMount() {
     console.log('componentDidMount (VideoScreen)');
-    this.requestViewVideo(this.props.route.params.id);
+    this.requestViewVideo();
+    //this.requestLikeVideo();
   }
 
-  async requestViewVideo(videoId) {
-
-    const sessionData = await AppAsyncStorage.getSession();
-    const sessionDataJSON = JSON.parse(sessionData);
+  async requestLikeVideo() {
     const authToken = await AppAsyncStorage.getTokenFromSession();
-
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
     var myBody = JSON.stringify({});
 
-    fetch(EndPoints.videos + '/' + videoId + '/views', {
+    fetch(EndPoints.videos + '/' + this.state.videoId + '/likes', {
       method: 'POST', headers: myHeaders, body: myBody,
     })
       .then((response) => response.json().then(json => {
@@ -43,7 +42,7 @@ export class VideoScreen extends React.Component {
         AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
-
+          // todo OK. hacer algo?
         } else {
           if (responseJson.fullResponse.status == 401) {
             AppUtils.logout();
@@ -57,7 +56,38 @@ export class VideoScreen extends React.Component {
         console.log('------- error ------');
         console.log(error);
       });
+  }
 
+
+  async requestViewVideo() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+    var myBody = JSON.stringify({});
+
+    fetch(EndPoints.videos + '/' + this.state.videoId + '/views', {
+      method: 'POST', headers: myHeaders, body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+          // todo OK. hacer algo?
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui? algo? nada? bla.');
+          }
+        }
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      });
   }
 
   render() {
