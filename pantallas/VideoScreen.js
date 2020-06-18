@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import { Appbar, Card, Chip, Divider, IconButton, Colors } from 'react-native-paper';
+import { Appbar, Card, Chip, Divider, IconButton, Colors, Button } from 'react-native-paper';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 import { ScrollView } from 'react-native-gesture-handler';
 import EndPoints from '../utils/EndPoints.js';
@@ -31,9 +31,9 @@ export class VideoScreen extends React.Component {
     const authToken = await AppAsyncStorage.getTokenFromSession();
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
-    var myBody = JSON.stringify({ });
+    var myBody = JSON.stringify({});
 
-    fetch(EndPoints.videos + '/' + videoId +'/views', {
+    fetch(EndPoints.videos + '/' + videoId + '/views', {
       method: 'POST', headers: myHeaders, body: myBody,
     })
       .then((response) => response.json().then(json => {
@@ -111,14 +111,30 @@ export class VideoScreen extends React.Component {
             <Divider style={{ marginTop: 8, backgroundColor: Colors.black }} />
           </View>
 
-          <View style={{ justifyContent: 'flex-start', flexDirection: 'row', marginHorizontal:8, marginTop: 8 }}>
-            <IconButton
-              icon="comment"
-              color={Colors.grey500}
-              size={20}
-              onPress={() => console.log('Pressed')}
-            />
-            <Text style={{alignSelf: 'center', fontSize: 20 }}>Comentarios:</Text>
+          <View style={{ justifyContent: 'space-between', flexDirection: 'row', }}>
+            <View style={{ justifyContent: 'flex-start', flexDirection: 'row', marginHorizontal: 8, marginTop: 8 }}>
+              <IconButton
+                icon="comment"
+                color={Colors.grey500}
+                size={20}
+                onPress={() => console.log('Pressed')}
+              />
+              <Text style={{ alignSelf: 'center', fontSize: 20 }}>Mensajes:</Text>
+            </View>
+            <View style={{ justifyContent: 'flex-start', flexDirection: 'row', marginHorizontal: 8, marginTop: 8 }}>
+
+              <Button
+                style={{ marginLeft: 10 }}
+                icon="comment"
+                mode="outlined"
+                onPress={() => {
+                  console.log('Comentar')
+                }}
+              >
+                Comentar
+              </Button>
+
+            </View>
           </View>
 
           <Card elevation={6} style={styles.cardContainer}>
