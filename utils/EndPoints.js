@@ -12,8 +12,6 @@ export default class EndPoints {
   static friendships = EndPoints._baseURL + '/friendships';
 
   static videos = EndPoints._baseURL + '/videos';
-  static video_like = EndPoints._baseURL + '/video/like';
-  static video_unlike = EndPoints._baseURL + '/video/unlike';
 }
 
 /*

@@ -5,6 +5,14 @@ import { Chip, Card } from 'react-native-paper';
 class VideoEnLista extends Component {
   state = {};
 
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    //console.log(this.props);
+  }
+
   render() {
     const { navigation } = this.props;
 
@@ -16,6 +24,7 @@ class VideoEnLista extends Component {
           console.log('press Card');
           //this.props.navigation.navigate('Video');
           navigation.navigate('Video',{
+            id: this.props.videoId,
             title: this.props.videoTitle,
             description: this.props.videoDescription,
             uri: this.props.videoURI

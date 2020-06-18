@@ -3,16 +3,60 @@ import { Text, View, StyleSheet } from 'react-native';
 import { Appbar, Card, Chip, Divider, IconButton, Colors } from 'react-native-paper';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 import { ScrollView } from 'react-native-gesture-handler';
+import EndPoints from '../utils/EndPoints.js';
+import AppAsyncStorage from '../utils/AppAsyncStorage';
+import AppUtils from '../utils/AppUtils.js';
 
 export class VideoScreen extends React.Component {
 
   constructor(props) {
     super(props);
 
-
     this.state = {
       selectedFile: '',
     };
+
+    this.requestViewVideo = this.requestViewVideo.bind(this);
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount (VideoScreen)');
+    this.requestViewVideo(this.props.route.params.id);
+  }
+
+  async requestViewVideo(videoId) {
+
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+    var myBody = JSON.stringify({ });
+
+    fetch(EndPoints.videos + '/' + videoId +'/views', {
+      method: 'POST', headers: myHeaders, body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui? algo? nada? bla.');
+          }
+        }
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      });
 
   }
 

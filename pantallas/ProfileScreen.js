@@ -227,19 +227,19 @@ export class ProfileScreen extends React.Component {
                 {(this.state.listUserVideosLoaded && this.state.listUserVideos.length > 0 &&
                   <FlatList
                     data={this.state.listUserVideos}
-                    keyExtractor={({ id }, index) => id}
+                    //keyExtractor={({ id }, index) => id}
                     renderItem={({ item }) => (
-
                       <VideoEnLista
+                        videoId={item.id}
                         videoTitle={item.title}
                         videoDescription={item.description}
                         videoAuthor={item.description}
                         videoSnapshot={item.media.thumb}
                         videoURI={item.media.url}
                         videoLength="15:15"
-                        videoViewCount={item.statistics.views.count}
-                        favoritesCount={item.statistics.likes.count}
-                        notFavoritesCount={item.statistics.dislikes.count}
+                        videoViewCount={item.count_views}
+                        favoritesCount={item.count_likes}
+                        notFavoritesCount={item.count_dislikes}
                         navigation={this.props.navigation}
                       />
                     )}
