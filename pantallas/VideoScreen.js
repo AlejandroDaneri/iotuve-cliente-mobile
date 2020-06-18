@@ -88,12 +88,12 @@ export class VideoScreen extends React.Component {
 
             <View style={{ marginTop: 8, justifyContent: 'space-between', flexDirection: 'row' }}>
               <View style={styles.actionsLeft}>
-                <Chip icon="eye" style={{ marginRight: 4 }}>1234</Chip>
+                <Chip icon="eye" style={{ marginRight: 4 }}>{this.props.route.params.count_views}</Chip>
                 <Chip icon="alarm">11:22</Chip>
               </View>
               <View style={styles.actionsRight}>
-                <Chip icon="heart" style={{ marginRight: 4 }}>123</Chip>
-                <Chip icon="heart-broken">35</Chip>
+                <Chip icon="heart" style={{ marginRight: 4 }}>{this.props.route.params.count_likes}</Chip>
+                <Chip icon="heart-broken">{this.props.route.params.count_dislikes}</Chip>
               </View>
             </View>
 

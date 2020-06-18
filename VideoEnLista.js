@@ -22,12 +22,14 @@ class VideoEnLista extends Component {
         style={styles.cardContainer}
         onPress={() => {
           console.log('press Card');
-          //this.props.navigation.navigate('Video');
           navigation.navigate('Video',{
             id: this.props.videoId,
             title: this.props.videoTitle,
             description: this.props.videoDescription,
-            uri: this.props.videoURI
+            uri: this.props.videoURI,
+            count_views:  this.props.videoViewCount,
+            count_likes: this.props.favoritesCount,
+            count_dislikes: this.props.notFavoritesCount,
           });
         }}>
         <Card.Title
