@@ -29,13 +29,9 @@ export class MuroScreen extends React.Component {
   }
 
   async requestWallVideos() {
-    const sessionData = await AppAsyncStorage.getSession();
-    const sessionDataJSON = JSON.parse(sessionData);
     const authToken = await AppAsyncStorage.getTokenFromSession();
-
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
-    //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.username, {
-    //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.id, {
+
     fetch(EndPoints.videos, {
       method: 'GET',
       headers: myHeaders,

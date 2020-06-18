@@ -1,13 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import {
-  Button,
-  Divider,
-  Chip,
-  Card,
-  Appbar,
-  ActivityIndicator,
-} from 'react-native-paper';
+import { Button, Divider, Chip, Card, Appbar, ActivityIndicator } from 'react-native-paper';
 import VideoEnLista from '../VideoEnLista.js';
 
 import EndPoints from '../utils/EndPoints';
@@ -84,9 +77,7 @@ export class ProfileScreen extends React.Component {
 
   async requestFriendship() {
     const authToken = await AppAsyncStorage.getTokenFromSession();
-
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
-
     var myBody = JSON.stringify({
       to_user: "usuario1@gmail.com",
       message: "mensaje clavado",
