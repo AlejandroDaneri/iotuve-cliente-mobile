@@ -190,24 +190,27 @@ export class LoginScreen extends React.Component {
                         console.log('Sign in with Google: denegado. Cerrando sesión...');
                         //Login failed, log out of Google
                         this._signOut();
+                        this.state.login_error_msg = 'Error iniciando sesión con Google';
                         this.setState({
-                          processPhase: 0,
+                          processPhase: 3,
                         });
                       }
                     })
                     .catch((error) => {
                       console.log('------- error ------');
                       console.log(error);
+                      this.state.login_error_msg = 'Error desconocido';
                       this.setState({
-                        processPhase: 0,
+                        processPhase: 3,
                       });
                     });
                 } else {
                   console.log('Sign in with Google: error creando usuario. Cerrando sesión...');
                   //User creation failed, log out of Google
                   this._signOut();
+                  this.state.login_error_msg = 'Error creando nuevo usuario';
                   this.setState({
-                    processPhase: 0,
+                    processPhase: 3,
                   });
                 }
               })
@@ -216,16 +219,21 @@ export class LoginScreen extends React.Component {
                 console.log(error);
                 //Login failed, log out of Google
                 this._signOut();
+                this.state.login_error_msg = 'Error desconocido';
                 this.setState({
-                  processPhase: 0,
+                  processPhase: 3,
                 });
               });
           } else {
             console.log('Sign in with Google: denegado. Cerrando sesión...');
+            this.state.login_error_msg = 'Error iniciando sesión con Google';
+            if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -3)) {
+              this.state.login_error_msg = 'Usuario ya registrado, por favor utilice usuario y contraseña';
+            }
             //Login failed, log out of Google
             this._signOut();
             this.setState({
-              processPhase: 0,
+              processPhase: 3,
             });
           }
         }
@@ -235,8 +243,9 @@ export class LoginScreen extends React.Component {
         console.log(error);
         //Login failed, log out of Google
         this._signOut();
+        this.state.login_error_msg = 'Error desconocido';
         this.setState({
-          processPhase: 0,
+          processPhase: 3,
         });
       });
   };
@@ -278,16 +287,31 @@ export class LoginScreen extends React.Component {
           this.props.navigation.dispatch(replaceAction);
 
         } else {
+
+          this.state.login_error_msg = 'Error desconocido';
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
+            this.state.login_error_msg = 'Por favor ingrese su usuario';
+          }
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -4)) {
+            this.state.login_error_msg = 'Por favor utilice "Sign in with Google"';
+          }
+          if ((responseJson.fullResponse.status == 401) && (responseJson.data.code == -2)) {
+            this.state.login_error_msg = 'Usuario o contraseña incorrectos';
+          }
+          if ((responseJson.fullResponse.status == 401) && (responseJson.data.code == -4)) {
+            this.state.login_error_msg = 'No se encontró el usuario';
+          }
           this.setState({
-            processPhase: 0,
+            processPhase: 3,
           });
         }
       })
       .catch((error) => {
         console.log('------- error ------');
         console.log(error);
+        this.state.login_error_msg = 'Error desconocido';
         this.setState({
-          processPhase: 0,
+          processPhase: 3,
         });
       });
   };
@@ -302,6 +326,8 @@ export class LoginScreen extends React.Component {
     });
     //Check if user is already signed in
     this._isSignedIn();
+    //Generic login error message
+    this.state.login_error_msg = 'Error desconocido';
   }
 
   render() {
@@ -370,6 +396,14 @@ export class LoginScreen extends React.Component {
                     color={GoogleSigninButton.Color.Dark}
                     onPress={this._signIn}
                     disabled={this.state.isSigninInProgress} />
+
+                {this.state.processPhase == 3 &&
+                  <View style={{ paddingTop: 25, paddingBottom: 10 }}>
+                    <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
+                      {this.state.login_error_msg}
+                    </Text>
+                  </View>
+                }
 
               </View>
               <View
