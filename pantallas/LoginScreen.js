@@ -118,7 +118,7 @@ export class LoginScreen extends React.Component {
         if (responseJson.fullResponse.ok) {
           AppAsyncStorage.saveSession(responseJson.data);
 
-          console.log('Sign in with Google: autorizado');
+          console.log('Sign in with Google: autorizado, ingresando a la aplicación');
           this.setState({
             data: responseJson.data,
             processPhase: 2,
@@ -126,31 +126,120 @@ export class LoginScreen extends React.Component {
           const replaceAction = StackActions.replace('Muro');
           this.props.navigation.dispatch(replaceAction);
         } else {
-
-          console.log('Sign in with Google: denegado. Cerrando sesión...');
           //Si el usuario no existe, hay que crearlo antes!
           //***********************************************
+          if ((responseJson.fullResponse.status == 401) && (responseJson.data.code == -4)) {
+            //Si es HTTP 401 y code -4, hay que registralo
+            console.log('Sign in with Google: nuevo inicio de sesión. Creando usuario...');
 
-          //Si es HTTP 401 pero code -3, hay que registralo
+            var misHeaders = new Headers({ });
 
-          //Y sigue el login normal...
-          //***********************************************
-          //Login failed, log out of Google
-          this._signOut();
-          this.setState({
-            processPhase: 0,
-          });
+            var miBody = JSON.stringify({
+              username: this.state.userInfo.user.email,
+              first_name: this.state.userInfo.user.givenName,
+              last_name: this.state.userInfo.user.familyName,
+              contact: {
+                email: this.state.userInfo.user.email,
+                phone: '-'
+              },
+              avatar: {
+                url: this.state.userInfo.user.photo
+              },
+              login_service: true
+            });
+
+            fetch(EndPoints.users, {
+              method: 'POST',
+              headers: misHeaders,
+              body: miBody,
+            })
+              .then((response_create) =>
+              response_create.json().then((json) => {
+                  return { data: json, fullResponse: response_create };
+                }),
+              )
+              .then((responseJson_create) => {
+                AppUtils.printResponseJson(responseJson_create);
+                if (responseJson_create.fullResponse.ok) {
+                  console.log('Sign in with Google: usuario creado');
+                  console.log('Sign in with Google: contactando al APP Server...');
+                  fetch(EndPoints.sessions, {
+                    method: 'POST',
+                    headers: myHeaders,
+                    body: myBody,
+                  })
+                    .then((response_relogin) =>
+                    response_relogin.json().then((json) => {
+                        return { data: json, fullResponse: response_relogin };
+                      }),
+                    )
+                    .then((responseJson_relogin) => {
+                      AppUtils.printResponseJson(responseJson_relogin);
+                      if (responseJson_relogin.fullResponse.ok) {
+                        AppAsyncStorage.saveSession(responseJson_relogin.data);
+
+                        console.log('Sign in with Google: autorizado, ingresando a la aplicación');
+                        this.setState({
+                          data: responseJson_relogin.data,
+                          processPhase: 2,
+                        });
+                        const replaceAction = StackActions.replace('Muro');
+                        this.props.navigation.dispatch(replaceAction);
+                      } else {
+
+                        console.log('Sign in with Google: denegado. Cerrando sesión...');
+                        //Login failed, log out of Google
+                        this._signOut();
+                        this.setState({
+                          processPhase: 0,
+                        });
+                      }
+                    })
+                    .catch((error) => {
+                      console.log('------- error ------');
+                      console.log(error);
+                      this.setState({
+                        processPhase: 0,
+                      });
+                    });
+                } else {
+                  console.log('Sign in with Google: error creando usuario. Cerrando sesión...');
+                  //User creation failed, log out of Google
+                  this._signOut();
+                  this.setState({
+                    processPhase: 0,
+                  });
+                }
+              })
+              .catch((error) => {
+                console.log('------- error ------');
+                console.log(error);
+                //Login failed, log out of Google
+                this._signOut();
+                this.setState({
+                  processPhase: 0,
+                });
+              });
+          } else {
+            console.log('Sign in with Google: denegado. Cerrando sesión...');
+            //Login failed, log out of Google
+            this._signOut();
+            this.setState({
+              processPhase: 0,
+            });
+          }
         }
       })
       .catch((error) => {
         console.log('------- error ------');
         console.log(error);
+        //Login failed, log out of Google
         this._signOut();
         this.setState({
           processPhase: 0,
         });
       });
-  }
+  };
 
   postFormData = () => {
 
@@ -170,13 +259,13 @@ export class LoginScreen extends React.Component {
       headers: myHeaders,
       body: myBody,
     })
-      .then((response) => response.json().then(json => {
-        return { data: json, fullResponse: response }
-      }))
+      .then((response) =>
+        response.json().then((json) => {
+          return { data: json, fullResponse: response };
+        }),
+      )
       .then((responseJson) => {
         AppUtils.printResponseJson(responseJson);
-
-        console.log('test1');
 
         if (responseJson.fullResponse.ok) {
           AppAsyncStorage.saveSession(responseJson.data);
@@ -195,16 +284,13 @@ export class LoginScreen extends React.Component {
         }
       })
       .catch((error) => {
-        //sign out of Google
-        console.log('Sign in with Google: hasta la vista, baby...')
-        this.GoogleSignin._signOut();
         console.log('------- error ------');
         console.log(error);
         this.setState({
           processPhase: 0,
         });
       });
-  }
+  };
 
   componentDidMount() {
     console.log('componentDidMount > LoginScreen');
