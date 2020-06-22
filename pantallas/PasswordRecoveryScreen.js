@@ -28,8 +28,10 @@ export class PasswordRecoveryScreen extends React.Component {
       processPhase: 0,
 
       // info del formulario
-      userEmail: ''
-    }
+      userEmail: '',
+      //Generic process error message
+      process_error_msg: 'Error desconocido'
+    };
 
     this.requestPasswordRecovery = this.requestPasswordRecovery.bind(this);
   }
@@ -61,13 +63,28 @@ export class PasswordRecoveryScreen extends React.Component {
             processPhase: 2,
           });
         } else {
+          this.state.process_error_msg = 'Error desconocido';
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
+            this.state.process_error_msg = 'El email ingresado no es válido';
+          }
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
+            this.state.process_error_msg = 'La cuenta está cerrada';
+          }
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -3)) {
+            this.state.process_error_msg = 'La cuenta usa "Sign in with Google", no se puede recularar la contraseña"';
+          }
+          if ((responseJson.fullResponse.status == 404) && (responseJson.data.code == -1)) {
+            this.state.process_error_msg = 'El email ingresado no es válido';
+          }
           this.setState({
-            processPhase: 0,
+            processPhase: 3,
           });
         }
       })
       .catch((error) => {
         console.log('------- error ------');
+        this.state.processPhase = 3;
+        this.state.process_error_msg = 'Error desconocido';
         console.log(error);
       });
   }
@@ -117,8 +134,7 @@ export class PasswordRecoveryScreen extends React.Component {
                         this.requestPasswordRecovery();
                       }}>
                       RESETEAR CLAVE
-                </Button>
-
+                     </Button>
                   </View>
 
                   <View
@@ -167,7 +183,7 @@ export class PasswordRecoveryScreen extends React.Component {
                 </View>
               }
 
-              {this.state.processPhase == 2 &&
+              {((this.state.processPhase == 2) || (this.state.processPhase == 3)) &&
                 <View
                   style={{
                     margin: 10,
@@ -177,17 +193,23 @@ export class PasswordRecoveryScreen extends React.Component {
                   }}>
 
                   <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-
+                  {(this.state.processPhase == 2) &&
+                  <View style={{ justifyContent: 'center', alignItems: 'center', }}>
                     <Icon.Button
                       backgroundColor="white"
                       color="blue"
                       size={56}
                       name="key"
                     ></Icon.Button>
-
+                    <Text style={{ fontSize: 20, textAlign: 'center' }}>Clave reseteada, te enviamos un correo</Text>
                   </View>
-
-                  <Text style={{ fontSize: 24, textAlign: 'center' }}>Clave reseteada, te enviamos un correo</Text>
+                  }
+                  {(this.state.processPhase == 3) &&
+                    <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
+                    {this.state.process_error_msg}
+                    </Text>
+                   }
+                  </View>
                   <View style={{ padding: 8 }}></View>
                   <Button
                     icon="arrow-left"
@@ -201,10 +223,8 @@ export class PasswordRecoveryScreen extends React.Component {
                     }}>
                     Volver a Login
                   </Button>
-
                 </View>
               }
-
             </View>
           </View>
         </SafeAreaView>
