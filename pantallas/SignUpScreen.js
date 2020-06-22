@@ -31,7 +31,9 @@ export class SignUpScreen extends React.Component {
       userLastname: '',
       userEmail: '',
       userPhone: '',
-      userPassword: ''
+      userPassword: '',
+      //Generic process error message
+      process_error_msg: 'Error desconocido'
     }
   }
 
@@ -72,8 +74,15 @@ export class SignUpScreen extends React.Component {
             processPhase: 2,
           });
         } else {
+          this.state.process_error_msg = 'Error desconocido'
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
+            this.state.process_error_msg = 'Por favor, verifique los datos ingresados';
+          }
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
+            this.state.process_error_msg = 'Formato de email inválido';
+          }
           this.setState({
-            processPhase: 0,
+            processPhase: 3,
           });
         }
       })
@@ -81,7 +90,8 @@ export class SignUpScreen extends React.Component {
         console.log('------- error ------');
         console.log(error);
         this.setState({
-          processPhase: 0,
+          processPhase: 3,
+          process_error_msg: 'Error desconocido'
         });
       });
 
@@ -103,7 +113,7 @@ export class SignUpScreen extends React.Component {
                 flexDirection: 'column',
               }}>
 
-              {this.state.processPhase == 0 &&
+              {((this.state.processPhase == 0) || (this.state.processPhase == 3)) &&
                 <View
                   style={{
                     margin: 10,
@@ -158,6 +168,12 @@ export class SignUpScreen extends React.Component {
                     onChangeText={(userPassword) => this.setState({ userPassword })}
                   />
 
+                {(this.state.processPhase == 3) &&
+                  <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
+                    {this.state.process_error_msg}
+                 </Text>
+                 }
+
                   <Button
                     style={{ marginTop: 15 }}
                     icon="send"
@@ -168,7 +184,6 @@ export class SignUpScreen extends React.Component {
                     }}>
                     Crear Nuevo Usuario
                 </Button>
-
                 </View>
               }
 
@@ -227,7 +242,7 @@ export class SignUpScreen extends React.Component {
                 </View>
               }
 
-              {this.state.processPhase == 0 &&
+              {((this.state.processPhase == 0) || (this.state.processPhase == 3)) &&
                 <View
                   style={{
                     margin: 10,

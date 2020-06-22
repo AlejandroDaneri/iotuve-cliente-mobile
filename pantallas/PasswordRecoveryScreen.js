@@ -105,7 +105,7 @@ export class PasswordRecoveryScreen extends React.Component {
                 flexDirection: 'column',
               }}>
 
-              {this.state.processPhase == 0 &&
+              {((this.state.processPhase == 0) || (this.state.processPhase == 3)) &&
                 <View>
 
                   <View
@@ -124,6 +124,12 @@ export class PasswordRecoveryScreen extends React.Component {
                       value={this.state.userEmail}
                       onChangeText={(userEmail) => this.setState({ userEmail })}
                     />
+
+                  {(this.state.processPhase == 3) &&
+                    <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
+                    {this.state.process_error_msg}
+                    </Text>
+                   }
 
                     <Button
                       style={{ marginTop: 15 }}
@@ -183,7 +189,7 @@ export class PasswordRecoveryScreen extends React.Component {
                 </View>
               }
 
-              {((this.state.processPhase == 2) || (this.state.processPhase == 3)) &&
+              {this.state.processPhase == 2 &&
                 <View
                   style={{
                     margin: 10,
@@ -193,22 +199,13 @@ export class PasswordRecoveryScreen extends React.Component {
                   }}>
 
                   <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-                  {(this.state.processPhase == 2) &&
-                  <View style={{ justifyContent: 'center', alignItems: 'center', }}>
                     <Icon.Button
                       backgroundColor="white"
                       color="blue"
                       size={56}
                       name="key"
                     ></Icon.Button>
-                    <Text style={{ fontSize: 20, textAlign: 'center' }}>Clave reseteada, te enviamos un correo</Text>
-                  </View>
-                  }
-                  {(this.state.processPhase == 3) &&
-                    <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
-                    {this.state.process_error_msg}
-                    </Text>
-                   }
+                    <Text style={{ fontSize: 24, textAlign: 'center' }}>Clave reseteada, te enviamos un correo</Text>
                   </View>
                   <View style={{ padding: 8 }}></View>
                   <Button

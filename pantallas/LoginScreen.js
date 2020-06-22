@@ -293,7 +293,7 @@ export class LoginScreen extends React.Component {
 
           this.state.login_error_msg = 'Error desconocido';
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
-            this.state.login_error_msg = 'Por favor ingrese su usuario';
+            this.state.login_error_msg = 'Por favor ingrese su usuario y contraseña';
           }
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
             this.state.login_error_msg = 'La cuenta está cerrada';
@@ -373,6 +373,14 @@ export class LoginScreen extends React.Component {
                   onChangeText={(userPassword) => this.setState({ userPassword })}
                 />
 
+                {this.state.processPhase == 3 &&
+                  <View style={{ paddingTop: 25, paddingBottom: 10 }}>
+                    <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
+                      {this.state.login_error_msg}
+                    </Text>
+                  </View>
+                }
+
                 {this.state.processPhase != 1 &&
                   <Button
                     style={{ marginTop: 15 }}
@@ -402,15 +410,6 @@ export class LoginScreen extends React.Component {
                     color={GoogleSigninButton.Color.Dark}
                     onPress={this._signIn}
                     disabled={this.state.isSigninInProgress} />
-
-                {this.state.processPhase == 3 &&
-                  <View style={{ paddingTop: 25, paddingBottom: 10 }}>
-                    <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
-                      {this.state.login_error_msg}
-                    </Text>
-                  </View>
-                }
-
               </View>
               <View
                 style={{
