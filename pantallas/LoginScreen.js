@@ -227,6 +227,9 @@ export class LoginScreen extends React.Component {
           } else {
             console.log('Sign in with Google: denegado. Cerrando sesión...');
             this.state.login_error_msg = 'Error iniciando sesión con Google';
+            if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
+              this.state.login_error_msg = 'La cuenta está cerrada';
+            }
             if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -3)) {
               this.state.login_error_msg = 'Usuario ya registrado, por favor utilice usuario y contraseña';
             }
@@ -291,6 +294,9 @@ export class LoginScreen extends React.Component {
           this.state.login_error_msg = 'Error desconocido';
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
             this.state.login_error_msg = 'Por favor ingrese su usuario';
+          }
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
+            this.state.login_error_msg = 'La cuenta está cerrada';
           }
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -4)) {
             this.state.login_error_msg = 'Por favor utilice "Sign in with Google"';
