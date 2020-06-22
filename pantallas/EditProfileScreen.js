@@ -24,6 +24,8 @@ export class EditProfileScreen extends React.Component {
       userEmail: '',
       userPhone: '',
 
+      userLoginService: true,
+
       newUserFirstName: '',
       newUserLastName: '',
       newUserEmail: '',
@@ -83,6 +85,8 @@ export class EditProfileScreen extends React.Component {
       userLastName: data.last_name,
       userEmail: data.contact.email,
       userPhone: data.contact.phone,
+
+      userLoginService: data.login_service,
 
       newUserFirstName: data.first_name,
       newUserLastName: data.last_name,
@@ -324,7 +328,7 @@ export class EditProfileScreen extends React.Component {
         </Card>
         }
 
-        {this.state.editingUserData == false &&
+        {((this.state.editingUserData == false) && (this.state.userLoginService == false)) &&
 
           <Card elevation={10} style={{ margin: 10, }}>
             <Card.Title title="Cambio de Clave" />
