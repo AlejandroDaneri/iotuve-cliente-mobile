@@ -384,7 +384,9 @@ export class LoginScreen extends React.Component {
                   paddingVertical: 20,
                   backgroundColor: 'white',
                 }}>
+
                 <TextInput
+                  keyboardType="email-address"
                   style={{ m: 15 }}
                   label="Ingresá tu Email"
                   mode="outlined"
@@ -422,12 +424,17 @@ export class LoginScreen extends React.Component {
                   </View>
                 }
 
-                <GoogleSigninButton
-                  style={{ marginTop: 10, marginLeft: -4, width: 267, height: 43 }}
-                  size={GoogleSigninButton.Size.Wide}
-                  color={GoogleSigninButton.Color.Dark}
-                  onPress={this._signIn}
-                  disabled={this.state.isSigninInProgress} />
+                <View style={{ alignItems: 'center', paddingTop: 8 }}>
+
+                  <GoogleSigninButton
+                    style={{ width: 250 }}
+                    size={GoogleSigninButton.Size.Wide}
+                    color={GoogleSigninButton.Color.Dark}
+                    onPress={this._signIn}
+                    disabled={this.state.isSigninInProgress} />
+
+                </View>
+
               </View>
               <View
                 style={{
