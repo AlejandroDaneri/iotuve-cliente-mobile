@@ -1,14 +1,8 @@
 import React from 'react';
 import { StackActions } from '@react-navigation/native';
 
-import { SafeAreaView, Text, View, Keyboard } from 'react-native';
-import {
-  Button,
-  TextInput,
-  Provider as PaperProvider,
-  Divider,
-} from 'react-native-paper';
-
+import { SafeAreaView, Text, View } from 'react-native';
+import { Button, TextInput, Provider as PaperProvider, Snackbar } from 'react-native-paper';
 
 import { styles } from '../utils/AppStyles';
 import ChotuveLogo from '../ChotuveLogo.js';
@@ -26,14 +20,35 @@ export class LoginScreen extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this._onToggleSnackBar = this._onToggleSnackBar.bind(this);
+    this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
+
     this.state = {
       processPhase: 0,
+
+      snackBarVisible: false,
+      snackBarText: '',
+      snackBarBackgroundColor: 'blue',
 
       userEmail: '',
       userPassword: '',
 
       logoColor: "blue",
     };
+  }
+
+  _onToggleSnackBar(texto) {
+    this.setState({
+      snackBarVisible: !this.state.snackBarVisible,
+      snackBarText: texto,
+    });
+  }
+
+  _onDismissSnackBar() {
+    this.setState({
+      snackBarVisible: false
+    });
   }
 
   _isSignedIn = async () => {
@@ -132,7 +147,7 @@ export class LoginScreen extends React.Component {
             //Si es HTTP 401 y code -4, hay que registralo
             console.log('Sign in with Google: nuevo inicio de sesión. Creando usuario...');
 
-            var misHeaders = new Headers({ });
+            var misHeaders = new Headers({});
 
             var miBody = JSON.stringify({
               username: this.state.userInfo.user.email,
@@ -154,7 +169,7 @@ export class LoginScreen extends React.Component {
               body: miBody,
             })
               .then((response_create) =>
-              response_create.json().then((json) => {
+                response_create.json().then((json) => {
                   return { data: json, fullResponse: response_create };
                 }),
               )
@@ -169,7 +184,7 @@ export class LoginScreen extends React.Component {
                     body: myBody,
                   })
                     .then((response_relogin) =>
-                    response_relogin.json().then((json) => {
+                      response_relogin.json().then((json) => {
                         return { data: json, fullResponse: response_relogin };
                       }),
                     )
@@ -191,6 +206,7 @@ export class LoginScreen extends React.Component {
                         //Login failed, log out of Google
                         this._signOut();
                         this.state.login_error_msg = 'Error iniciando sesión con Google';
+                        this._onToggleSnackBar(this.state.login_error_msg);
                         this.setState({
                           processPhase: 3,
                         });
@@ -200,6 +216,7 @@ export class LoginScreen extends React.Component {
                       console.log('------- error ------');
                       console.log(error);
                       this.state.login_error_msg = 'Error desconocido';
+                      this._onToggleSnackBar(this.state.login_error_msg);
                       this.setState({
                         processPhase: 3,
                       });
@@ -209,6 +226,7 @@ export class LoginScreen extends React.Component {
                   //User creation failed, log out of Google
                   this._signOut();
                   this.state.login_error_msg = 'Error creando nuevo usuario';
+                  this._onToggleSnackBar(this.state.login_error_msg);
                   this.setState({
                     processPhase: 3,
                   });
@@ -229,9 +247,11 @@ export class LoginScreen extends React.Component {
             this.state.login_error_msg = 'Error iniciando sesión con Google';
             if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
               this.state.login_error_msg = 'La cuenta está cerrada';
+              this._onToggleSnackBar(this.state.login_error_msg);
             }
             if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -3)) {
               this.state.login_error_msg = 'Usuario ya registrado, por favor utilice usuario y contraseña';
+              this._onToggleSnackBar(this.state.login_error_msg);
             }
             //Login failed, log out of Google
             this._signOut();
@@ -294,18 +314,23 @@ export class LoginScreen extends React.Component {
           this.state.login_error_msg = 'Error desconocido';
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
             this.state.login_error_msg = 'Por favor ingrese su usuario y contraseña';
+            this._onToggleSnackBar(this.state.login_error_msg);
           }
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
             this.state.login_error_msg = 'La cuenta está cerrada';
+            this._onToggleSnackBar(this.state.login_error_msg);
           }
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -4)) {
             this.state.login_error_msg = 'Por favor utilice "Sign in with Google"';
+            this._onToggleSnackBar(this.state.login_error_msg);
           }
           if ((responseJson.fullResponse.status == 401) && (responseJson.data.code == -2)) {
             this.state.login_error_msg = 'Usuario o contraseña incorrectos';
+            this._onToggleSnackBar(this.state.login_error_msg);
           }
           if ((responseJson.fullResponse.status == 401) && (responseJson.data.code == -4)) {
             this.state.login_error_msg = 'No se encontró el usuario';
+            this._onToggleSnackBar(this.state.login_error_msg);
           }
           this.setState({
             processPhase: 3,
@@ -316,6 +341,7 @@ export class LoginScreen extends React.Component {
         console.log('------- error ------');
         console.log(error);
         this.state.login_error_msg = 'Error desconocido';
+        this._onToggleSnackBar(this.state.login_error_msg);
         this.setState({
           processPhase: 3,
         });
@@ -373,14 +399,6 @@ export class LoginScreen extends React.Component {
                   onChangeText={(userPassword) => this.setState({ userPassword })}
                 />
 
-                {this.state.processPhase == 3 &&
-                  <View style={{ paddingTop: 25, paddingBottom: 10 }}>
-                    <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
-                      {this.state.login_error_msg}
-                    </Text>
-                  </View>
-                }
-
                 {this.state.processPhase != 1 &&
                   <Button
                     style={{ marginTop: 15 }}
@@ -395,7 +413,7 @@ export class LoginScreen extends React.Component {
                 }
 
                 {this.state.processPhase == 1 &&
-                  <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                  <View style={{ marginTop: 15 }}>
                     <Button
                       loading="true"
                       mode="contained">
@@ -405,11 +423,11 @@ export class LoginScreen extends React.Component {
                 }
 
                 <GoogleSigninButton
-                    style={{ marginTop: 10, marginLeft: -4, width: 267, height: 43 }}
-                    size={GoogleSigninButton.Size.Wide}
-                    color={GoogleSigninButton.Color.Dark}
-                    onPress={this._signIn}
-                    disabled={this.state.isSigninInProgress} />
+                  style={{ marginTop: 10, marginLeft: -4, width: 267, height: 43 }}
+                  size={GoogleSigninButton.Size.Wide}
+                  color={GoogleSigninButton.Color.Dark}
+                  onPress={this._signIn}
+                  disabled={this.state.isSigninInProgress} />
               </View>
               <View
                 style={{
@@ -424,7 +442,7 @@ export class LoginScreen extends React.Component {
                   mode="outlined"
                   onPress={() => {
                     console.log('Navegacion -> PasswordRecovery'),
-                    navigation.navigate('PasswordRecovery');
+                      navigation.navigate('PasswordRecovery');
                   }}>
                   OLVIDÉ MI CLAVE
                 </Button>
@@ -443,7 +461,25 @@ export class LoginScreen extends React.Component {
               </View>
 
             </View>
+
+
           </View>
+
+          <Snackbar
+            style={{ backgroundColor: this.state.snackBarBackgroundColor }}
+            visible={this.state.snackBarVisible}
+            duration={2000}
+            onDismiss={this._onDismissSnackBar}
+            action={{
+              onPress: () => {
+                // Do something
+                this._onDismissSnackBar();
+              },
+            }}
+          >
+            {this.state.snackBarText}
+          </Snackbar>
+
         </SafeAreaView>
       </PaperProvider>
     );

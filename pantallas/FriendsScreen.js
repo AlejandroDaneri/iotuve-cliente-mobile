@@ -170,8 +170,6 @@ export class FriendsScreen extends React.Component {
   render() {
     const { navigation } = this.props;
 
-    const { snackBarVisible } = this.state;
-
     return (
 
       <View style={{ flex: 1 }}>
@@ -275,7 +273,7 @@ export class FriendsScreen extends React.Component {
 
           <Snackbar
             style={{ backgroundColor: this.state.snackBarBackgroundColor }}
-            visible={snackBarVisible}
+            visible={this.state.snackBarVisible}
             duration={2000}
             onDismiss={this._onDismissSnackBar}
             action={{
