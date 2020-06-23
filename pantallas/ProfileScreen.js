@@ -22,13 +22,23 @@ export class ProfileScreen extends React.Component {
       listUserVideos: [],
     };
 
+//    console.log(props.params.onBack);
+
     this.requestUserVideos = this.requestUserVideos.bind(this);
     this.requestFriendship = this.requestFriendship.bind(this);
+  }
+
+  componentWillUnmount() {
+    console.log('componentWillUnmount (ProfileScreen)');
+    // si descomentamos esta linea, el muro se refresca
+    // pero no esta quedando muy bien el "efecto".
+    this.props.route.params.onBack();
   }
 
   componentDidMount() {
     console.log('componentDidMount (ProfileScreen)');
     //this.requestUserProfile();
+
     this.requestUserVideos();
   }
 
@@ -118,9 +128,7 @@ export class ProfileScreen extends React.Component {
       <View style={{ flex: 1 }}>
         <Appbar.Header style={{ backgroundColor: 'midnightblue' }}>
           <Appbar.BackAction
-            onPress={(props) => {
-              this.props.navigation.goBack(null);
-            }}
+            onPress={() => { this.props.navigation.goBack() }}
           />
 
           <Appbar.Content title="Mi Perfil" />

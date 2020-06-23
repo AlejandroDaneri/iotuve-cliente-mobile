@@ -21,6 +21,19 @@ export class MuroScreen extends React.Component {
     };
 
     this.requestWallVideos = this.requestWallVideos.bind(this);
+    this.onBack = this.onBack.bind(this);
+  }
+
+  onBack() {
+    // funcion para hacer callback cuando se regresa a esta pantalla 
+    // y se haga un refresh del listado de videos
+    
+    console.log('onBack (MuroScreen)');
+    this.setState({
+      loadingWallVideos: true,
+      listWallVideosLoaded: false,
+    });
+    this.requestWallVideos();
   }
 
   componentDidMount() {
@@ -103,9 +116,10 @@ export class MuroScreen extends React.Component {
             icon="account"
             onPress={() => {
               console.log('Navegacion -> Profile'),
-                navigation.navigate('Profile');
-            }}
-          />
+                navigation.navigate("Profile", { onBack: this.onBack });
+            }
+            } />
+
           <Appbar.Action
             icon="dots-vertical"
             onPress={() => {
