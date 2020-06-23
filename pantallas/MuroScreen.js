@@ -2,13 +2,13 @@ import React from 'react';
 import { StackActions } from '@react-navigation/native';
 
 import { ScrollView, View, FlatList } from 'react-native';
-import { Appbar, ActivityIndicator } from 'react-native-paper';
-import PruebaRequestGet from '../PruebaRequestGet.js';
+import { Appbar } from 'react-native-paper';
 import VideoEnLista from '../VideoEnLista.js';
 
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 import AppUtils from '../utils/AppUtils.js';
 import EndPoints from '../utils/EndPoints.js';
+import CargandoVideos from '../CargandoVideos.js';
 
 export class MuroScreen extends React.Component {
   constructor(props) {
@@ -117,7 +117,9 @@ export class MuroScreen extends React.Component {
         <View style={{ flex: 1, marginVertical: 0, backgroundColor: 'white' }}>
           <ScrollView>
 
-            {this.state.loadingWallVideos && <ActivityIndicator style={{ padding: 20 }} />}
+            {this.state.loadingWallVideos &&
+              <CargandoVideos />
+            }
 
             {(this.state.listWallVideosLoaded && this.state.listWallVideos.length > 0 &&
               <FlatList
