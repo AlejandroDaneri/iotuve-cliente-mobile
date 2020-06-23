@@ -387,6 +387,7 @@ export class LoginScreen extends React.Component {
 
                 <TextInput
                   keyboardType="email-address"
+                  autoCapitalize="none"
                   style={{ m: 15 }}
                   label="Ingresá tu Email"
                   mode="outlined"
