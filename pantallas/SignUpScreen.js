@@ -4,6 +4,7 @@ import {
   Button,
   TextInput,
   Provider as PaperProvider,
+  Snackbar,
   Card
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,9 +23,16 @@ export class SignUpScreen extends React.Component {
 
   constructor(props) {
     super(props);
+  
+    this._onToggleSnackBar = this._onToggleSnackBar.bind(this);
+    this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
 
     this.state = {
       processPhase: 0,
+
+      snackBarVisible: false,
+      snackBarText: '',
+      snackBarBackgroundColor: '#CC0000',
 
       // info del formulario
       userFirstName: '',
@@ -35,6 +43,19 @@ export class SignUpScreen extends React.Component {
       //Generic process error message
       process_error_msg: 'Error desconocido'
     }
+  }
+
+  _onToggleSnackBar(texto) {
+    this.setState({
+      snackBarVisible: !this.state.snackBarVisible,
+      snackBarText: texto,
+    });
+  }
+
+  _onDismissSnackBar() {
+    this.setState({
+      snackBarVisible: false
+    });
   }
 
   postFormData = () => {
@@ -53,6 +74,9 @@ export class SignUpScreen extends React.Component {
       contact: {
         email: this.state.userEmail,
         phone: this.state.userPhone
+      },
+      avatar: {
+        url: 'https://ui-avatars.com/api/?name=' + (this.state.userFirstName ? this.state.userFirstName.charAt(0):'C') + '+' + (this.state.userFirstName ? this.state.userLastname.charAt(0):'T') + '&size=96&color=FFFFFF&background=191970'
       }
     })
     
@@ -76,11 +100,15 @@ export class SignUpScreen extends React.Component {
         } else {
           this.state.process_error_msg = 'Error desconocido'
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
-            this.state.process_error_msg = 'Por favor, verifique los datos ingresados';
+            this.state.process_error_msg = 'Por favor, verificá los datos ingresados';
           }
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
-            this.state.process_error_msg = 'Formato de email inválido';
+            this.state.process_error_msg = 'Por favor, verificá la información de contacto ingresada';
           }
+          if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -3)) {
+            this.state.process_error_msg = 'Formato incorrecto de avatar';
+          }
+          this._onToggleSnackBar(this.state.process_error_msg);
           this.setState({
             processPhase: 3,
           });
@@ -93,6 +121,7 @@ export class SignUpScreen extends React.Component {
           processPhase: 3,
           process_error_msg: 'Error desconocido'
         });
+        this._onToggleSnackBar(this.state.process_error_msg);
       });
 
   };
@@ -140,6 +169,8 @@ export class SignUpScreen extends React.Component {
                   />
 
                   <TextInput
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                     style={{ paddingVertical: 4 }}
                     dense="true"
                     label="Ingresá tu Email"
@@ -147,7 +178,6 @@ export class SignUpScreen extends React.Component {
                     value={this.state.userEmail}
                     onChangeText={(userEmail) => this.setState({ userEmail })}
                   />
-
 
                   <TextInput
                     style={{ paddingVertical: 4 }}
@@ -167,12 +197,6 @@ export class SignUpScreen extends React.Component {
                     value={this.state.userPassword}
                     onChangeText={(userPassword) => this.setState({ userPassword })}
                   />
-
-                {(this.state.processPhase == 3) &&
-                  <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
-                    {this.state.process_error_msg}
-                 </Text>
-                 }
 
                   <Button
                     style={{ marginTop: 15 }}
@@ -267,6 +291,22 @@ export class SignUpScreen extends React.Component {
 
             </View>
           </View>
+
+          <Snackbar
+            style={{ backgroundColor: this.state.snackBarBackgroundColor }}
+            visible={this.state.snackBarVisible}
+            duration={3000}
+            onDismiss={this._onDismissSnackBar}
+            action={{
+              onPress: () => {
+                // Do something
+                this._onDismissSnackBar();
+              },
+            }}
+          >
+            {this.state.snackBarText}
+          </Snackbar>
+
         </SafeAreaView>
       </PaperProvider>
     );

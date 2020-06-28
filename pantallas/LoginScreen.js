@@ -29,12 +29,12 @@ export class LoginScreen extends React.Component {
 
       snackBarVisible: false,
       snackBarText: '',
-      snackBarBackgroundColor: 'blue',
+      snackBarBackgroundColor: '#CC0000',
 
       userEmail: '',
       userPassword: '',
 
-      logoColor: "blue",
+      logoColor: 'blue',
     };
   }
 
@@ -247,12 +247,11 @@ export class LoginScreen extends React.Component {
             this.state.login_error_msg = 'Error iniciando sesión con Google';
             if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
               this.state.login_error_msg = 'La cuenta está cerrada';
-              this._onToggleSnackBar(this.state.login_error_msg);
             }
             if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -3)) {
-              this.state.login_error_msg = 'Usuario ya registrado, por favor utilice usuario y contraseña';
-              this._onToggleSnackBar(this.state.login_error_msg);
+              this.state.login_error_msg = 'Usuario ya registrado, por favor utilizá usuario y contraseña con esta cuenta';
             }
+            this._onToggleSnackBar(this.state.login_error_msg);
             //Login failed, log out of Google
             this._signOut();
             this.setState({
@@ -313,25 +312,21 @@ export class LoginScreen extends React.Component {
 
           this.state.login_error_msg = 'Error desconocido';
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
-            this.state.login_error_msg = 'Por favor ingrese su usuario y contraseña';
-            this._onToggleSnackBar(this.state.login_error_msg);
+            this.state.login_error_msg = 'Por favor ingresá tu usuario y contraseña';
           }
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
             this.state.login_error_msg = 'La cuenta está cerrada';
-            this._onToggleSnackBar(this.state.login_error_msg);
           }
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -4)) {
-            this.state.login_error_msg = 'Por favor utilice "Sign in with Google"';
-            this._onToggleSnackBar(this.state.login_error_msg);
+            this.state.login_error_msg = 'Por favor utilizá con esta cuenta "Sign in with Google"';
           }
           if ((responseJson.fullResponse.status == 401) && (responseJson.data.code == -2)) {
             this.state.login_error_msg = 'Usuario o contraseña incorrectos';
-            this._onToggleSnackBar(this.state.login_error_msg);
           }
           if ((responseJson.fullResponse.status == 401) && (responseJson.data.code == -4)) {
             this.state.login_error_msg = 'No se encontró el usuario';
-            this._onToggleSnackBar(this.state.login_error_msg);
           }
+          this._onToggleSnackBar(this.state.login_error_msg);
           this.setState({
             processPhase: 3,
           });
@@ -465,18 +460,14 @@ export class LoginScreen extends React.Component {
                   }}>
                   SOY UN NUEVO USUARIO
                 </Button>
-
               </View>
-
             </View>
-
-
           </View>
 
           <Snackbar
             style={{ backgroundColor: this.state.snackBarBackgroundColor }}
             visible={this.state.snackBarVisible}
-            duration={2000}
+            duration={3000}
             onDismiss={this._onDismissSnackBar}
             action={{
               onPress: () => {

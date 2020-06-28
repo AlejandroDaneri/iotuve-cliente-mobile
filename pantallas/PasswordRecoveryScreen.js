@@ -4,6 +4,7 @@ import {
   Button,
   TextInput,
   Provider as PaperProvider,
+  Snackbar,
   Card
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -24,8 +25,15 @@ export class PasswordRecoveryScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    this._onToggleSnackBar = this._onToggleSnackBar.bind(this);
+    this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
+
     this.state = {
       processPhase: 0,
+
+      snackBarVisible: false,
+      snackBarText: '',
+      snackBarBackgroundColor: '#CC0000',
 
       // info del formulario
       userEmail: '',
@@ -34,6 +42,19 @@ export class PasswordRecoveryScreen extends React.Component {
     };
 
     this.requestPasswordRecovery = this.requestPasswordRecovery.bind(this);
+  }
+
+  _onToggleSnackBar(texto) {
+    this.setState({
+      snackBarVisible: !this.state.snackBarVisible,
+      snackBarText: texto,
+    });
+  }
+
+  _onDismissSnackBar() {
+    this.setState({
+      snackBarVisible: false
+    });
   }
 
   async requestPasswordRecovery() {
@@ -71,20 +92,22 @@ export class PasswordRecoveryScreen extends React.Component {
             this.state.process_error_msg = 'La cuenta está cerrada';
           }
           if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -3)) {
-            this.state.process_error_msg = 'La cuenta usa "Sign in with Google", no se puede recularar la contraseña"';
+            this.state.process_error_msg = 'La cuenta usa "Sign in with Google", no se puede resetear la contraseña"';
           }
           if ((responseJson.fullResponse.status == 404) && (responseJson.data.code == -1)) {
             this.state.process_error_msg = 'El email ingresado no es válido';
           }
+          this._onToggleSnackBar(this.state.process_error_msg);
           this.setState({
-            processPhase: 3,
+            processPhase: 0,
           });
         }
       })
       .catch((error) => {
         console.log('------- error ------');
-        this.state.processPhase = 3;
+        this.state.processPhase = 0;
         this.state.process_error_msg = 'Error desconocido';
+        this._onToggleSnackBar(this.state.process_error_msg);
         console.log(error);
       });
   }
@@ -105,9 +128,8 @@ export class PasswordRecoveryScreen extends React.Component {
                 flexDirection: 'column',
               }}>
 
-              {((this.state.processPhase == 0) || (this.state.processPhase == 3)) &&
+              {(this.state.processPhase == 0) &&
                 <View>
-
                   <View
                     style={{
                       margin: 10,
@@ -115,8 +137,9 @@ export class PasswordRecoveryScreen extends React.Component {
                       paddingVertical: 10,
                       backgroundColor: 'white',
                     }}>
-
                     <TextInput
+                      keyboardType="email-address"
+                      autoCapitalize="none"
                       style={{ paddingVertical: 4 }}
                       dense="true"
                       label="Ingresá tu Email"
@@ -124,13 +147,6 @@ export class PasswordRecoveryScreen extends React.Component {
                       value={this.state.userEmail}
                       onChangeText={(userEmail) => this.setState({ userEmail })}
                     />
-
-                  {(this.state.processPhase == 3) &&
-                    <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'red' }}>
-                    {this.state.process_error_msg}
-                    </Text>
-                   }
-
                     <Button
                       style={{ marginTop: 15 }}
                       icon="key"
@@ -142,7 +158,6 @@ export class PasswordRecoveryScreen extends React.Component {
                       RESETEAR CLAVE
                      </Button>
                   </View>
-
                   <View
                     style={{
                       margin: 10,
@@ -151,7 +166,6 @@ export class PasswordRecoveryScreen extends React.Component {
                       paddingVertical: 20,
                       backgroundColor: 'white',
                     }}>
-
                     <Button
                       icon="arrow-left"
                       mode="outlined"
@@ -164,7 +178,6 @@ export class PasswordRecoveryScreen extends React.Component {
                       }}>
                       Volver a Login
                   </Button>
-
                   </View>
                 </View>
               }
@@ -205,7 +218,7 @@ export class PasswordRecoveryScreen extends React.Component {
                       size={56}
                       name="key"
                     ></Icon.Button>
-                    <Text style={{ fontSize: 24, textAlign: 'center' }}>Clave reseteada, te enviamos un correo</Text>
+                    <Text style={{ fontSize: 24, textAlign: 'center' }}>Te enviamos un correo, por favor seguí las instrucciones para recuperar tu cuenta</Text>
                   </View>
                   <View style={{ padding: 8 }}></View>
                   <Button
@@ -224,6 +237,22 @@ export class PasswordRecoveryScreen extends React.Component {
               }
             </View>
           </View>
+
+          <Snackbar
+            style={{ backgroundColor: this.state.snackBarBackgroundColor }}
+            visible={this.state.snackBarVisible}
+            duration={3000}
+            onDismiss={this._onDismissSnackBar}
+            action={{
+              onPress: () => {
+                // Do something
+                this._onDismissSnackBar();
+              },
+            }}
+          >
+            {this.state.snackBarText}
+          </Snackbar>
+
         </SafeAreaView>
       </PaperProvider>
     );
