@@ -22,6 +22,15 @@ export default class AppUtils {
     console.log('');
   }
 
+  static capitalize(str) {
+    // capitaliza un string
+    var nice = str
+      .trim()
+      .toLowerCase()
+      .replace(/(?:^|\s|["'([{])+\S/g, (match) => match.toUpperCase());
+    return nice;
+  }
+
   static logout() {
     // ejecuta limpiezas al hacer logout
     AppAsyncStorage.deleteSession();

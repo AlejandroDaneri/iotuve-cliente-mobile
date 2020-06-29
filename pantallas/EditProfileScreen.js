@@ -23,7 +23,7 @@ export class EditProfileScreen extends React.Component {
       userLastName: '',
       userEmail: '',
       userPhone: '',
-
+      userAvatar: '',
       userLoginService: true,
 
       newUserFirstName: '',
@@ -85,6 +85,7 @@ export class EditProfileScreen extends React.Component {
       userLastName: data.last_name,
       userEmail: data.contact.email,
       userPhone: data.contact.phone,
+      userAvatar: data.avatar.url,
 
       userLoginService: data.login_service,
 

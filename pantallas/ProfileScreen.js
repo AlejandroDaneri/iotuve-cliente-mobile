@@ -1,12 +1,14 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Image, Text, View } from 'react-native';
 import { Button, Divider, Chip, Card, Appbar, ActivityIndicator } from 'react-native-paper';
+import { ListItem } from 'react-native-elements';
 import VideoEnLista from '../VideoEnLista.js';
 
 import EndPoints from '../utils/EndPoints';
 import AppUtils from '../utils/AppUtils';
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 import { FlatList } from 'react-native-gesture-handler';
+import { readFileAssets } from 'react-native-fs';
 
 
 export class ProfileScreen extends React.Component {
@@ -15,6 +17,14 @@ export class ProfileScreen extends React.Component {
     super(props);
 
     this.state = {
+
+      userFirstName: '',
+      userLastName: '',
+      userEmail: '',
+      userPhone: '',
+      userAvatar: '',
+      userLoginService: true,
+
       loadingUserVideos: true,
 
       requestingFriendship: false,
@@ -22,8 +32,8 @@ export class ProfileScreen extends React.Component {
       listUserVideos: [],
     };
 
-//    console.log(props.params.onBack);
-
+    // console.log(props.params.onBack);
+    this.requestUserData = this.requestUserData.bind(this);
     this.requestUserVideos = this.requestUserVideos.bind(this);
     this.requestFriendship = this.requestFriendship.bind(this);
   }
@@ -37,9 +47,55 @@ export class ProfileScreen extends React.Component {
 
   componentDidMount() {
     console.log('componentDidMount (ProfileScreen)');
-    //this.requestUserProfile();
-
+    this.requestUserData();
     this.requestUserVideos();
+  }
+
+  async requestUserData() {
+
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username, {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+          this.updateUserData(responseJson.data);
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui? algo? nada? bla.');
+          }
+        }
+        this.setState({ initialLoading: false })
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      });
+  }
+
+  updateUserData(data) {
+    this.setState({
+      userFirstName: data.first_name,
+      userLastName: data.last_name,
+      userEmail: data.contact.email,
+      userPhone: data.contact.phone,
+      userAvatar: data.avatar.url,
+      userLoginService: data.login_service,
+    })
   }
 
   async requestUserVideos() {
@@ -155,9 +211,15 @@ export class ProfileScreen extends React.Component {
         <ScrollView>
           <View>
             <Card elevation={10} style={styles.cardContainer}>
-              <Card.Title
-                title="Juan Marcos - usuario1@gmail.com"
-                subtitle="Espacio / Campo para otra cosa, descripción, etc"
+              <ListItem
+                leftAvatar = {{
+                  size: 'large',
+                  source: { uri: this.state.userAvatar },
+                  showEditButton: false,
+                }}
+                title = {AppUtils.capitalize(this.state.userFirstName) + ' ' + AppUtils.capitalize(this.state.userLastName)}
+                titleStyle = {{ fontSize: 20, fontWeight: "bold" }}
+                subtitle = {this.state.userEmail}
               />
               <Divider />
               <Card.Content>
