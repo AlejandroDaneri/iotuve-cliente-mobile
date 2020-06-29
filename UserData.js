@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { Divider, List, Avatar } from 'react-native-paper';
-
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Divider, List } from 'react-native-paper';
+import { Avatar } from 'react-native-elements';
 
 class UserData extends Component {
 
@@ -36,7 +35,16 @@ class UserData extends Component {
 
         <Divider />
         <View style={{ alignItems: 'center', padding: 10 }}>
-          <Avatar.Text size={56} label={this.props.firstName.charAt(0)} />
+          {/* <Avatar.Text size={56} label={this.props.firstName.charAt(0)} /> */}
+          <Avatar
+            rounded
+            size='large'
+            source={{
+              uri: this.props.avatar
+            }}
+            //onPress = {() => console.log("Tap on avatar. Change avatar?")}
+          />
+
         </View>
 
       </View>

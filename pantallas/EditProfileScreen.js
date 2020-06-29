@@ -93,6 +93,7 @@ export class EditProfileScreen extends React.Component {
       newUserLastName: data.last_name,
       newUserEmail: data.contact.email,
       newUserPhone: data.contact.phone,
+      newUserAvatar: data.avatar.url,
     })
   }
 
@@ -111,7 +112,7 @@ export class EditProfileScreen extends React.Component {
         phone: this.state.newUserPhone
       },
       avatar: {
-        url: "http://www.guido.com"
+        url: this.state.newUserAvatar
       },
     });
 
@@ -219,7 +220,9 @@ export class EditProfileScreen extends React.Component {
                   firstName={this.state.userFirstName}
                   lastName={this.state.userLastName}
                   email={this.state.userEmail}
-                  phone={this.state.userPhone} />
+                  phone={this.state.userPhone}
+                  avatar={this.state.userAvatar}
+                />
 
                 <Button
                   style={{ margin: 10 }}

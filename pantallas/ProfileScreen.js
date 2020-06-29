@@ -216,6 +216,7 @@ export class ProfileScreen extends React.Component {
                   size: 'large',
                   source: { uri: this.state.userAvatar },
                   showEditButton: false,
+                  onPress: () => {console.log('Navegacion -> EditProfile'); navigation.navigate('EditProfile')}
                 }}
                 title = {AppUtils.capitalize(this.state.userFirstName) + ' ' + AppUtils.capitalize(this.state.userLastName)}
                 titleStyle = {{ fontSize: 20, fontWeight: "bold" }}
