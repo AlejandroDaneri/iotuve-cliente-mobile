@@ -465,7 +465,7 @@ export class LoginScreen extends React.Component {
           </View>
 
           <Snackbar
-            style={{ backgroundColor: this.state.snackBarBackgroundColor }}
+            style={{ backgroundColor: this.state.snackBarBackgroundColor, elevation: 20 }}
             visible={this.state.snackBarVisible}
             duration={3000}
             onDismiss={this._onDismissSnackBar}
