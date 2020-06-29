@@ -41,6 +41,30 @@ export class MuroScreen extends React.Component {
     this.requestWallVideos();
   }
 
+  async userLogout() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    fetch(EndPoints.sessions, {
+      method: 'DELETE',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      })
+      .finally(() => {
+        this.setState({ loadingWallVideos: false })
+      });
+    AppUtils.logout();
+  }
+
   async requestWallVideos() {
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
@@ -91,9 +115,9 @@ export class MuroScreen extends React.Component {
             icon="arrow-left"
             color="grey"
             onPress={() => {
-              AppUtils.logout();
+              console.log('Logout. Cerrando sesión en el servidor');
+              this.userLogout();
               console.log('Navegacion -> Login');
-
               const replaceAction = StackActions.replace('Login');
               this.props.navigation.dispatch(replaceAction);
             }}
