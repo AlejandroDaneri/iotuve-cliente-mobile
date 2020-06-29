@@ -11,8 +11,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { styles } from '../utils/AppStyles';
 
-import { requestPing } from '../networking/ChotuveRequests.js';
-
 import ChotuveLogo from '../ChotuveLogo.js';
 import EndPoints from '../utils/EndPoints';
 

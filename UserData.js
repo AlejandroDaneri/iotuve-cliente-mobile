@@ -42,7 +42,7 @@ class UserData extends Component {
             source={{
               uri: this.props.avatar
             }}
-            //onPress = {() => console.log("Tap on avatar. Change avatar?")}
+            onPress = {() => console.log("Tap on avatar. Change avatar?")}
           />
 
         </View>

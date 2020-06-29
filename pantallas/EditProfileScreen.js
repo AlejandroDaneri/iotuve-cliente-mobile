@@ -1,20 +1,28 @@
 import React from 'react';
-import { Text, View, Keyboard } from 'react-native';
-import { Divider, Card, List, Appbar, Button, TextInput, Colors, ActivityIndicator } from 'react-native-paper';
+import { SafeAreaView, Text, View, Keyboard } from 'react-native';
+import { Snackbar, Provider as PaperProvider, Divider, Card, List, Appbar, Button, TextInput, Colors, ActivityIndicator } from 'react-native-paper';
 import UserData from '../UserData';
 import AppAsyncStorage from '../utils/AppAsyncStorage';
 import EndPoints from '../utils/EndPoints';
 import AppUtils from '../utils/AppUtils';
 
+import { styles } from '../utils/AppStyles';
 
 export class EditProfileScreen extends React.Component {
 
   constructor(props) {
     super(props);
 
+    this._onToggleSnackBar = this._onToggleSnackBar.bind(this);
+    this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
+
     this.state = {
       processPhase: 0,
       initialLoading: true,
+
+      snackBarVisible: false,
+      snackBarText: '',
+      snackBarBackgroundColor: '#CC0000',
 
       editingUserData: false,
       editingUserPassword: false,
@@ -31,12 +39,29 @@ export class EditProfileScreen extends React.Component {
       newUserEmail: '',
       newUserPhone: '',
       newUserPassword: '',
+      newUserAvatar: '',
+
+      //Generic process error message
+      process_error_msg: 'Error desconocido'
     };
 
     this.postFormData = this.postFormData.bind(this);
     this.postFormDataPassword = this.postFormDataPassword.bind(this);
     this.requestUserData = this.requestUserData.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
+  }
+
+  _onToggleSnackBar(texto) {
+    this.setState({
+      snackBarVisible: !this.state.snackBarVisible,
+      snackBarText: texto,
+    });
+  }
+
+  _onDismissSnackBar() {
+    this.setState({
+      snackBarVisible: false
+    });
   }
 
   componentDidMount() {
@@ -68,13 +93,16 @@ export class EditProfileScreen extends React.Component {
             AppUtils.logout();
             this.props.navigation.navigate("Login");
           } else {
-            console.log('que hacer aqui? algo? nada? bla.');
+            this.state.process_error_msg = 'Error desconocido'
+            this._onToggleSnackBar(this.state.process_error_msg);
           }
         }
         this.setState({ initialLoading: false })
       })
       .catch((error) => {
         console.log('------- error ------');
+        this.state.process_error_msg = 'Error desconocido'
+        this._onToggleSnackBar(this.state.process_error_msg);
         console.log(error);
       });
   }
@@ -135,12 +163,24 @@ export class EditProfileScreen extends React.Component {
             AppUtils.logout();
             this.props.navigation.navigate("Login");
           } else {
-            console.log('que hacer aqui? algo? nada? bla.');
+            this.state.process_error_msg = 'Error desconocido'
+            if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
+              this.state.process_error_msg = 'Por favor, verificá los datos ingresados';
+            }
+            if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -2)) {
+              this.state.process_error_msg = 'Por favor, verificá la información de contacto ingresada';
+            }
+            if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -3)) {
+              this.state.process_error_msg = 'Formato incorrecto de avatar';
+            }
+            this._onToggleSnackBar(this.state.process_error_msg);
           }
         }
       })
       .catch((error) => {
         console.log('------- error ------');
+        this.state.process_error_msg = 'Error desconocido'
+        this._onToggleSnackBar(this.state.process_error_msg);
         console.log(error);
       });
   }
@@ -180,13 +220,18 @@ export class EditProfileScreen extends React.Component {
             AppUtils.logout();
             this.props.navigation.navigate("Login");
           } else {
-            console.log('que hacer aqui? algo? nada? bla.');
+            this.state.process_error_msg = 'Error desconocido'
+            if ((responseJson.fullResponse.status == 400) && (responseJson.data.code == -1)) {
+              this.state.process_error_msg = 'Por favor, verificá los datos ingresados';
+            }
+            this._onToggleSnackBar(this.state.process_error_msg);
           }
-
         }
       })
       .catch((error) => {
         console.log('------- error ------');
+        this.state.process_error_msg = 'Error desconocido'
+        this._onToggleSnackBar(this.state.process_error_msg);
         console.log(error);
       });
   }
@@ -197,201 +242,220 @@ export class EditProfileScreen extends React.Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <Appbar.Header style={{ backgroundColor: 'midnightblue' }}>
-          <Appbar.BackAction
-            onPress={(props) => {
-              this.props.navigation.goBack(null);
-            }}
-          />
+        <PaperProvider>
+          <SafeAreaView style={styles.safearea}>
+            <Appbar.Header style={{ backgroundColor: 'midnightblue' }}>
+              <Appbar.BackAction
+                onPress={(props) => {
+                  this.props.navigation.goBack(null);
+                }}
+              />
 
-          <Appbar.Content title="Editar Mis Datos" />
-        </Appbar.Header>
+              <Appbar.Content title="Editar Mis Datos" />
+            </Appbar.Header>
 
-        {this.state.initialLoading && <ActivityIndicator style={{ padding: 20 }} />}
-        
-        {this.state.editingUserPassword == false &&
-        <Card elevation={10} style={{ margin: 10, }}>
-          <Card.Title title="Datos Actuales" />
-          <Card.Content>
+            {this.state.initialLoading && <ActivityIndicator style={{ padding: 20 }} />}
+            
+            {this.state.editingUserPassword == false &&
+            <Card elevation={10} style={{ margin: 10 }}>
+              <Card.Title title="Datos Actuales" />
+              <Card.Content>
 
-            {this.state.editingUserData == false && this.state.editingUserPassword == false &&
-              <View>
-                <UserData
-                  firstName={this.state.userFirstName}
-                  lastName={this.state.userLastName}
-                  email={this.state.userEmail}
-                  phone={this.state.userPhone}
-                  avatar={this.state.userAvatar}
-                />
-
-                <Button
-                  style={{ margin: 10 }}
-                  icon="account"
-                  mode="outlined"
-                  onPress={() => {
-                    this.setState({ editingUserData: true, editingUserPassword: false });
-                  }}
-                >
-                  Editar Datos
-                </Button>
-              </View>
-            }
-
-
-            {this.state.editingUserData == true &&
-              <View>
-
-                <View style={{ flexDirection: 'row' }}>
-                  <List.Icon color={Colors.blue500} icon="account" />
-
-                  <View style={{ flex: 1, flexDirection: 'row' }}>
-                    <TextInput
-                      style={{ padding: 2, flex: 1 }}
-                      dense="true"
-                      //label="Nombre"
-                      mode="outlined"
-                      value={this.state.newUserFirstName}
-                      onChangeText={(newUserFirstName) => this.setState({ newUserFirstName })}
-
+                {this.state.editingUserData == false && this.state.editingUserPassword == false &&
+                  <View>
+                    <UserData
+                      firstName={this.state.userFirstName}
+                      lastName={this.state.userLastName}
+                      email={this.state.userEmail}
+                      phone={this.state.userPhone}
+                      avatar={this.state.userAvatar}
                     />
-                  </View>
-                </View>
 
-                <Divider />
-
-                <View style={{ flexDirection: 'row' }}>
-                  <List.Icon color={Colors.blue500} icon="account" />
-
-                  <View style={{ flex: 1, flexDirection: 'row' }}>
-                    <TextInput
-                      style={{ padding: 2, flex: 1 }}
-                      dense="true"
-                      //label="Apellido"
+                    <Button
+                      style={{ margin: 10 }}
+                      icon="account"
                       mode="outlined"
-                      value={this.state.newUserLastName}
-                      onChangeText={(newUserLastName) => this.setState({ newUserLastName })}
-                    />
+                      onPress={() => {
+                        this.setState({ editingUserData: true, editingUserPassword: false });
+                      }}
+                    >
+                      Editar Datos
+                    </Button>
                   </View>
-                </View>
+                }
 
-                <Divider />
+                {this.state.editingUserData == true &&
+                  <View>
 
-                <View style={{ flexDirection: 'row' }}>
-                  <List.Icon color={Colors.blue500} icon="email" />
+                    <View style={{ flexDirection: 'row' }}>
+                      <List.Icon color={Colors.blue500} icon="account" />
 
-                  <TextInput
-                    style={{ padding: 2, flex: 1 }}
-                    disabled="true"
-                    dense="true"
-                    //label="Email"
-                    mode="outlined"
-                    value={this.state.newUserEmail}
-                    onChangeText={(newUserEmail) => this.setState({ newUserEmail })}
-                  />
-                </View>
+                      <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <TextInput
+                          style={{ padding: 2, flex: 1 }}
+                          dense="true"
+                          //label="Nombre"
+                          mode="outlined"
+                          value={this.state.newUserFirstName}
+                          onChangeText={(newUserFirstName) => this.setState({ newUserFirstName })}
 
-                <Divider />
+                        />
+                      </View>
+                    </View>
 
-                <View style={{ flexDirection: 'row' }}>
-                  <List.Icon color={Colors.blue500} icon="phone" />
+                    <Divider />
 
-                  <TextInput
-                    style={{ padding: 2, flex: 1 }}
-                    dense="true"
-                    //label="Teléfono"
-                    mode="outlined"
-                    value={this.state.newUserPhone}
-                    onChangeText={(newUserPhone) => this.setState({ newUserPhone })}
-                  />
-                </View>
+                    <View style={{ flexDirection: 'row' }}>
+                      <List.Icon color={Colors.blue500} icon="account" />
 
+                      <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <TextInput
+                          style={{ padding: 2, flex: 1 }}
+                          dense="true"
+                          //label="Apellido"
+                          mode="outlined"
+                          value={this.state.newUserLastName}
+                          onChangeText={(newUserLastName) => this.setState({ newUserLastName })}
+                        />
+                      </View>
+                    </View>
 
-                <Button
-                  style={{ margin: 10 }}
-                  mode="contained"
-                  onPress={() => {
-                    this.postFormData();
-                    this.setState({ editingUserData: false, editingUserPassword: false });
-                  }}>
-                  Confirmar Datos
-                </Button>
+                    <Divider />
 
-                <Button
-                  style={{ margin: 10 }}
-                  mode="contained"
-                  color="red"
-                  onPress={() => {
-                    this.setState({ editingUserData: false, editingUserPassword: false });
-                  }}>
-                  Cancelar
-                </Button>
-              </View>
-            }
+                    <View style={{ flexDirection: 'row' }}>
+                      <List.Icon color={Colors.blue500} icon="email" />
 
-          </Card.Content>
-        </Card>
-        }
+                      <TextInput
+                        style={{ padding: 2, flex: 1 }}
+                        disabled="true"
+                        dense="true"
+                        //label="Email"
+                        mode="outlined"
+                        value={this.state.newUserEmail}
+                        onChangeText={(newUserEmail) => this.setState({ newUserEmail })}
+                      />
+                    </View>
 
-        {((this.state.editingUserData == false) && (this.state.userLoginService == false)) &&
+                    <Divider />
 
-          <Card elevation={10} style={{ margin: 10, }}>
-            <Card.Title title="Cambio de Clave" />
-            <Card.Content>
+                    <View style={{ flexDirection: 'row' }}>
+                      <List.Icon color={Colors.blue500} icon="phone" />
 
-              {this.state.editingUserPassword == false && this.state.editingUserData == false &&
-                <Button
-                  style={{ margin: 10 }}
-                  icon="key"
-                  mode="outlined"
-                  onPress={() => {
-                    this.setState({ editingUserPassword: true, editingUserData: false });
-                  }}>
-                  Cambiar Mi Clave
-              </Button>
-              }
-
-              {this.state.editingUserPassword == true &&
-                <View>
-
-                  <View style={{ flexDirection: 'row' }}>
-                    <List.Icon color={Colors.blue500} icon="key" />
-
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
                       <TextInput
                         style={{ padding: 2, flex: 1 }}
                         dense="true"
-                        //label="Nombre"
+                        //label="Teléfono"
                         mode="outlined"
-                        onChangeText={(newUserPassword) => this.setState({ newUserPassword })}
+                        value={this.state.newUserPhone}
+                        onChangeText={(newUserPhone) => this.setState({ newUserPhone })}
                       />
                     </View>
+
+
+                    <Button
+                      style={{ margin: 10 }}
+                      mode="contained"
+                      onPress={() => {
+                        this.postFormData();
+                        this.setState({ editingUserData: false, editingUserPassword: false });
+                      }}>
+                      Confirmar Datos
+                    </Button>
+
+                    <Button
+                      style={{ margin: 10 }}
+                      mode="contained"
+                      color="red"
+                      onPress={() => {
+                        this.setState({ editingUserData: false, editingUserPassword: false });
+                      }}>
+                      Cancelar
+                    </Button>
                   </View>
+                }
 
-                  <Button
-                    style={{ margin: 10 }}
-                    mode="contained"
-                    onPress={() => {
-                      this.postFormDataPassword();
-                      this.setState({ editingUserData: false, editingUserPassword: false });
-                    }}>
-                    Confirmar Clave
-                </Button>
-                  <Button
-                    style={{ margin: 10 }}
-                    mode="contained"
-                    color="red"
-                    onPress={() => {
-                      this.setState({ editingUserData: false, editingUserPassword: false });
-                    }}>
-                    Cancelar
-                </Button>
+              </Card.Content>
+            </Card>
+            }
 
-                </View >
-              }
-            </Card.Content>
-          </Card>
-        }
+            {((this.state.editingUserData == false) && (this.state.userLoginService == false)) &&
 
+              <Card elevation={10} style={{ margin: 10 }}>
+                <Card.Title title="Cambio de Clave" />
+                <Card.Content>
+
+                  {this.state.editingUserPassword == false && this.state.editingUserData == false &&
+                    <Button
+                      style={{ margin: 10 }}
+                      icon="key"
+                      mode="outlined"
+                      onPress={() => {
+                        this.setState({ editingUserPassword: true, editingUserData: false });
+                      }}>
+                      Cambiar Mi Clave
+                  </Button>
+                  }
+
+                  {this.state.editingUserPassword == true &&
+                    <View>
+
+                      <View style={{ flexDirection: 'row' }}>
+                        <List.Icon color={Colors.blue500} icon="key" />
+
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                          <TextInput
+                            style={{ padding: 2, flex: 1 }}
+                            secureTextEntry={true}
+                            autoCapitalize="none"
+                            dense="true"
+                            //label="Nombre"
+                            mode="outlined"
+                            onChangeText={(newUserPassword) => this.setState({ newUserPassword })}
+                          />
+                        </View>
+                      </View>
+
+                      <Button
+                        style={{ margin: 10 }}
+                        mode="contained"
+                        onPress={() => {
+                          this.postFormDataPassword();
+                          this.setState({ editingUserData: false, editingUserPassword: false });
+                        }}>
+                        Confirmar Clave
+                    </Button>
+                      <Button
+                        style={{ margin: 10 }}
+                        mode="contained"
+                        color="red"
+                        onPress={() => {
+                          this.setState({ editingUserData: false, editingUserPassword: false });
+                        }}>
+                        Cancelar
+                    </Button>
+
+                    </View >
+                  }
+                </Card.Content>
+              </Card>
+            }
+
+            <Snackbar
+              style={{ backgroundColor: this.state.snackBarBackgroundColor }}
+              visible={this.state.snackBarVisible}
+              duration={3000}
+              onDismiss={this._onDismissSnackBar}
+              action={{
+                onPress: () => {
+                  // Do something
+                  this._onDismissSnackBar();
+                },
+              }}
+            >
+              {this.state.snackBarText}
+            </Snackbar>
+          </SafeAreaView>
+        </PaperProvider>
       </View >
     );
   }
