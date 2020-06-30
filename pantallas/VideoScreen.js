@@ -13,18 +13,53 @@ export class VideoScreen extends React.Component {
     super(props);
 
     this.state = {
+      videoInfoExpanded: false,
+
       videoId: this.props.route.params.id,
     };
 
     this.requestViewVideo = this.requestViewVideo.bind(this);
     this.requestLikeVideo = this.requestLikeVideo.bind(this);
-    //this.requestDislikeVideo = this.requestDislikeVideo.bind(this);
+    this.requestDislikeVideo = this.requestDislikeVideo.bind(this);
   }
 
   componentDidMount() {
     console.log('componentDidMount (VideoScreen)');
     this.requestViewVideo();
     //this.requestLikeVideo();
+  }
+
+  async requestDislikeVideo() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+    var myBody = JSON.stringify({});
+
+    fetch(EndPoints.videos + '/' + this.state.videoId + '/dislikes', {
+      method: 'POST', headers: myHeaders, body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+          // todo OK. hacer algo?
+          this.props.route.params.count_dislikes = this.props.route.params.count_dislikes + 1;
+          this.setState({ });
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui? algo? nada? bla.');
+          }
+        }
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      });
   }
 
   async requestLikeVideo() {
@@ -43,6 +78,8 @@ export class VideoScreen extends React.Component {
 
         if (responseJson.fullResponse.ok) {
           // todo OK. hacer algo?
+          this.props.route.params.count_likes = this.props.route.params.count_likes + 1;
+          this.setState({ });
         } else {
           if (responseJson.fullResponse.status == 401) {
             AppUtils.logout();
@@ -114,31 +151,77 @@ export class VideoScreen extends React.Component {
 
         <ScrollView>
 
-          <View style={{ backgroundColor: Colors.grey50, paddingHorizontal: 8 }}>
+          <View style={{ backgroundColor: Colors.white, paddingHorizontal: 8 }}>
 
             <View style={{ marginTop: 8, justifyContent: 'space-between', flexDirection: 'row' }}>
               <View style={styles.actionsLeft}>
                 <Chip icon="eye" style={{ marginRight: 4 }}>{this.props.route.params.count_views}</Chip>
-                <Chip icon="alarm">11:22</Chip>
+                <Chip icon="alarm">00:00</Chip>
               </View>
               <View style={styles.actionsRight}>
-                <Chip icon="heart" style={{ marginRight: 4 }}>{this.props.route.params.count_likes}</Chip>
-                <Chip icon="heart-broken">{this.props.route.params.count_dislikes}</Chip>
+                <Chip
+                  style={{ marginRight: 4, color: 'red' }}
+                  mode='outlined'
+                  icon="heart"
+                  onPress={() => {
+                    console.log('Marcar like');
+                    this.requestLikeVideo();
+                  }}>{this.props.route.params.count_likes}</Chip>
+                <Chip
+                  mode='outlined'
+                  icon="heart-broken"
+                  onPress={() => {
+                    console.log('Marcar dislike');
+                    this.requestDislikeVideo();
+                  }}>{this.props.route.params.count_dislikes}</Chip>
               </View>
             </View>
 
             <Divider style={{ marginTop: 8 }} />
 
-            <Text style={{ fontSize: 30 }}>{this.props.route.params.title}</Text>
-            <Text style={{ fontSize: 18 }}>{this.props.route.params.description}</Text>
+            <View style={{ justifyContent: 'space-between', alignItems: 'flex-end', flexDirection: 'row', marginBottom: 10 }}>
 
-            <Divider style={{ marginVertical: 8 }} />
+              <Text style={{ fontSize: 28 }}>{this.props.route.params.title}</Text>
 
-            <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-              <Chip icon="account">usuario1</Chip>
-              <Chip icon="calendar">14 de Marzo, 22:30</Chip>
+              <Button
+                style={{ marginLeft: 10, marginTop: 8 }}
+                icon="information"
+                mode="outlined"
+                color="grey"
+                compact="true"
+                onPress={() => {
+                  this.setState({
+                    videoInfoExpanded: !this.state.videoInfoExpanded,
+                  });
+
+                }}
+              >
+                + info
+              </Button>
+
             </View>
-            <Divider style={{ marginTop: 8, backgroundColor: Colors.black }} />
+
+            {(this.state.videoInfoExpanded &&
+
+              <View style={{ marginBottom: 10 }}>
+                <Text style={{ fontSize: 18 }}>{this.props.route.params.description} bla bla blab lablbalb abla</Text>
+
+                <Divider style={{ marginVertical: 8 }} />
+
+                <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                  <Chip icon="calendar">14 de Marzo, 22:30</Chip>
+                  <Chip
+                    mode='outlined'
+                    icon="account"
+                    onPress={() => {
+                      console.log('Ir a perfil de usuario');
+                      navigation.navigate("Profile");
+                    }}>usuario1</Chip>
+                </View>
+              </View>
+
+            )}
+
           </View>
 
           <View style={{ justifyContent: 'space-between', flexDirection: 'row', }}>
@@ -170,8 +253,8 @@ export class VideoScreen extends React.Component {
           <Card elevation={6} style={styles.cardContainer}>
             <Card.Content>
               <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-                <Chip mode='outlined' icon="account">Patricio Estrella</Chip>
-                <Chip mode='outlined' icon="calendar">12-12-20</Chip>
+                <Chip icon="account">Patricio Estrella</Chip>
+                <Chip icon="calendar">12-12-20</Chip>
               </View>
               <Text style={{ marginLeft: 8, marginTop: 8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </Text>
             </Card.Content>
@@ -180,8 +263,8 @@ export class VideoScreen extends React.Component {
           <Card elevation={6} style={styles.cardContainer}>
             <Card.Content>
               <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-                <Chip mode='outlined' icon="account">Calamardo</Chip>
-                <Chip mode='outlined' icon="calendar">16-12-20</Chip>
+                <Chip icon="account">Calamardo</Chip>
+                <Chip icon="calendar">16-12-20</Chip>
               </View>
               <Text style={{ marginLeft: 8, marginTop: 8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</Text>
             </Card.Content>

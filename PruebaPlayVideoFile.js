@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
-import Video from 'react-native-video';
+//import Video from 'react-native-video';
+import VideoPlayer from 'react-native-video-controls';
 
 class PruebaPlayVideoFile extends Component {
   render() {
@@ -8,8 +9,8 @@ class PruebaPlayVideoFile extends Component {
     // https://www.radiantmediaplayer.com/media/bbb-360p.mp4
 
     return (
-      <Video
-        source={{ uri: this.props.uri }} 
+      <VideoPlayer
+        source={{ uri: this.props.uri }}
         ref={(ref) => {
           this.player = ref;
         }}
@@ -17,6 +18,10 @@ class PruebaPlayVideoFile extends Component {
         resizeMode={'contain'}
         onBuffer={this.onBuffer}
         onError={this.videoError}
+        showOnStart={false}
+        disableVolume={true}
+        disableFullscreen={true}
+        disableBack={true}
       />
     );
   }
