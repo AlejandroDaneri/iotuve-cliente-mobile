@@ -15,8 +15,8 @@ export class MuroScreen extends React.Component {
     super(props);
     this.state = {
       loadingWallVideos: true,
-      listWallVideosLoaded: false,
 
+      listWallVideosLoaded: false,
       listWallVideos: [],
     };
 
