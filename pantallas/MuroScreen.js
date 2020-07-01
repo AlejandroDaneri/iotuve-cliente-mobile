@@ -176,6 +176,8 @@ export class MuroScreen extends React.Component {
                     videoViewCount={item.count_views}
                     favoritesCount={item.count_likes}
                     notFavoritesCount={item.count_dislikes}
+                    userLike={item.user_like}
+                    userDislike={item.user_dislike}
                     navigation={this.props.navigation}
                   />
                 )}

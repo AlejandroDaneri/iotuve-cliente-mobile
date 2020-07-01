@@ -19,23 +19,25 @@ export class VideoScreen extends React.Component {
     };
 
     this.requestViewVideo = this.requestViewVideo.bind(this);
-    this.requestLikeVideo = this.requestLikeVideo.bind(this);
-    this.requestDislikeVideo = this.requestDislikeVideo.bind(this);
+    this.postLikeVideo = this.postLikeVideo.bind(this);
+    this.postDislikeVideo = this.postDislikeVideo.bind(this);
+    this.deleteLikeVideo = this.deleteLikeVideo.bind(this);
+    this.deleteDislikeVideo = this.deleteDislikeVideo.bind(this);
+    this.requestLikedVideo = this.requestLikedVideo.bind(this);
   }
 
   componentDidMount() {
     console.log('componentDidMount (VideoScreen)');
     this.requestViewVideo();
-    //this.requestLikeVideo();
   }
 
-  async requestDislikeVideo() {
+  async requestLikedVideo(method, endpoint) {
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
     var myBody = JSON.stringify({});
 
-    fetch(EndPoints.videos + '/' + this.state.videoId + '/dislikes', {
-      method: 'POST', headers: myHeaders, body: myBody,
+    fetch(EndPoints.videos + '/' + this.state.videoId + '/'+ endpoint, {
+      method: method, headers: myHeaders, body: myBody,
     })
       .then((response) => response.json().then(json => {
         return { data: json, fullResponse: response }
@@ -44,8 +46,24 @@ export class VideoScreen extends React.Component {
         AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
-          // todo OK. hacer algo?
-          this.props.route.params.count_dislikes = this.props.route.params.count_dislikes + 1;
+
+          if ((endpoint == 'likes') && (method == 'POST')) {
+            this.props.route.params.count_likes += 1;
+            this.props.route.params.user_like = true;
+          }
+          if ((endpoint == 'dislikes') && (method == 'POST')) {
+            this.props.route.params.count_dislikes += 1;
+            this.props.route.params.user_dislike = true;
+          }
+          if ((endpoint == 'likes') && (method == 'DELETE')) {
+            this.props.route.params.count_likes -= 1;
+            this.props.route.params.user_like = false;
+          }
+          if ((endpoint == 'dislikes') && (method == 'DELETE')) {
+            this.props.route.params.count_dislikes -= 1;
+            this.props.route.params.user_dislike = false;
+          }
+          
           this.setState({ });
         } else {
           if (responseJson.fullResponse.status == 401) {
@@ -62,39 +80,21 @@ export class VideoScreen extends React.Component {
       });
   }
 
-  async requestLikeVideo() {
-    const authToken = await AppAsyncStorage.getTokenFromSession();
-    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
-    var myBody = JSON.stringify({});
-
-    fetch(EndPoints.videos + '/' + this.state.videoId + '/likes', {
-      method: 'POST', headers: myHeaders, body: myBody,
-    })
-      .then((response) => response.json().then(json => {
-        return { data: json, fullResponse: response }
-      }))
-      .then((responseJson) => {
-        AppUtils.printResponseJson(responseJson);
-
-        if (responseJson.fullResponse.ok) {
-          // todo OK. hacer algo?
-          this.props.route.params.count_likes = this.props.route.params.count_likes + 1;
-          this.setState({ });
-        } else {
-          if (responseJson.fullResponse.status == 401) {
-            AppUtils.logout();
-            this.props.navigation.navigate("Login");
-          } else {
-            console.log('que hacer aqui? algo? nada? bla.');
-          }
-        }
-      })
-      .catch((error) => {
-        console.log('------- error ------');
-        console.log(error);
-      });
+  deleteDislikeVideo() { 
+    this.requestLikedVideo('DELETE', 'dislikes');
   }
 
+  async deleteLikeVideo() { 
+    this.requestLikedVideo('DELETE', 'likes');
+  }
+
+  async postDislikeVideo() {
+    this.requestLikedVideo('POST', 'dislikes');
+  }
+
+  async postLikeVideo() {
+    this.requestLikedVideo('POST', 'likes');
+  }
 
   async requestViewVideo() {
     const authToken = await AppAsyncStorage.getTokenFromSession();
@@ -164,15 +164,28 @@ export class VideoScreen extends React.Component {
                   mode='outlined'
                   icon="heart"
                   onPress={() => {
-                    console.log('Marcar like');
-                    this.requestLikeVideo();
+                    if (this.props.route.params.user_like) { 
+                      console.log('Desmarcar like');
+                      this.deleteLikeVideo();
+                    } else {
+                      console.log('Marcar like');
+                      this.postLikeVideo();
+                      }
                   }}>{this.props.route.params.count_likes}</Chip>
                 <Chip
                   mode='outlined'
                   icon="heart-broken"
                   onPress={() => {
-                    console.log('Marcar dislike');
-                    this.requestDislikeVideo();
+
+                    console.log(this.props.route.params.user_dislike);
+
+                    if (this.props.route.params.user_dislike) { 
+                      console.log('Desmarcar dislike');
+                      this.deleteDislikeVideo();
+                    } else { 
+                      console.log('Marcar dislike');
+                      this.postDislikeVideo();
+                      }
                   }}>{this.props.route.params.count_dislikes}</Chip>
               </View>
             </View>

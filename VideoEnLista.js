@@ -30,6 +30,8 @@ class VideoEnLista extends Component {
             count_views:  this.props.videoViewCount,
             count_likes: this.props.favoritesCount,
             count_dislikes: this.props.notFavoritesCount,
+            user_like: this.props.userLike,
+            user_dislike: this.props.userDislike,
           });
         }}>
         <Card.Title
