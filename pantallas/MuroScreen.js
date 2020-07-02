@@ -27,7 +27,7 @@ export class MuroScreen extends React.Component {
   onBack() {
     // funcion para hacer callback cuando se regresa a esta pantalla 
     // y se haga un refresh del listado de videos
-    
+
     console.log('onBack (MuroScreen)');
     this.setState({
       loadingWallVideos: true,
@@ -122,13 +122,16 @@ export class MuroScreen extends React.Component {
               this.props.navigation.dispatch(replaceAction);
             }}
           />
+
           <Appbar.Action
-            icon="chat"
+            icon="refresh"
             onPress={() => {
-              console.log('Navegacion -> Chat'),
-                navigation.navigate('Chat');
+              this.onBack();
+              console.log('Refresh videos');
+                //navigation.navigate('Chat');
             }}
           />
+
           <Appbar.Action
             icon="upload"
             onPress={() => {
