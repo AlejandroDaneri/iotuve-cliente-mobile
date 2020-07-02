@@ -10,6 +10,7 @@ import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
 import EndPoints from '../utils/EndPoints.js';
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
+import { Image } from 'react-native-elements';
 
 
 export class UploadVideoScreen extends React.Component {
@@ -178,7 +179,7 @@ export class UploadVideoScreen extends React.Component {
       );
 
       putFileTask.on('state_changed', taskSnapshot => {
-        console.log(`${taskSnapshot.bytesTransferred} transferred out of `+ this.state.selectedFileSize);
+        console.log(`${taskSnapshot.bytesTransferred} transferred out of ` + this.state.selectedFileSize);
       });
 
       putFileTask.then((firebaseUploadResult) => {
@@ -298,29 +299,39 @@ export class UploadVideoScreen extends React.Component {
           <Appbar.Content title="Nuevo Contenido" />
         </Appbar.Header>
 
-        <View>
-          <Card elevation={10} style={styles.cardContainer}>
-            <Card.Title
-              title="Subir un nuevo video"
-            />
-            <Divider />
-            <Card.Content>
 
+        {this.state.uploadPhase == 0 &&
+          <View>
+            <Card elevation={10} style={styles.cardContainer}>
+              <Card.Title
+                title="Subir un nuevo video"
+              />
               <Divider />
+              <Card.Content>
 
-              {/*To show single file attribute*/}
-              <Button
-                style={{ marginTop: 15 }}
-                icon="video"
-                mode="contained"
-                disabled={this.state.uploadPhase > 0 ? "false" : ""}
-                onPress={this.clickElegirUnVideo}>
-                Elegir un Video
+                <Divider />
+
+                <View style={{alignItems: 'center'}}>
+                  <Image
+                    style={{ width: 300, height: 300 }}
+                    source={require('../images/undraw_video_upload_3d4u.png')}
+                  />
+                </View>
+
+                {/*To show single file attribute*/}
+                <Button
+                  style={{ marginTop: 15 }}
+                  icon="video"
+                  mode="contained"
+                  disabled={this.state.uploadPhase > 0 ? "false" : ""}
+                  onPress={this.clickElegirUnVideo}>
+                  Elegir un Video
               </Button>
 
-            </Card.Content>
-          </Card>
-        </View>
+              </Card.Content>
+            </Card>
+          </View>
+        }
 
         {this.state.selectedFile.uri &&
           <View>
@@ -393,7 +404,13 @@ export class UploadVideoScreen extends React.Component {
                 }
 
                 {this.state.uploadPhase == 3 &&
-                  <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                  <View style={{ paddingTop: 20, paddingBottom: 10, alignItems: 'center' }}>
+
+                    <Image
+                      style={{ width: 300, height: 300 }}
+                      source={require('../images/undraw_videographer_nnc7.png')}
+                    />
+
                     <Button
                       icon="upload"
                       mode="outlined">

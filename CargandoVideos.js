@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Image } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -18,12 +18,10 @@ class CargandoVideos extends Component {
 
         <Text style={{ fontSize: 20, padding: 20 }}>Cargando Videos</Text>
 
-        <Icon.Button
-          color="white"
-          backgroundColor="midnightblue"
-          size={64}
-          name="play"
-          onPress={() => { this.toggleLogoColor(); console.log('Logo clikeado') }}></Icon.Button>
+        <Image
+          style={{ width: 300, height: 300 }}
+          source={require('./images/undraw_youtube_tutorial_2gn3.png')}
+        />
 
       </View>
     );
