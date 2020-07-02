@@ -18,9 +18,12 @@ export class UploadVideoScreen extends React.Component {
     super(props);
 
     this.state = {
-      selectedFile: '',
       appHasPermission: null,
       uploadPhase: 0, // 0 = nada, 1 = video seleccionado, 2 = video subiendo, 3 = video subido;
+
+      selectedFile: '',
+      selectedFilePath: '',
+      selectedFileSize: 0,
 
       videoPublic: false,
       visibilityDescription: 'Privado',
@@ -106,75 +109,93 @@ export class UploadVideoScreen extends React.Component {
     })
   }
 
+  setPathToVideo() {
+
+    let pathToVideos;
+
+    pathToVideos = RNFS.DownloadDirectoryPath;
+    RNFS.readDir(pathToVideos).then((result) => {
+      var item = result.find(data => data.name === this.state.selectedFile.name);
+      if (typeof item !== 'undefined') {
+        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+      }
+    });
+
+    pathToVideos = RNFS.ExternalStorageDirectoryPath + "/DCIM/Camera";
+    RNFS.readDir(pathToVideos).then((result) => {
+      var item = result.find(data => data.name === this.state.selectedFile.name);
+      if (typeof item !== 'undefined') {
+        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+      }
+    });
+
+    pathToVideos = RNFS.ExternalStorageDirectoryPath;
+    RNFS.readDir(pathToVideos).then((result) => {
+      var item = result.find(data => data.name === this.state.selectedFile.name);
+      if (typeof item !== 'undefined') {
+        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+      }
+    });
+
+    pathToVideos = RNFS.DocumentDirectoryPath;
+    RNFS.readDir(pathToVideos).then((result) => {
+      var item = result.find(data => data.name === this.state.selectedFile.name);
+      if (typeof item !== 'undefined') {
+        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+      }
+    });
+
+    pathToVideos = RNFS.ExternalDirectoryPath;
+    RNFS.readDir(pathToVideos).then((result) => {
+      var item = result.find(data => data.name === this.state.selectedFile.name);
+      if (typeof item !== 'undefined') {
+        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+      }
+    });
+
+  }
+
   async uploadSelectedFile() {
 
     if (this.state.appHasPermission) {
 
-      // RNFS.DocumentDirectoryPath
-      // RNFS.DownloadDirectoryPath
-      // RNFS.ExternalDirectoryPath
-      // RNFS.ExternalStorageDirectoryPath
+      const pathFileToUpload = this.state.selectedFilePath;
+      const firebaseReferencePath = '/uploads/videos/test/' + AppUtils.generateRandomNumber() + '_' + this.state.selectedFile.name;
 
-      console.log("RNFS.DocumentDirectoryPath: " + RNFS.DocumentDirectoryPath);
-      console.log("RNFS.DownloadDirectoryPath: " + RNFS.DownloadDirectoryPath);
-      console.log("RNFS.ExternalDirectoryPath: " + RNFS.ExternalDirectoryPath);
-      console.log("RNFS.ExternalStorageDirectoryPath: " + RNFS.ExternalStorageDirectoryPath);
-      //let pathToVideos = RNFS.ExternalStorageDirectoryPath + "/DCIM/Camera";
-      let pathToVideos = RNFS.DownloadDirectoryPath;
+      console.log(firebaseReferencePath);
+      const reference = firebase.storage().ref(firebaseReferencePath);
+      console.log('REFERENCE: ');
+      console.log(reference);
 
-      //RNFS.readDir(RNFS.DocumentDirectoryPath).then((result) => {
-      //RNFS.readDir(RNFS.DownloadDirectoryPath).then((result) => {
-      //RNFS.readDir(RNFS.ExternalDirectoryPath).then((result) => {
-      RNFS.readDir(pathToVideos).then((result) => {
-        console.log('GOT RESULT: ', result);
-
-        var item = result.find(data => data.name === this.state.selectedFile.name);
-        if (typeof item !== 'undefined') {
-
-          const pathFileToUpload = item.path;
-          const firebaseReferencePath = '/uploads/videos/test/' + AppUtils.generateRandomNumber() + '_' + item.name;
-
-          console.log(firebaseReferencePath);
-          const reference = firebase.storage().ref(firebaseReferencePath);
-          console.log('REFERENCE: ');
-          console.log(reference);
-
-          this.setState({
-            uploadPhase: 2,
-          });
-
-          console.log('pathFileToUpload: ' + pathFileToUpload);
-
-          const putFileTask = reference.putFile(
-            pathFileToUpload
-          );
-
-          putFileTask.on('state_changed', taskSnapshot => {
-            console.log(`${taskSnapshot.bytesTransferred} transferred out of ${item.size}`);
-          });
-
-          putFileTask.then((firebaseUploadResult) => {
-            console.log('Video uploaded to the bucket!');
-            console.log(firebaseUploadResult);
-
-            this.postNewVideo(firebaseUploadResult.metadata).then((resultAppServer) => {
-              console.log('regreso del metodo del postNewVideo();')
-              console.log('resultAppServer:');
-              console.log(resultAppServer);
-              this.setState({
-                uploadPhase: 3,
-              });
-            });
-
-          });
-        } else {
-          console.log("No encuentro el archivo en el directorio");
-        }
-
-      }).catch((error) => {
-        console.log('------ Error readDir ------');
-        console.log(error);
+      this.setState({
+        uploadPhase: 2,
       });
+
+      console.log('pathFileToUpload: ' + pathFileToUpload);
+
+      const putFileTask = reference.putFile(
+        pathFileToUpload
+      );
+
+      putFileTask.on('state_changed', taskSnapshot => {
+        console.log(`${taskSnapshot.bytesTransferred} transferred out of `+ this.state.selectedFileSize);
+      });
+
+      putFileTask.then((firebaseUploadResult) => {
+        console.log('Video uploaded to the bucket!');
+        console.log(firebaseUploadResult);
+
+        this.postNewVideo(firebaseUploadResult.metadata).then((resultAppServer) => {
+          console.log('regreso del metodo del postNewVideo();')
+          console.log('resultAppServer:');
+          console.log(resultAppServer);
+          this.setState({
+            uploadPhase: 3,
+          });
+        });
+
+      });
+
 
     } else {
       console.log('Dijo que no a otorgar permisos!');
@@ -183,6 +204,9 @@ export class UploadVideoScreen extends React.Component {
   }
 
   async selectOneFile() {
+
+    // reseteo el path si es que existia
+    this.setState({ uploadFilePath: '' });
 
     //Opening Document Picker for selection of one file
     try {
@@ -204,6 +228,9 @@ export class UploadVideoScreen extends React.Component {
       console.log('Type : ' + res.type);
       console.log('File Name : ' + res.name);
       console.log('File Size : ' + res.size);
+
+      // esta linea setea el path que luego se usara en el upload!
+      this.setPathToVideo();
 
       /*
       RNFS.exists(decodeURIComponent(this.state.selectedFile.name)).then((resultExists) => {
@@ -305,88 +332,88 @@ export class UploadVideoScreen extends React.Component {
               </Card>
             }
 
-              <Card elevation={10} style={styles.cardContainer}>
+            <Card elevation={10} style={styles.cardContainer}>
 
-                <Card.Title
-                  title="Tu video"
-                />
-                <Divider />
-                <Card.Content>
-                  
-                  {this.state.uploadPhase == 1 &&
-                    <View>
-                      <TextInput
-                        style={{ paddingVertical: 4 }}
-                        dense="true"
-                        label="Indicar Título del video"
-                        mode="outlined"
-                        value={this.state.videoTitle}
-                        onChangeText={(videoTitle) => this.setState({ videoTitle })}
-                      />
+              <Card.Title
+                title="Tu video"
+              />
+              <Divider />
+              <Card.Content>
 
-                      <TextInput
-                        style={{ paddingVertical: 4 }}
-                        dense="true"
-                        label="Agregar Descripción"
-                        mode="outlined"
-                        value={this.state.videoDescription}
-                        onChangeText={(videoDescription) => this.setState({ videoDescription })}
-                      />
+                {this.state.uploadPhase == 1 &&
+                  <View>
+                    <TextInput
+                      style={{ paddingVertical: 4 }}
+                      dense="true"
+                      label="Indicar Título del video"
+                      mode="outlined"
+                      value={this.state.videoTitle}
+                      onChangeText={(videoTitle) => this.setState({ videoTitle })}
+                    />
 
-                      <List.Item
-                        title="Visibilidad"
-                        description={this.state.visibilityDescription}
-                        left={props => <List.Icon {...props} icon="lock" />}
-                        right={props => <Switch
-                          value={this.state.videoPublic}
-                          onValueChange={this._onToggleSwitch}
-                        />}
-                      />
+                    <TextInput
+                      style={{ paddingVertical: 4 }}
+                      dense="true"
+                      label="Agregar Descripción"
+                      mode="outlined"
+                      value={this.state.videoDescription}
+                      onChangeText={(videoDescription) => this.setState({ videoDescription })}
+                    />
 
-                      <Button
-                        style={{ marginTop: 10 }}
-                        icon="upload"
-                        mode="contained"
-                        disabled={this.state.uploadInProgress}
-                        onPress={this.uploadSelectedFile}>
-                        Subir Video
+                    <List.Item
+                      title="Visibilidad"
+                      description={this.state.visibilityDescription}
+                      left={props => <List.Icon {...props} icon="lock" />}
+                      right={props => <Switch
+                        value={this.state.videoPublic}
+                        onValueChange={this._onToggleSwitch}
+                      />}
+                    />
+
+                    <Button
+                      style={{ marginTop: 10 }}
+                      icon="upload"
+                      mode="contained"
+                      disabled={this.state.uploadInProgress}
+                      onPress={this.uploadSelectedFile}>
+                      Subir Video
                       </Button>
 
-                    </View>
-                  }
+                  </View>
+                }
 
-                  {this.state.uploadPhase == 2 &&
-                    <View style={{ paddingTop: 20, paddingBottom: 10 }}>
-                      <Button
-                        loading="true"
-                        mode="outlined">
-                        Espera, subiendo tu video
+                {this.state.uploadPhase == 2 &&
+                  <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                    <Button
+                      loading="true"
+                      mode="outlined">
+                      Espera, subiendo tu video
                     </Button>
-                    </View>
-                  }
+                  </View>
+                }
 
-                  {this.state.uploadPhase == 3 &&
-                    <View style={{ paddingTop: 20, paddingBottom: 10 }}>
-                      <Button
-                        icon="upload"
-                        mode="outlined">
-                        Video Subido con éxito
+                {this.state.uploadPhase == 3 &&
+                  <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                    <Button
+                      icon="upload"
+                      mode="outlined">
+                      Video Subido con éxito
                     </Button>
 
-                      <Button
-                        style={{ marginTop: 15 }}
-                        mode="contained"
-                        onPress={() => {
-                          console.log('Navegacion -> Muro'),
-                            navigation.navigate('Muro');
-                        }}>
-                        Volver a mi muro
+                    <Button
+                      style={{ marginTop: 15 }}
+                      mode="contained"
+                      onPress={() => {
+                        console.log('Navegacion -> Muro'),
+                          navigation.navigate('Muro');
+                      }}>
+                      Volver a mi muro
                     </Button>
-                    </View>
-                  }
+                  </View>
+                }
 
-                </Card.Content>
-              </Card>
+              </Card.Content>
+            </Card>
           </View>
         }
 
