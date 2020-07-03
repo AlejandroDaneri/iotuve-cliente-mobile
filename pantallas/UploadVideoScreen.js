@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
-import { List, TextInput, Switch, Divider, Card, Button, Appbar, Chip } from 'react-native-paper';
+import { List, TextInput, Switch, Divider, Card, Button, Appbar, Chip, ProgressBar, Colors } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 import AppUtils from '../utils/AppUtils.js';
@@ -25,6 +25,7 @@ export class UploadVideoScreen extends React.Component {
       selectedFile: '',
       selectedFilePath: '',
       selectedFileSize: 0,
+      uploadPercent100: 0,
 
       videoPublic: false,
       visibilityDescription: 'Privado',
@@ -180,6 +181,11 @@ export class UploadVideoScreen extends React.Component {
 
       putFileTask.on('state_changed', taskSnapshot => {
         console.log(`${taskSnapshot.bytesTransferred} transferred out of ` + this.state.selectedFileSize);
+        let currentUploadPercent = ((taskSnapshot.bytesTransferred / this.state.selectedFileSize).toFixed(2)) * 100;
+        currentUploadPercent = Math.round(currentUploadPercent);
+        this.setState({
+          uploadPercent100: currentUploadPercent,
+        })
       });
 
       putFileTask.then((firebaseUploadResult) => {
@@ -311,7 +317,7 @@ export class UploadVideoScreen extends React.Component {
 
                 <Divider />
 
-                <View style={{alignItems: 'center'}}>
+                <View style={{ alignItems: 'center' }}>
                   <Image
                     style={{ width: 300, height: 300 }}
                     source={require('../images/undraw_video_upload_3d4u.png')}
@@ -346,7 +352,7 @@ export class UploadVideoScreen extends React.Component {
             <Card elevation={10} style={styles.cardContainer}>
 
               <Card.Title
-                title="Tu video"
+                title="Tu nuevo contenido"
               />
               <Divider />
               <Card.Content>
@@ -395,6 +401,16 @@ export class UploadVideoScreen extends React.Component {
 
                 {this.state.uploadPhase == 2 &&
                   <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+
+                    <ProgressBar
+                      style={{ height: 10 }}
+                      progress={this.state.uploadPercent100 / 100}
+                      color={Colors.blue500} />
+
+                    <View style={{ alignItems: 'flex-end', marginBottom: 16, marginTop: 4 }}>
+                      <Text style={{ fontSize: 16, marginEnd: 4 }}>{this.state.uploadPercent100} %</Text>
+                    </View>
+
                     <Button
                       loading="true"
                       mode="outlined">
