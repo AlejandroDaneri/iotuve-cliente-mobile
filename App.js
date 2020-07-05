@@ -1,4 +1,6 @@
 import React from 'react';
+import Icon from 'react-native-vector-icons/MaterialIcons'
+
 import { AppRegistry, View } from 'react-native';
 
 import { styles } from './utils/AppStyles.js';
@@ -22,6 +24,8 @@ const Stack = createStackNavigator();
 export default class ChotuveFiubaApp extends React.Component {
 
   render() {
+	Icon.loadFont();
+	  
     console.log('render - App.js');
 
     console.disableYellowBox = true;
