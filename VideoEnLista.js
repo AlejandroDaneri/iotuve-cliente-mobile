@@ -26,6 +26,7 @@ class VideoEnLista extends Component {
             id: this.props.videoId,
             title: this.props.videoTitle,
             description: this.props.videoDescription,
+            user: this.props.videoUser,
             uri: this.props.videoURI,
             count_views:  this.props.videoViewCount,
             count_likes: this.props.favoritesCount,

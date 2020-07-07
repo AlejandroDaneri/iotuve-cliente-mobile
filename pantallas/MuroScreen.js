@@ -172,7 +172,7 @@ export class MuroScreen extends React.Component {
                     videoId={item.id}
                     videoTitle={item.title}
                     videoDescription={item.description}
-                    videoAuthor={item.description}
+                    videoUser={item.user}
                     videoSnapshot={item.media.thumb}
                     videoURI={item.media.url}
                     videoLength="00:00"

@@ -334,7 +334,7 @@ export class VideoScreen extends React.Component {
                     onPress={() => {
                       console.log('Ir a perfil de usuario');
                       navigation.navigate("Profile");
-                    }}>usuario1</Chip>
+                    }}>{this.props.route.params.user}</Chip>
                 </View>
               </View>
 
