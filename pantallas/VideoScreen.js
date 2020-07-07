@@ -268,6 +268,7 @@ export class VideoScreen extends React.Component {
                 <Chip
                   style={{ marginRight: 4, color: 'red' }}
                   mode='outlined'
+                  selectedColor={(this.props.route.params.user_like) ? 'blue' : 'black'}
                   icon="heart"
                   onPress={() => {
                     if (this.props.route.params.user_like) {
@@ -281,6 +282,7 @@ export class VideoScreen extends React.Component {
                 <Chip
                   mode='outlined'
                   icon="heart-broken"
+                  selectedColor={(this.props.route.params.user_dislike) ? 'blue' : 'black'}
                   onPress={() => {
 
                     console.log(this.props.route.params.user_dislike);
