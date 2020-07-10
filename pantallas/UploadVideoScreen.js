@@ -171,7 +171,8 @@ export class UploadVideoScreen extends React.Component {
     if (this.state.appHasPermission) {
 
       const pathFileToUpload = this.state.selectedFilePath;
-      const firebaseReferencePath = '/uploads/videos/test/' + AppUtils.generateRandomNumber() + '_' + this.state.selectedFile.name;
+      const firebaseReferenceName = AppUtils.generateRandomNumber() + '_' + this.state.selectedFile.name;
+      const firebaseReferencePath = '/uploads/videos/test/' + firebaseReferenceName;
 
       console.log(firebaseReferencePath);
       const reference = firebase.storage().ref(firebaseReferencePath);
@@ -201,7 +202,12 @@ export class UploadVideoScreen extends React.Component {
         console.log('Video uploaded to the bucket!');
         console.log(firebaseUploadResult);
 
-        this.postNewVideo(firebaseUploadResult.metadata).then((resultAppServer) => {
+        //Sincronizamos la respuesta entre Android e iOS
+        console.log('Nombre a enviar a AppServer: ' + firebaseReferenceName);
+        var appServerMetadata = firebaseUploadResult.metadata;
+        appServerMetadata.name = firebaseReferenceName;
+
+        this.postNewVideo(appServerMetadata).then((resultAppServer) => {
           console.log('regreso del metodo del postNewVideo();')
           console.log('resultAppServer:');
           console.log(resultAppServer);
