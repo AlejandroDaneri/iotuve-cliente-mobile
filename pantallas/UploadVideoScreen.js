@@ -1,8 +1,8 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { Text, StyleSheet, View } from 'react-native';
 import { List, TextInput, Switch, Divider, Card, Button, Appbar, Chip, ProgressBar, Colors } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
-import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 import AppUtils from '../utils/AppUtils.js';
 
 import firebase from '@react-native-firebase/app';
@@ -115,46 +115,55 @@ export class UploadVideoScreen extends React.Component {
 
     let pathToVideos;
 
-    pathToVideos = RNFS.DownloadDirectoryPath;
-    RNFS.readDir(pathToVideos).then((result) => {
-      var item = result.find(data => data.name === this.state.selectedFile.name);
-      if (typeof item !== 'undefined') {
-        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
-      }
-    });
+    if (Platform.OS === 'ios') {
+      console.log('Set path to videos: iOS');
+      pathToVideos = '';
+      this.setState({ selectedFilePath: this.state.selectedFile.uri, selectedFileSize: this.state.selectedFile.size });
+    } else {
+      console.log('Set path to videos: Android');
+      pathToVideos = RNFS.DownloadDirectoryPath;
+      RNFS.readDir(pathToVideos).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
 
-    pathToVideos = RNFS.ExternalStorageDirectoryPath + "/DCIM/Camera";
-    RNFS.readDir(pathToVideos).then((result) => {
-      var item = result.find(data => data.name === this.state.selectedFile.name);
-      if (typeof item !== 'undefined') {
-        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
-      }
-    });
+      pathToVideos = RNFS.ExternalStorageDirectoryPath + "/DCIM/Camera";
+      RNFS.readDir(pathToVideos).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
 
-    pathToVideos = RNFS.ExternalStorageDirectoryPath;
-    RNFS.readDir(pathToVideos).then((result) => {
-      var item = result.find(data => data.name === this.state.selectedFile.name);
-      if (typeof item !== 'undefined') {
-        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
-      }
-    });
+      pathToVideos = RNFS.ExternalStorageDirectoryPath;
+      RNFS.readDir(pathToVideos).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
 
-    pathToVideos = RNFS.DocumentDirectoryPath;
-    RNFS.readDir(pathToVideos).then((result) => {
-      var item = result.find(data => data.name === this.state.selectedFile.name);
-      if (typeof item !== 'undefined') {
-        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
-      }
-    });
+      pathToVideos = RNFS.DocumentDirectoryPath;
+      RNFS.readDir(pathToVideos).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
 
-    pathToVideos = RNFS.ExternalDirectoryPath;
-    RNFS.readDir(pathToVideos).then((result) => {
-      var item = result.find(data => data.name === this.state.selectedFile.name);
-      if (typeof item !== 'undefined') {
-        this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
-      }
-    });
-
+      pathToVideos = RNFS.ExternalDirectoryPath;
+      RNFS.readDir(pathToVideos).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
+    }
+    console.log('Path to videos: ' + pathToVideos);
+    console.log('Selected file path: ' + this.state.selectedFilePath);
+    console.log('Selected file size: ' + this.state.selectedFileSize);
   }
 
   async uploadSelectedFile() {
@@ -272,7 +281,8 @@ export class UploadVideoScreen extends React.Component {
   }
 
   async clickElegirUnVideo() {
-    var hasPermission = await AppUtils.requestPermissionsAndroid();
+    //var hasPermission = await AppUtils.requestPermissionsAndroid();
+    var hasPermission = await AppUtils.checkPermissionsLibrary();
     if (hasPermission) {
       console.log('hasPermission');
       this.setState({ appHasPermission: true });

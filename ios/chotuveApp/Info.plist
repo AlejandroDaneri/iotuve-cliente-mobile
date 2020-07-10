@@ -83,5 +83,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	
+    <!-- Keep only the permissions used in your app -->
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Por favor otorgá el permiso de acceso a tus archivos para poder continuar.</string>
+
+    <!-- … -->
+	
 </dict>
 </plist>

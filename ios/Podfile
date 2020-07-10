@@ -77,12 +77,16 @@ target 'chotuveApp' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-
-
-
-
-
-
+  # React-Native-Firebase
+  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
+  pod 'RNFBStorage', :path => '../node_modules/@react-native-firebase/storage'
+  
+  # RNFS
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  
+  # Permissions
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
 
   target 'chotuveAppTests' do
     inherit! :complete
