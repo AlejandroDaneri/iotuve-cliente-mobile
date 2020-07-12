@@ -227,20 +227,21 @@ export class ProfileScreen extends React.Component {
 
                 <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
                   <View style={styles.actionsLeft}>
-                    <Text># Conexiónes con amigos:</Text>
+                    <Text>Conexiónes con amigos:</Text>
                   </View>
                   <View style={styles.actionsRight}>
-                    <Chip icon="account-multiple">12110</Chip>
+                    <Chip icon="account-multiple">1211</Chip>
                   </View>
                 </View>
 
                 <Divider />
                 <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
                   <View style={styles.actionsLeft}>
-                    <Text># Videos publicados:</Text>
+                    <Text>Videos subidos / Vistos:</Text>
                   </View>
                   <View style={styles.actionsRight}>
-                    <Chip icon="upload">3660</Chip>
+                    <Chip icon="upload" style={{ marginRight: 4 }}>1150</Chip>
+                    <Chip icon="eye">630</Chip>
                   </View>
                 </View>
 
@@ -248,12 +249,10 @@ export class ProfileScreen extends React.Component {
 
                 <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
                   <View style={styles.actionsLeft}>
-                    <Text># Likes / Unlikes:</Text>
+                    <Text>Likes / Unlikes:</Text>
                   </View>
                   <View style={styles.actionsRight}>
-                    <Chip icon="heart" style={{ marginRight: 4 }}>
-                      1150
-                    </Chip>
+                    <Chip icon="heart" style={{ marginRight: 4 }}>1150</Chip>
                     <Chip icon="heart-broken">2230</Chip>
                   </View>
                 </View>
