@@ -3,6 +3,7 @@ import React from 'react';
 import { StackActions } from '@react-navigation/native';
 import { ScrollView, View, FlatList, RefreshControl } from 'react-native';
 import { Appbar } from 'react-native-paper';
+import axios from "axios"
 
 /* Import Components */
 import VideoEnLista from '../VideoEnLista.js';
@@ -72,31 +73,19 @@ export class MuroScreen extends React.Component {
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
-    fetch(EndPoints.videos, {
-      method: 'GET',
-      headers: myHeaders,
+    axios.get(EndPoints.videos, {
+      headers: {'X-Auth-Token': authToken},
+      params: {
+        limit: 50
+      }
     })
-      .then((response) => response.json().then(json => {
-        return { data: json, fullResponse: response }
-      }))
-      .then((responseJson) => {
-        AppUtils.printResponseJson(responseJson);
+      .then(response => {
+        const {data} = response
 
-        if (responseJson.fullResponse.ok) {
-          console.log(responseJson.data.data[0]);
-          this.setState({
-            listWallVideos: responseJson.data.data,
-            listWallVideosLoaded: true,
-          });
-        } else {
-          if (responseJson.fullResponse.status == 401) {
-            AppUtils.logout();
-            this.props.navigation.navigate("Login");
-          } else {
-            console.log('que hacer aqui?');
-          }
-        }
-
+        this.setState({
+          listWallVideos: data.data,
+          listWallVideosLoaded: true,
+        });
       })
       .catch((error) => {
         console.log('------- error ------');
