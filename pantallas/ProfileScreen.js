@@ -23,6 +23,7 @@ export class ProfileScreen extends React.Component {
       userEmail: '',
       userPhone: '',
       userAvatar: '',
+      userStatistics: '',
       userLoginService: true,
 
       loadingUserVideos: true,
@@ -95,6 +96,7 @@ export class ProfileScreen extends React.Component {
       userPhone: data.contact.phone,
       userAvatar: data.avatar.url,
       userLoginService: data.login_service,
+      userStatistics: data.statistics,
     })
   }
 
@@ -230,7 +232,7 @@ export class ProfileScreen extends React.Component {
                     <Text>Conexiónes con amigos:</Text>
                   </View>
                   <View style={styles.actionsRight}>
-                    <Chip icon="account-multiple">1211</Chip>
+                    <Chip icon="account-multiple">{this.state.userStatistics.friends}</Chip>
                   </View>
                 </View>
 
@@ -240,8 +242,8 @@ export class ProfileScreen extends React.Component {
                     <Text>Videos subidos / Vistos:</Text>
                   </View>
                   <View style={styles.actionsRight}>
-                    <Chip icon="upload" style={{ marginRight: 4 }}>1150</Chip>
-                    <Chip icon="eye">630</Chip>
+                    <Chip icon="upload" style={{ marginRight: 4 }}>{this.state.userStatistics.uploaded}</Chip>
+                    <Chip icon="eye">{this.state.userStatistics.views}</Chip>
                   </View>
                 </View>
 
@@ -252,8 +254,8 @@ export class ProfileScreen extends React.Component {
                     <Text>Likes / Unlikes:</Text>
                   </View>
                   <View style={styles.actionsRight}>
-                    <Chip icon="heart" style={{ marginRight: 4 }}>1150</Chip>
-                    <Chip icon="heart-broken">2230</Chip>
+                    <Chip icon="heart" style={{ marginRight: 4 }}>{this.state.userStatistics.likes}</Chip>
+                    <Chip icon="heart-broken">{this.state.userStatistics.dislikes}</Chip>
                   </View>
                 </View>
 
