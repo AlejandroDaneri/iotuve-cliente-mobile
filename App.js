@@ -7,17 +7,17 @@ import { styles } from './utils/AppStyles.js';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SplashScreen } from './pantallas/SplashScreen';
-import { LoginScreen } from './pantallas/LoginScreen';
-import { SignUpScreen } from './pantallas/SignUpScreen';
-import { PasswordRecoveryScreen } from './pantallas/PasswordRecoveryScreen';
-import { MuroScreen } from './pantallas/MuroScreen';
-import { ProfileScreen } from './pantallas/ProfileScreen';
-import { FriendsScreen } from './pantallas/FriendsScreen';
-import { ChatScreen } from './pantallas/ChatScreen';
-import { EditProfileScreen } from './pantallas/EditProfileScreen';
-import { VideoScreen } from './pantallas/VideoScreen';
-import { UploadVideoScreen } from './pantallas/UploadVideoScreen';
+import { SplashScreen } from './components/SplashScreen';
+import { LoginScreen } from './components/LoginScreen';
+import { SignUpScreen } from './components/SignUpScreen';
+import { PasswordRecoveryScreen } from './components/PasswordRecoveryScreen';
+import { MuroScreen } from './components/MuroScreen';
+import { ProfileScreen } from './components/ProfileScreen';
+import { FriendsScreen } from './components/FriendsScreen';
+import { ChatScreen } from './components/ChatScreen';
+import { EditProfileScreen } from './components/EditProfileScreen';
+import { VideoScreen } from './components/VideoScreen';
+import { UploadVideoScreen } from './components/UploadVideoScreen';
 
 const Stack = createStackNavigator();
 
