@@ -1,7 +1,7 @@
 /* Import Libs */
 import React from 'react';
 import { StackActions } from '@react-navigation/native';
-import { ScrollView, View, FlatList } from 'react-native';
+import { ScrollView, View, FlatList, RefreshControl } from 'react-native';
 import { Appbar } from 'react-native-paper';
 
 /* Import Components */
@@ -107,6 +107,10 @@ export class MuroScreen extends React.Component {
       });
   }
 
+  onRefresh = () => {
+    this.onBack();
+  }
+
   render() {
     const { navigation } = this.props;
 
@@ -123,15 +127,6 @@ export class MuroScreen extends React.Component {
               console.log('Navegacion -> Login');
               const replaceAction = StackActions.replace('Login');
               this.props.navigation.dispatch(replaceAction);
-            }}
-          />
-
-          <Appbar.Action
-            icon="refresh"
-            onPress={() => {
-              this.onBack();
-              console.log('Refresh videos');
-                //navigation.navigate('Chat');
             }}
           />
 
@@ -159,36 +154,36 @@ export class MuroScreen extends React.Component {
         </Appbar.Header>
 
         <View style={{ flex: 1, marginVertical: 0, backgroundColor: 'white' }}>
-          <ScrollView>
+          <ScrollView refreshControl={<RefreshControl refreshing={false} onRefresh={this.onRefresh} />}>
 
-            {this.state.loadingWallVideos &&
-              <CargandoVideos />
-            }
+          {this.state.loadingWallVideos &&
+            <CargandoVideos />
+          }
 
-            {(this.state.listWallVideosLoaded && this.state.listWallVideos.length > 0 &&
-              <FlatList
-                data={this.state.listWallVideos}
-                keyExtractor={({ id }, index) => id}
-                renderItem={({ item }) => (
+          {(this.state.listWallVideosLoaded && this.state.listWallVideos.length > 0 &&
+            <FlatList
+              data={this.state.listWallVideos}
+              keyExtractor={({ id }, index) => id}
+              renderItem={({ item }) => (
 
-                  <VideoEnLista
-                    videoId={item.id}
-                    videoTitle={item.title}
-                    videoDescription={item.description}
-                    videoUser={item.user}
-                    videoSnapshot={item.media.thumb}
-                    videoURI={item.media.url}
-                    videoLength="00:00"
-                    videoViewCount={item.count_views}
-                    favoritesCount={item.count_likes}
-                    notFavoritesCount={item.count_dislikes}
-                    userLike={item.user_like}
-                    userDislike={item.user_dislike}
-                    navigation={this.props.navigation}
-                  />
-                )}
-              />
-            )}
+                <VideoEnLista
+                  videoId={item.id}
+                  videoTitle={item.title}
+                  videoDescription={item.description}
+                  videoUser={item.user}
+                  videoSnapshot={item.media.thumb}
+                  videoURI={item.media.url}
+                  videoLength="00:00"
+                  videoViewCount={item.count_views}
+                  favoritesCount={item.count_likes}
+                  notFavoritesCount={item.count_dislikes}
+                  userLike={item.user_like}
+                  userDislike={item.user_dislike}
+                  navigation={this.props.navigation}
+                />
+              )}
+            />
+          )}
 
           </ScrollView>
         </View>
