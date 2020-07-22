@@ -444,8 +444,7 @@ export class VideoScreen extends React.Component {
             />
           )}
 
-          {(this.state.listCommentsVideosLoaded && this.state.listCommentsVideos == null &&
-
+          {(this.state.listCommentsVideosLoaded && this.state.listCommentsVideos != null && this.state.listCommentsVideos.length == 0 &&
 
             <View style={{ margin: 16 }}>
               <Divider></Divider>
@@ -453,7 +452,6 @@ export class VideoScreen extends React.Component {
               <Text style={{ marginVertical: 8, fontSize: 14 }}>Podes agregar uno ahora mismo</Text>
               <Divider></Divider>
             </View>
-
 
           )}
 
