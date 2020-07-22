@@ -1,12 +1,11 @@
+/* Import Libs */
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
-import { AppRegistry, View } from 'react-native';
-
-import { styles } from './utils/AppStyles.js';
-
+import { AppRegistry } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+/* Import Components */
 import { SplashScreen } from './components/SplashScreen';
 import { LoginScreen } from './components/LoginScreen';
 import { SignUpScreen } from './components/SignUpScreen';
