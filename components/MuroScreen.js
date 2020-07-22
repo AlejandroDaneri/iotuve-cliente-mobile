@@ -1,14 +1,17 @@
+/* Import Libs */
 import React from 'react';
 import { StackActions } from '@react-navigation/native';
-
 import { ScrollView, View, FlatList } from 'react-native';
 import { Appbar } from 'react-native-paper';
-import VideoEnLista from '../VideoEnLista.js';
 
+/* Import Components */
+import VideoEnLista from '../VideoEnLista.js';
+import CargandoVideos from '../CargandoVideos.js';
+
+/* Import Utils */
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 import AppUtils from '../utils/AppUtils.js';
 import EndPoints from '../utils/EndPoints.js';
-import CargandoVideos from '../CargandoVideos.js';
 
 export class MuroScreen extends React.Component {
   constructor(props) {
