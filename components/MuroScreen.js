@@ -88,8 +88,13 @@ export class MuroScreen extends React.Component {
         });
       })
       .catch((error) => {
-        console.log('------- error ------');
-        console.log(error);
+        if(error.response.status === 401) {
+          AppUtils.logout()
+          this.setState({
+            listWallVideosLoaded: false
+          })
+          this.props.navigation.navigate("Login")
+        }
       })
       .finally(() => {
         this.setState({ loadingWallVideos: false })
