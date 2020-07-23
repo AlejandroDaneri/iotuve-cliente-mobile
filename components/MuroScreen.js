@@ -1,9 +1,11 @@
 /* Import Libs */
 import React from 'react';
 import { StackActions } from '@react-navigation/native';
-import { ScrollView, View, FlatList, RefreshControl } from 'react-native';
+import { ScrollView, View, FlatList, RefreshControl, Alert } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import axios from "axios"
+import firebase from "react-native-firebase";
+import AsyncStorage from '@react-native-community/async-storage';
 
 /* Import Components */
 import VideoEnLista from '../VideoEnLista.js';
@@ -42,7 +44,78 @@ export class MuroScreen extends React.Component {
 
   componentDidMount() {
     console.log('componentDidMount (MuroScreen)');
+
+    // FCM -----------
+    this.checkPermission(); //we check if user has permission to receive push.
+    this.createNotificationListeners(); // Register all listener for notification 
+    // FCM -----------
+
     this.requestWallVideos();
+  }
+
+  async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    // If Premission granted proceed towards token fetch
+    if (enabled) {
+      console.log('checkPermission FCM -> enabled');
+      this.getToken();
+    } else {
+      // If permission hasn’t been granted to our app, request user in requestPermission method. 
+      console.log('checkPermission FCM -> NOT enabled');
+      this.requestPermission(); // iOS <<<<<<<<
+    }
+  }
+
+  async getToken() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    console.log('fcmToken obtenido del storage local:');
+    console.log(fcmToken);
+
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      console.log('fcmToken obtenido de firebase:');
+      console.log(fcmToken);
+      
+      if (fcmToken) {
+        // user has a device token, save in storage
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+      }
+    }
+  }
+
+
+  async createNotificationListeners() {
+
+    // This listener triggered when notification has been received in foreground
+    this.notificationListener = firebase.notifications().onNotification((notification) => {
+      const { title, body } = notification;
+      this.displayNotification(title, body);
+    });
+
+    // This listener triggered when app is in backgound and we click, tapped and opened notifiaction
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+      const { title, body } = notificationOpen.notification;
+      this.displayNotification(title, body);
+    });
+
+    // This listener triggered when app is closed and we click,tapped and opened notification 
+    const notificationOpen = await firebase.notifications().getInitialNotification();
+    if (notificationOpen) {
+      const { title, body } = notificationOpen.notification;
+      this.displayNotification(title, body);
+    }
+  }
+
+
+  displayNotification(title, body) {
+    // we display notification in alert box with title and body
+    Alert.alert(
+      title, body,
+      [
+        { text: 'Ok', onPress: () => console.log('displayNotification -> ok pressed') },
+      ],
+      { cancelable: false },
+    );
   }
 
   async userLogout() {
