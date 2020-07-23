@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Image, Text, View } from 'react-native';
 import { Button, Divider, Chip, Card, Appbar, ActivityIndicator } from 'react-native-paper';
 import { FlatList } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements';
+import axios from 'axios';
 
 /* Import Components */
 import VideoEnLista from '../VideoEnLista.js';
@@ -49,9 +50,40 @@ export class ProfileScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount (ProfileScreen)');
-    this.requestUserData();
-    this.requestUserVideos();
+    const { username } = this.props.route.params;
+
+    if (username) {
+      this.requestVideos(username)
+    } else {
+      this.requestUserData();
+      this.requestUserVideos();
+    }
+  }
+
+  async requestVideos(username) {
+    console.log("========= requestVideos ========")
+    console.log(username)
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    axios.get(EndPoints.videos, {
+      headers: { 'X-Auth-Token': authToken },
+      params: {
+        user: username
+      }
+    })
+    .then(response => {
+      const { data } = response
+      this.setState({
+        listUserVideos: data.data,
+        listUserVideosLoaded: true,
+        loadingUserVideos: false
+      });
+    })
+    .catch(error => {
+      if (error.response.status === 401) {
+        AppUtils.logout()
+        this.props.navigation.navigate("Login")
+      }
+    })
   }
 
   async requestUserData() {
@@ -109,8 +141,8 @@ export class ProfileScreen extends React.Component {
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
     fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.username, {
-    //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.id, {
-    //fetch(EndPoints.videos, {
+      //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.id, {
+      //fetch(EndPoints.videos, {
       method: 'GET',
       headers: myHeaders,
     })
@@ -216,15 +248,15 @@ export class ProfileScreen extends React.Component {
           <View>
             <Card elevation={10} style={styles.cardContainer}>
               <ListItem
-                leftAvatar = {{
+                leftAvatar={{
                   size: 'large',
                   source: { uri: this.state.userAvatar },
                   showEditButton: false,
-                  onPress: () => {console.log('Navegacion -> EditProfile'); navigation.navigate('EditProfile')}
+                  onPress: () => { console.log('Navegacion -> EditProfile'); navigation.navigate('EditProfile') }
                 }}
-                title = {AppUtils.capitalize(this.state.userFirstName) + ' ' + AppUtils.capitalize(this.state.userLastName)}
-                titleStyle = {{ fontSize: 20, fontWeight: "bold" }}
-                subtitle = {this.state.userEmail}
+                title={AppUtils.capitalize(this.state.userFirstName) + ' ' + AppUtils.capitalize(this.state.userLastName)}
+                titleStyle={{ fontSize: 20, fontWeight: "bold" }}
+                subtitle={this.state.userEmail}
               />
               <Divider />
               <Card.Content>
