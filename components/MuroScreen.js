@@ -74,13 +74,13 @@ export class MuroScreen extends React.Component {
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
     axios.get(EndPoints.videos, {
-      headers: {'X-Auth-Token': authToken},
+      headers: { 'X-Auth-Token': authToken },
       params: {
         limit: 50
       }
     })
       .then(response => {
-        const {data} = response
+        const { data } = response
 
         this.setState({
           listWallVideos: data.data,
@@ -88,7 +88,7 @@ export class MuroScreen extends React.Component {
         });
       })
       .catch((error) => {
-        if(error.response.status === 401) {
+        if (error.response.status === 401) {
           AppUtils.logout()
           this.setState({
             listWallVideosLoaded: false
@@ -112,17 +112,6 @@ export class MuroScreen extends React.Component {
       <View style={{ flex: 1 }}>
         <Appbar.Header style={{ backgroundColor: 'midnightblue' }}>
           <Appbar.Content title="Muro" />
-          <Appbar.Action
-            icon="arrow-left"
-            color="grey"
-            onPress={() => {
-              console.log('Logout. Cerrando sesión en el servidor');
-              this.userLogout();
-              console.log('Navegacion -> Login');
-              const replaceAction = StackActions.replace('Login');
-              this.props.navigation.dispatch(replaceAction);
-            }}
-          />
 
           <Appbar.Action
             icon="upload"
@@ -140,44 +129,49 @@ export class MuroScreen extends React.Component {
             } />
 
           <Appbar.Action
-            icon="dots-vertical"
+            icon="logout"
             onPress={() => {
-              alert('Mas Acciones, Config, Etc');
+              console.log('Logout. Cerrando sesión en el servidor');
+              this.userLogout();
+              console.log('Navegacion -> Login');
+              const replaceAction = StackActions.replace('Login');
+              this.props.navigation.dispatch(replaceAction);
             }}
           />
+
         </Appbar.Header>
 
         <View style={{ flex: 1, marginVertical: 0, backgroundColor: 'white' }}>
           <ScrollView refreshControl={<RefreshControl refreshing={false} onRefresh={this.onRefresh} />}>
 
-          {this.state.loadingWallVideos &&
-            <CargandoVideos />
-          }
+            {this.state.loadingWallVideos &&
+              <CargandoVideos />
+            }
 
-          {(this.state.listWallVideosLoaded && this.state.listWallVideos.length > 0 &&
-            <FlatList
-              data={this.state.listWallVideos}
-              keyExtractor={({ id }, index) => id}
-              renderItem={({ item }) => (
+            {(this.state.listWallVideosLoaded && this.state.listWallVideos.length > 0 &&
+              <FlatList
+                data={this.state.listWallVideos}
+                keyExtractor={({ id }, index) => id}
+                renderItem={({ item }) => (
 
-                <VideoEnLista
-                  videoId={item.id}
-                  videoTitle={item.title}
-                  videoDescription={item.description}
-                  videoUser={item.user}
-                  videoSnapshot={item.media.thumb}
-                  videoURI={item.media.url}
-                  videoLength="00:00"
-                  videoViewCount={item.count_views}
-                  favoritesCount={item.count_likes}
-                  notFavoritesCount={item.count_dislikes}
-                  userLike={item.user_like}
-                  userDislike={item.user_dislike}
-                  navigation={this.props.navigation}
-                />
-              )}
-            />
-          )}
+                  <VideoEnLista
+                    videoId={item.id}
+                    videoTitle={item.title}
+                    videoDescription={item.description}
+                    videoUser={item.user}
+                    videoSnapshot={item.media.thumb}
+                    videoURI={item.media.url}
+                    videoLength="00:00"
+                    videoViewCount={item.count_views}
+                    favoritesCount={item.count_likes}
+                    notFavoritesCount={item.count_dislikes}
+                    userLike={item.user_like}
+                    userDislike={item.user_dislike}
+                    navigation={this.props.navigation}
+                  />
+                )}
+              />
+            )}
 
           </ScrollView>
         </View>
