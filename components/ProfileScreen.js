@@ -1,15 +1,17 @@
+/* Import Libs */
 import React from 'react';
 import { ScrollView, StyleSheet, Image, Text, View } from 'react-native';
 import { Button, Divider, Chip, Card, Appbar, ActivityIndicator } from 'react-native-paper';
+import { FlatList } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements';
+
+/* Import Components */
 import VideoEnLista from '../VideoEnLista.js';
 
+/* Import Utils */
 import EndPoints from '../utils/EndPoints';
 import AppUtils from '../utils/AppUtils';
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
-import { FlatList } from 'react-native-gesture-handler';
-import { readFileAssets } from 'react-native-fs';
-
 
 export class ProfileScreen extends React.Component {
 
