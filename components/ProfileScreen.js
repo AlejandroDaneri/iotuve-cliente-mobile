@@ -54,15 +54,34 @@ export class ProfileScreen extends React.Component {
 
     if (username) {
       this.requestVideos(username)
+      this.requestUser(username)
     } else {
       this.requestUserData();
       this.requestUserVideos();
     }
   }
 
+  async requestUser(username) {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    console.log(authToken)
+    console.log("request user")
+    axios.get(EndPoints.users +  "/" + username, {
+      headers: { 'X-Auth-Token': authToken },
+    })
+    .then(response => {
+      const {data} = response
+      console.log(data)
+      this.updateUserData(data);
+    })
+    .catch(error => {
+      if (error.response.status === 401) {
+        AppUtils.logout()
+        this.props.navigation.navigate("Login")
+      }
+    })
+  }
+
   async requestVideos(username) {
-    console.log("========= requestVideos ========")
-    console.log(username)
     const authToken = await AppAsyncStorage.getTokenFromSession();
     axios.get(EndPoints.videos, {
       headers: { 'X-Auth-Token': authToken },
