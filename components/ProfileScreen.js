@@ -20,6 +20,7 @@ export class ProfileScreen extends React.Component {
     super(props);
 
     this.state = {
+      loggedUsername: "",
 
       userFirstName: '',
       userLastName: '',
@@ -36,13 +37,31 @@ export class ProfileScreen extends React.Component {
       listUserVideos: [],
     };
 
-    // console.log(props.params.onBack);
     this.requestUserData = this.requestUserData.bind(this);
     this.requestUserVideos = this.requestUserVideos.bind(this);
     this.requestFriendship = this.requestFriendship.bind(this);
   }
 
+  async setLoggedUsername() {
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
+    this.setState({loggedUsername: sessionDataJSON.session_data.username})
+  }
+
+  isProfileSelectedUserLogged() {
+    const { username } = this.props.route.params;
+    if(!username) {
+      return true
+    }
+    if(username === this.state.loggedUsername) {
+      return true
+    }
+    return false
+  }
+
   componentDidMount() {
+    this.setLoggedUsername()
+    
     const { username } = this.props.route.params;
 
     if (username) {
@@ -54,16 +73,15 @@ export class ProfileScreen extends React.Component {
     }
   }
 
+
+
   async requestUser(username) {
     const authToken = await AppAsyncStorage.getTokenFromSession();
-    console.log(authToken)
-    console.log("request user")
     axios.get(EndPoints.users +  "/" + username, {
       headers: { 'X-Auth-Token': authToken },
     })
     .then(response => {
       const {data} = response
-      console.log(data)
       this.updateUserData(data);
     })
     .catch(error => {
@@ -99,7 +117,6 @@ export class ProfileScreen extends React.Component {
   }
 
   async requestUserData() {
-
     const sessionData = await AppAsyncStorage.getSession();
     const sessionDataJSON = JSON.parse(sessionData);
     const authToken = await AppAsyncStorage.getTokenFromSession();
@@ -307,7 +324,7 @@ export class ProfileScreen extends React.Component {
 
                 <Divider />
 
-                <Button
+                {!this.isProfileSelectedUserLogged() && <Button
                   style={{ margin: 10 }}
                   mode="contained"
                   icon="plus"
@@ -316,7 +333,7 @@ export class ProfileScreen extends React.Component {
                     this.requestFriendship();
                   }}>
                   Solicitar Amistad
-                </Button>
+                </Button>}
 
               </Card.Content>
             </Card>
