@@ -310,7 +310,7 @@ export class ProfileScreen extends React.Component {
                 <Button
                   style={{ margin: 10 }}
                   mode="contained"
-                  icon="voice"
+                  icon="plus"
                   disabled={this.state.uploadPhase > 0 ? "false" : ""}
                   onPress={() => {
                     this.requestFriendship();
