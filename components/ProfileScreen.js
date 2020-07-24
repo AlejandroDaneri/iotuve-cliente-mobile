@@ -42,13 +42,6 @@ export class ProfileScreen extends React.Component {
     this.requestFriendship = this.requestFriendship.bind(this);
   }
 
-  componentWillUnmount() {
-    console.log('componentWillUnmount (ProfileScreen)');
-    // si descomentamos esta linea, el muro se refresca
-    // pero no esta quedando muy bien el "efecto".
-    this.props.route.params.onBack();
-  }
-
   componentDidMount() {
     const { username } = this.props.route.params;
 
