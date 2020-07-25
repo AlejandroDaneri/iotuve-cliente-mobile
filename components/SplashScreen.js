@@ -8,6 +8,9 @@ import { styles } from '../utils/AppStyles';
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 
 import ChotuveLogo from '../ChotuveLogo.js';
+import EndPoints from '../utils/EndPoints';
+import axios from "axios"
+
 
 export class SplashScreen extends React.Component {
 
@@ -25,8 +28,23 @@ export class SplashScreen extends React.Component {
     if (sessionData !== null) {
       const authToken = await AppAsyncStorage.getTokenFromSession();
       // tengo token guardado, lo uso para continuar.
-      const replaceAction = StackActions.replace('Muro');
-      this.props.navigation.dispatch(replaceAction);
+
+      axios.get(EndPoints.sessions, {
+        headers: { 'X-Auth-Token': authToken },
+      })
+        .then(response => {
+          const replaceAction = StackActions.replace('Muro');
+          this.props.navigation.dispatch(replaceAction);
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.status === 401) {
+            // no tengo token, no hago nada. Me quedo en esta pantalla de Login
+            const replaceAction = StackActions.replace('Login');
+            this.props.navigation.dispatch(replaceAction);
+          }
+        });
+
     } else {
       // no tengo token, no hago nada. Me quedo en esta pantalla de Login
       const replaceAction = StackActions.replace('Login');
