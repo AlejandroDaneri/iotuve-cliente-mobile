@@ -1,7 +1,7 @@
 import React from 'react';
 import { StackActions } from '@react-navigation/native';
 
-import { SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Button, TextInput, Provider as PaperProvider, Snackbar } from 'react-native-paper';
 
 import { styles } from '../utils/AppStyles';
@@ -398,16 +398,19 @@ export class LoginScreen extends React.Component {
                 />
 
                 {this.state.processPhase != 1 &&
-                  <Button
-                    style={{ marginTop: 15 }}
-                    icon="send"
-                    mode="contained"
-                    onPress={() => {
-                      console.log('Click en boton Ingresar en Login');
-                      this.postFormData();
-                    }}>
-                    Ingresar
+                  <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                    <Button
+                      style={{ marginTop: 15 }}
+                      icon="send"
+                      mode="contained"
+                      onPress={() => {
+                        console.log('Click en boton Ingresar en Login');
+                        Keyboard.dismiss();
+                        this.postFormData();
+                      }}>
+                      Ingresar
                 </Button>
+                  </TouchableWithoutFeedback>
                 }
 
                 {this.state.processPhase == 1 &&
