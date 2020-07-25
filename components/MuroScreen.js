@@ -48,7 +48,9 @@ export class MuroScreen extends React.Component {
     // FCM -----------
     this.checkPermission(); //we check if user has permission to receive push.
     this.createNotificationListeners(); // Register all listener for notification 
+    //this.createChannel();
     // FCM -----------
+
 
     this.requestWallVideos();
   }
@@ -75,7 +77,7 @@ export class MuroScreen extends React.Component {
       fcmToken = await firebase.messaging().getToken();
       console.log('fcmToken obtenido de firebase:');
       console.log(fcmToken);
-      
+
       if (fcmToken) {
         // user has a device token, save in storage
         await AsyncStorage.setItem('fcmToken', fcmToken);
@@ -83,41 +85,83 @@ export class MuroScreen extends React.Component {
     }
   }
 
+  createChannel = () => {
+    const channel = new firebase.notifications.Android.Channel(
+      CHANNEL_NOTIFICATIONS.CHANNEL_ID,
+      CHANNEL_NOTIFICATIONS.CHANNEL_NAME,
+      firebase.notifications.Android.Importance.Max
+    ).setDescription(CHANNEL_NOTIFICATIONS.CHANNEL_DESCRIPTION);
+    firebase.notifications().android.createChannel(channel);
+  };
 
   async createNotificationListeners() {
 
     // This listener triggered when notification has been received in foreground
     this.notificationListener = firebase.notifications().onNotification((notification) => {
+      console.log('onNotification: ', notification);
+
       const { title, body } = notification;
       this.displayNotification(title, body);
+
+      const {
+        notifications: {
+          Android: {
+            Priority: { Max }
+          }
+        }
+      } = firebase;
+
+      const localNotification = new firebase.notifications.Notification()
+        .setNotificationId(notification.notificationId)
+        .setTitle(notification.title)
+        .setSubtitle(notification.subtitle)
+        .setBody(notification.body);
+
+      if (Platform.OS === 'android') {
+        localNotification._android._channelId = notification.data.channelId;
+      }
+
+      //notification.android.setChannelId(CHANNEL_NOTIFICATIONS.CHANNEL_ID);
+      //      notification.android.setChannelId(notification.data.channelId);
+      //notification.android.setPriority(Max);
+      //notification.setData(notification.data);
+
+      console.log('Notificacion propia');
+      console.log(localNotification);
+      firebase.notifications().displayNotification(localNotification);
+
+      //firebase.notifications().displayNotification(notification);
+
+      //console.log('Notificacion --> AQUI');
+
     });
 
     // This listener triggered when app is in backgound and we click, tapped and opened notifiaction
     this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
       const { title, body } = notificationOpen.notification;
-      this.displayNotification(title, body);
+      // this.displayNotification(title, body);
     });
 
     // This listener triggered when app is closed and we click,tapped and opened notification 
     const notificationOpen = await firebase.notifications().getInitialNotification();
     if (notificationOpen) {
       const { title, body } = notificationOpen.notification;
-      this.displayNotification(title, body);
+      // this.displayNotification(title, body);
     }
   }
 
-
-  displayNotification(title, body) {
-    // we display notification in alert box with title and body
-    Alert.alert(
-      title, body,
-      [
-        { text: 'Ok', onPress: () => console.log('displayNotification -> ok pressed') },
-      ],
-      { cancelable: false },
-    );
-  }
-
+  
+    displayNotification(title, body) {
+      // we display notification in alert box with title and body
+      Alert.alert(
+        title, body,
+        [
+          { text: 'Ok', onPress: () => console.log('displayNotification -> ok pressed') },
+        ],
+        { cancelable: false },
+      );
+    }
+  
   async userLogout() {
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
