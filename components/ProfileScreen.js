@@ -1,7 +1,7 @@
 /* Import Libs */
 import React from 'react';
 import { ScrollView, StyleSheet, Image, Text, View } from 'react-native';
-import { Button, Divider, Chip, Card, Appbar, ActivityIndicator } from 'react-native-paper';
+import { Button, Divider, Chip, Card, Appbar, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { FlatList } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements';
 import axios from 'axios';
@@ -20,6 +20,10 @@ export class ProfileScreen extends React.Component {
     super(props);
 
     this.state = {
+      snackBarVisible: false,
+      snackBarText: '',
+      snackBarBackgroundColor: '#CC0000',
+
       loggedUsername: "",
 
       userFirstName: '',
@@ -37,9 +41,25 @@ export class ProfileScreen extends React.Component {
       listUserVideos: [],
     };
 
+    this._onToggleSnackBar = this._onToggleSnackBar.bind(this);
+    this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
+
     this.requestUserData = this.requestUserData.bind(this);
     this.requestUserVideos = this.requestUserVideos.bind(this);
     this.requestFriendship = this.requestFriendship.bind(this);
+  }
+
+  _onToggleSnackBar(texto) {
+    this.setState({
+      snackBarVisible: !this.state.snackBarVisible,
+      snackBarText: texto,
+    });
+  }
+
+  _onDismissSnackBar() {
+    this.setState({
+      snackBarVisible: false
+    });
   }
 
   async setLoggedUsername() {
@@ -207,10 +227,11 @@ export class ProfileScreen extends React.Component {
   }
 
   async requestFriendship() {
+    const { username } = this.props.route.params;
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
     var myBody = JSON.stringify({
-      to_user: "usuario1@gmail.com",
+      to_user: username,
       message: "mensaje clavado",
     });
 
@@ -232,7 +253,9 @@ export class ProfileScreen extends React.Component {
             AppUtils.logout();
             this.props.navigation.navigate("Login");
           } else {
-            console.log('que hacer aqui?');
+            // error 400 dice "Friend request already exist";
+            this.state.login_error_msg = 'Ya hay una solicitud de amistad pendiente';
+            this._onToggleSnackBar(this.state.login_error_msg);
           }
         }
       })
@@ -252,7 +275,7 @@ export class ProfileScreen extends React.Component {
             onPress={() => { this.props.navigation.goBack() }}
           />
 
-          <Appbar.Content title="Mi Perfil" />
+          <Appbar.Content title="Perfil de usuario" />
 
           <Appbar.Action
             icon="account-star"
@@ -407,6 +430,22 @@ export class ProfileScreen extends React.Component {
             </View>
           </View>
         </ScrollView>
+
+        <Snackbar
+            style={{ backgroundColor: this.state.snackBarBackgroundColor, elevation: 20 }}
+            visible={this.state.snackBarVisible}
+            duration={3000}
+            onDismiss={this._onDismissSnackBar}
+            action={{
+              onPress: () => {
+                // Do something
+                this._onDismissSnackBar();
+              },
+            }}
+          >
+            {this.state.snackBarText}
+        </Snackbar>
+        
       </View>
     );
   }
