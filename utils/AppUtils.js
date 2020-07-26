@@ -36,6 +36,7 @@ export default class AppUtils {
   static logout() {
     // ejecuta limpiezas al hacer logout
     AppAsyncStorage.deleteSession();
+    AppAsyncStorage.deleteFcmToken();
   }
 
   static testConsole() {

@@ -21,7 +21,11 @@ export default class AppAsyncStorage {
     } 
     
     static deleteSession = async (token) => {
-        await AsyncStorage.removeItem('session_data');;
+        await AsyncStorage.removeItem('session_data');
+    }
+
+    static deleteFcmToken = async (token) => {
+        await AsyncStorage.removeItem('fcmToken');
     }
 
 }
