@@ -8,6 +8,8 @@ export default class EndPoints {
   static ping = EndPoints._baseURL + '/ping';
   
   static sessions = EndPoints._baseURL + '/sessions';
+
+  static fcm = EndPoints._baseURL + '/fcm';
   
   static users = EndPoints._baseURL + '/users';
   
