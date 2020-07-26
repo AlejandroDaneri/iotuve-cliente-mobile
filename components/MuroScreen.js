@@ -103,7 +103,6 @@ export class MuroScreen extends React.Component {
       console.log('onNotification: ', notification);
 
       const { title, body } = notification;
-      this.displayNotification(title, body);
 
       const {
         notifications: {
@@ -130,8 +129,9 @@ export class MuroScreen extends React.Component {
 
       console.log('Notificacion propia');
       console.log(localNotification);
-      firebase.notifications().displayNotification(localNotification);
+//      firebase.notifications().displayNotification(localNotification);
 
+      this.displayNotification(title, body);
       //firebase.notifications().displayNotification(notification);
 
       //console.log('Notificacion --> AQUI');
