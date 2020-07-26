@@ -1,5 +1,6 @@
 /* Import Libs */
 import React from 'react';
+import { Platform } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 import { ScrollView, View, FlatList, RefreshControl, Alert } from 'react-native';
 import { Appbar } from 'react-native-paper';
@@ -45,12 +46,13 @@ export class MuroScreen extends React.Component {
   componentDidMount() {
     console.log('componentDidMount (MuroScreen)');
 
-    // FCM -----------
-    this.checkPermission(); //we check if user has permission to receive push.
-    this.createNotificationListeners(); // Register all listener for notification 
-    //this.createChannel();
-    // FCM -----------
-
+    if (Platform.OS !== 'ios') {
+      // FCM -----------
+      this.checkPermission(); //we check if user has permission to receive push.
+      this.createNotificationListeners(); // Register all listener for notification 
+      //this.createChannel();
+      // FCM -----------
+    }
 
     this.requestWallVideos();
   }
