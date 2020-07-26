@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, ActivityIndicator, Text, View } from 'react-native';
+import { SafeAreaView, ActivityIndicator, Text, View, StatusBar } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -65,18 +65,19 @@ export class SplashScreen extends React.Component {
 
       <PaperProvider>
         <SafeAreaView style={styles.safearea}>
-          <View
-            style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'midnightblue', flex: 1, }}>
+          <StatusBar barStyle="light-content" />
+            <View
+              style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'midnightblue', flex: 1, }}>
 
-            <ChotuveLogo />
+              <ChotuveLogo />
 
-            <ActivityIndicator style={{ paddingTop: 10 }} size="large" color="#0000ff" />
+              <ActivityIndicator style={{ paddingTop: 10 }} size="large" color="#0000ff" />
 
-            <Text style={{ color: 'white', paddingVertical: 20 }}>
-              Estamos inicializando el sistema...
-            </Text>
+              <Text style={{ color: 'white', paddingVertical: 20 }}>
+                Estamos inicializando el sistema...
+              </Text>
 
-          </View>
+            </View>
         </SafeAreaView>
       </PaperProvider>
 

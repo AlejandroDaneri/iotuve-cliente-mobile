@@ -1,7 +1,7 @@
 import React from 'react';
 import { StackActions } from '@react-navigation/native';
 
-import { SafeAreaView, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { SafeAreaView, View, TouchableWithoutFeedback, Keyboard, StatusBar } from 'react-native';
 import { Button, TextInput, Provider as PaperProvider, Snackbar } from 'react-native-paper';
 
 import { styles } from '../utils/AppStyles';
@@ -363,6 +363,7 @@ export class LoginScreen extends React.Component {
     return (
       <PaperProvider>
         <SafeAreaView style={styles.safearea}>
+        <StatusBar barStyle="light-content" />
           <View
             style={{ backgroundColor: 'midnightblue', flex: 1, paddingHorizontal: 20, paddingTop: 5 }}>
 
