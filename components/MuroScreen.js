@@ -79,6 +79,8 @@ export class MuroScreen extends React.Component {
       console.log(fcmToken);
 
       if (fcmToken) {
+        // user has a device token, save in the server
+        await this.saveFCMToken(fcmToken);
         // user has a device token, save in storage
         await AsyncStorage.setItem('fcmToken', fcmToken);
       }
@@ -150,18 +152,43 @@ export class MuroScreen extends React.Component {
     }
   }
 
-  
-    displayNotification(title, body) {
-      // we display notification in alert box with title and body
-      Alert.alert(
-        title, body,
-        [
-          { text: 'Ok', onPress: () => console.log('displayNotification -> ok pressed') },
-        ],
-        { cancelable: false },
-      );
-    }
-  
+  displayNotification(title, body) {
+    // we display notification in alert box with title and body
+    Alert.alert(
+      title, body,
+      [
+        { text: 'Ok', onPress: () => console.log('displayNotification -> ok pressed') },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  async saveFCMToken(token) {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+    var myBody = JSON.stringify({ token: token, });
+
+    console.log(myHeaders);
+    console.log(myBody);
+    
+    fetch(EndPoints.fcm, {
+      method: 'POST',
+      headers: myHeaders,
+      body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        console.log('------- SAVE Server FCM ------');
+        AppUtils.printResponseJson(responseJson);
+      })
+      .catch((error) => {
+        console.log('------- error SAVE Server FCM ------');
+        console.log(error);
+      });
+  }
+
   async userLogout() {
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
