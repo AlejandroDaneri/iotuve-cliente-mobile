@@ -443,11 +443,12 @@ export class ProfileScreen extends React.Component {
                         videoAuthor={item.description}
                         videoSnapshot={item.media.thumb}
                         videoURI={item.media.url}
-                        videoLength="15:15"
+                        videoLength="00:00"
                         videoViewCount={item.count_views}
                         favoritesCount={item.count_likes}
                         notFavoritesCount={item.count_dislikes}
                         navigation={this.props.navigation}
+                        ownerVideo={this.isProfileSelectedUserLogged()}
                       />
                     )}
                   />
