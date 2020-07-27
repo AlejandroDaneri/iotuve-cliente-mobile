@@ -28,8 +28,8 @@ class Amistad extends Component {
         >
 
           <View style={{ flexDirection: 'row', }}>
-          
-            <Avatar.Image size={56} source={{uri: this.props.userAvatar}} />
+
+            <Avatar.Image size={56} source={{ uri: this.props.userAvatar }} />
 
             <View style={{ flex: 1, flexDirection: 'column' }}>
 
@@ -45,7 +45,7 @@ class Amistad extends Component {
                 </Chip>
 
               </View>
-{/*
+              {/*
               <Divider style={{ marginTop: 14 }}></Divider>
 
               <Card elevation={1}>

@@ -142,6 +142,9 @@ export class FriendsScreen extends React.Component {
           this.setState({
             dataFriendsRequest: responseJson.data.data,
           });
+
+          console.log(responseJson.data.data);
+
         } else {
           if (responseJson.fullResponse.status == 401) {
             AppUtils.logout();
@@ -252,8 +255,11 @@ export class FriendsScreen extends React.Component {
                   renderItem={({ item }) => (
 
                     <PedidoAmistad
+                      requestId={item.id}
+                      requestStatus={item.status}
                       requestDate={moment(item.date_created).format("DD-MM-YYYY  hh:mm:ss")}
-                      userName={item.from_user}
+                      fromUserName={item.from_user}
+                      message={item.message}
                       onPress={this._onToggleSnackBar}
                     />
 

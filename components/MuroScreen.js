@@ -129,7 +129,7 @@ export class MuroScreen extends React.Component {
 
       console.log('Notificacion propia');
       console.log(localNotification);
-//      firebase.notifications().displayNotification(localNotification);
+      //      firebase.notifications().displayNotification(localNotification);
 
       this.displayNotification(title, body);
       //firebase.notifications().displayNotification(notification);
@@ -170,7 +170,7 @@ export class MuroScreen extends React.Component {
 
     console.log(myHeaders);
     console.log(myBody);
-    
+
     fetch(EndPoints.fcm, {
       method: 'POST',
       headers: myHeaders,
@@ -210,6 +210,19 @@ export class MuroScreen extends React.Component {
       .finally(() => {
         this.setState({ loadingWallVideos: false })
       });
+    
+    
+       
+    
+    // DELETE del token en app-server
+
+
+
+    // delete en firebase
+    //       firebase.messaging().deleteToken();
+
+
+
     AppUtils.logout();
   }
 

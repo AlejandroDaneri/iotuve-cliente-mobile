@@ -3,19 +3,63 @@ import { Text, StyleSheet, View } from 'react-native';
 import { Chip, Avatar, Button, Card, Divider, Headline } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import EndPoints from './utils/EndPoints';
 
 class PedidoAmistad extends Component {
 
   handlePressAccept = () => {
     // Need to check to prevent null exception. 
-    this.props.onPress?.(this.props.userName, '1'); // Same as this.props.onPress && this.props.onPress();
+    this.props.onPress?.(this.props.fromUserName, '1'); // Same as this.props.onPress && this.props.onPress();
   }
 
   handlePressReject = () => {
+    console.log(this.props);
     // Need to check to prevent null exception. 
-    this.props.onPress?.(this.props.userName, '0'); // Same as this.props.onPress && this.props.onPress();
+    this.props.onPress?.(this.props.fromUserName, '0'); // Same as this.props.onPress && this.props.onPress();
   }
 
+  // approved, pending, rejected
+
+  async rejectRequest() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    fetch(EndPoints.friendships +'/', {
+      method: 'PUT',
+      headers: myHeaders,
+      //body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+
+        if (responseJson.fullResponse.ok) {
+          this.setState({
+            dataFriends: responseJson.data.data,
+          });
+        } else {
+          if (responseJson.fullResponse.status == 401) {
+            AppUtils.logout();
+            this.props.navigation.navigate("Login");
+          } else {
+            console.log('que hacer aqui?');
+          }
+        }
+
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      })
+      .finally(() => {
+        this.setState({ isLoadingFriends: false })
+      });
+
+  }
+
+  
   render() {
 
     return (
@@ -28,11 +72,11 @@ class PedidoAmistad extends Component {
         >
 
           <View style={{ flexDirection: 'row', }}>
-          <Avatar.Image size={56} source={{uri: 'http://2.bp.blogspot.com/-YUV22Vr-eJQ/U90_xPOgBZI/AAAAAAAAAGA/A-s5lx3uMKU/s1600/bob02.png',}} />
-            
+            <Avatar.Image size={56} source={{ uri: 'http://2.bp.blogspot.com/-YUV22Vr-eJQ/U90_xPOgBZI/AAAAAAAAAGA/A-s5lx3uMKU/s1600/bob02.png', }} />
+
             <View style={{ flexDirection: 'column' }}>
 
-              <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.userName}</Headline>
+              <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.fromUserName}</Headline>
 
               <View style={{ flexDirection: 'row', }}>
                 <Chip icon="video" style={{ marginLeft: 10 }}>
