@@ -16,7 +16,7 @@ class VideoEnLista extends Component {
   }
 
   componentDidMount() {
-    //console.log(this.props);
+    console.log(this.props.dateCreated);
   }
 
   async deleteVideo(videoId) {
@@ -62,6 +62,7 @@ class VideoEnLista extends Component {
                 id: this.props.videoId,
                 title: this.props.videoTitle,
                 description: this.props.videoDescription,
+                dateCreated: this.props.dateCreated,
                 user: this.props.videoUser,
                 uri: this.props.videoURI,
                 count_views: this.props.videoViewCount,

@@ -38,6 +38,8 @@ export class VideoScreen extends React.Component {
 
   componentDidMount() {
     console.log('componentDidMount (VideoScreen)');
+    console.log(this.props.route.params.dateCreated);
+
     this.requestViewVideo();
     this.requestComments()
   }
@@ -329,7 +331,7 @@ export class VideoScreen extends React.Component {
                 <Divider style={{ marginVertical: 8 }} />
 
                 <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-                  <Chip icon="calendar">14 de Marzo, 22:30</Chip>
+                  <Chip icon="calendar">{moment(this.props.route.params.dateCreated).format("DD-MM-YYYY, HH:mm")}</Chip>
                   <Chip
                     mode='outlined'
                     icon="account"

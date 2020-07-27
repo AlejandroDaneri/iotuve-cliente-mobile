@@ -438,6 +438,7 @@ export class ProfileScreen extends React.Component {
                     renderItem={({ item }) => (
                       <VideoEnLista
                         videoId={item.id}
+                        dateCreated={item.date_created}
                         videoTitle={item.title}
                         videoDescription={item.description}
                         videoAuthor={item.description}
