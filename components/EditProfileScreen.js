@@ -39,6 +39,7 @@ export class EditProfileScreen extends React.Component {
       newUserEmail: '',
       newUserPhone: '',
       newUserPassword: '',
+      newUserPasswordConfirm: '',
       newUserAvatar: '',
 
       //Generic process error message
@@ -212,6 +213,8 @@ export class EditProfileScreen extends React.Component {
       .then((responseJson) => {
         AppUtils.printResponseJson(responseJson);
 
+        this.state.newUserPassword = '';
+        this.state.newUserPasswordConfirm = '';
         if (responseJson.fullResponse.ok) {
           // cuando cambio la clave, y estuvo todo OK. hago algo especial?
           this.setState({ editingUserData: false })
@@ -365,7 +368,7 @@ export class EditProfileScreen extends React.Component {
                     <Button
                       style={{ margin: 10 }}
                       mode="contained"
-                      color="red"
+                      color="#CC0000"
                       onPress={() => {
                         this.setState({ editingUserData: false, editingUserPassword: false });
                       }}>
@@ -408,9 +411,25 @@ export class EditProfileScreen extends React.Component {
                             secureTextEntry={true}
                             autoCapitalize="none"
                             dense="true"
-                            //label="Nombre"
+                            label="Nueva contraseña"
                             mode="outlined"
                             onChangeText={(newUserPassword) => this.setState({ newUserPassword })}
+                          />
+                        </View>
+                      </View>
+
+                      <View style={{ flexDirection: 'row' }}>
+                        <List.Icon color={Colors.blue500} icon="key" />
+
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                          <TextInput
+                            style={{ padding: 2, flex: 1 }}
+                            secureTextEntry={true}
+                            autoCapitalize="none"
+                            dense="true"
+                            label="Confirmar contraseña"
+                            mode="outlined"
+                            onChangeText={(newUserPasswordConfirm) => this.setState({ newUserPasswordConfirm })}
                           />
                         </View>
                       </View>
@@ -418,17 +437,26 @@ export class EditProfileScreen extends React.Component {
                       <Button
                         style={{ margin: 10 }}
                         mode="contained"
+                        disabled={(((this.state.newUserPassword == '' ) || (this.state.newUserPasswordConfirm == '' )) ? true : false)}
                         onPress={() => {
-                          this.postFormDataPassword();
-                          this.setState({ editingUserData: false, editingUserPassword: false });
+                          if (this.state.newUserPassword === this.state.newUserPasswordConfirm) {
+                            this.postFormDataPassword();
+                            this.setState({ editingUserData: false, editingUserPassword: false });
+                          }
+                          else {
+                            console.log('Las claves ingresadas no coinciden');
+                            this._onToggleSnackBar('Las claves ingresadas no coinciden');
+                          }
                         }}>
                         Confirmar Clave
                     </Button>
                       <Button
                         style={{ margin: 10 }}
                         mode="contained"
-                        color="red"
+                        color="#CC0000"
                         onPress={() => {
+                          this.state.newUserPassword = '';
+                          this.state.newUserPasswordConfirm = '';
                           this.setState({ editingUserData: false, editingUserPassword: false });
                         }}>
                         Cancelar

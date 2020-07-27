@@ -290,11 +290,29 @@ export class MuroScreen extends React.Component {
           <Appbar.Action
             icon="logout"
             onPress={() => {
-              console.log('Logout. Cerrando sesión en el servidor');
-              this.userLogout();
-              console.log('Navegacion -> Login');
-              const replaceAction = StackActions.replace('Login');
-              this.props.navigation.dispatch(replaceAction);
+              Alert.alert(
+                'Cerrar sesión',
+                '¿Estás seguro?',
+                [
+                  {
+                    text: 'No',
+                    onPress: () => console.log('Cancelado por el usuario.'),
+                    style: 'cancel'
+                  },
+                  { 
+                    text: 'Sí', 
+                    onPress: () => {
+                      console.log('Logout. Cerrando sesión en el servidor');
+                      this.userLogout();
+                      console.log('Navegacion -> Login');
+                      const replaceAction = StackActions.replace('Login');
+                      this.props.navigation.dispatch(replaceAction);
+                    },
+                    style: 'default'
+                  }
+                ],
+                { cancelable: false }
+              );
             }}
           />
 
