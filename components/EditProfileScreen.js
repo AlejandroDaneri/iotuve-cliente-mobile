@@ -368,7 +368,7 @@ export class EditProfileScreen extends React.Component {
                     <Button
                       style={{ margin: 10 }}
                       mode="contained"
-                      color="red"
+                      color="#CC0000"
                       onPress={() => {
                         this.setState({ editingUserData: false, editingUserPassword: false });
                       }}>
@@ -453,7 +453,7 @@ export class EditProfileScreen extends React.Component {
                       <Button
                         style={{ margin: 10 }}
                         mode="contained"
-                        color="red"
+                        color="#CC0000"
                         onPress={() => {
                           this.state.newUserPassword = '';
                           this.state.newUserPasswordConfirm = '';
