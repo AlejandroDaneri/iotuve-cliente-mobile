@@ -1,6 +1,7 @@
 /* Import Libs */
 import React from 'react';
-import { ScrollView, StyleSheet, Image, Text, View } from 'react-native';
+import { StackActions } from '@react-navigation/native';
+import { ScrollView, StyleSheet, Image, Text, View, Alert } from 'react-native';
 import { Button, Divider, Chip, Card, Appbar, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { FlatList } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements';
@@ -92,8 +93,6 @@ export class ProfileScreen extends React.Component {
       this.requestUserVideos();
     }
   }
-
-
 
   async requestUser(username) {
     const authToken = await AppAsyncStorage.getTokenFromSession();
@@ -190,8 +189,6 @@ export class ProfileScreen extends React.Component {
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
     fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.username, {
-      //fetch(EndPoints.videos + '?user=' + sessionDataJSON.session_data.id, {
-      //fetch(EndPoints.videos, {
       method: 'GET',
       headers: myHeaders,
     })
@@ -223,6 +220,35 @@ export class ProfileScreen extends React.Component {
       })
       .finally(() => {
         this.setState({ loadingUserVideos: false })
+      });
+  }
+
+  async closeAccount(username) {
+
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    console.log('Cerrar cuenta');
+    fetch(EndPoints.users +  "/" + username, {
+      method: 'DELETE',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        AppUtils.printResponseJson(responseJson);
+      })
+      .catch((error) => {
+        console.log('------- error ------');
+        console.log(error);
+      })
+      .finally(() => {
+        console.log('Success!')
+        console.log('Navegacion -> Login');
+        AppUtils.logout();
+        const replaceAction = StackActions.replace('Login');
+        this.props.navigation.dispatch(replaceAction);    
       });
   }
 
@@ -275,7 +301,8 @@ export class ProfileScreen extends React.Component {
             onPress={() => { this.props.navigation.goBack() }}
           />
 
-          <Appbar.Content title="Perfil de usuario" />
+          {this.isProfileSelectedUserLogged() && <Appbar.Content title="Mi Perfil" />}
+          {!this.isProfileSelectedUserLogged() && <Appbar.Content title="Perfil de usuario" />}
 
           <Appbar.Action
             icon="account-star"
@@ -285,14 +312,14 @@ export class ProfileScreen extends React.Component {
             }}
           />
 
-          <Appbar.Action
+          {this.isProfileSelectedUserLogged() && <Appbar.Action
             icon="pencil"
             onPress={() => {
-              //alert('Editar Mi Perfil');
               console.log('Navegacion -> EditProfile'),
-                navigation.navigate('EditProfile');
+              navigation.navigate('EditProfile');
             }}
           />
+          }
 
         </Appbar.Header>
 
@@ -348,7 +375,7 @@ export class ProfileScreen extends React.Component {
                 <Divider />
 
                 {!this.isProfileSelectedUserLogged() && <Button
-                  style={{ margin: 10 }}
+                  style={{ margin: 10, marginTop: 20 }}
                   mode="contained"
                   icon="plus"
                   disabled={this.state.uploadPhase > 0 ? "false" : ""}
@@ -356,6 +383,33 @@ export class ProfileScreen extends React.Component {
                     this.requestFriendship();
                   }}>
                   Solicitar Amistad
+                </Button>}
+
+                {this.isProfileSelectedUserLogged() && <Button
+                  style={{ margin: 10, marginTop: 20, backgroundColor: '#CC0000' }}
+                  mode="contained"
+                  icon="close"
+                  disabled={this.state.uploadPhase > 0 ? "false" : ""}
+                  onPress={() => {
+                    Alert.alert(
+                      'Cerrar cuenta',
+                      '¿Estás seguro? Esta acción no se puede deshacer.',
+                      [
+                        {
+                          text: 'No',
+                          onPress: () => console.log('Cancelado por el usuario.'),
+                          style: 'cancel'
+                        },
+                        { 
+                          text: 'Sí', 
+                          onPress: () => this.closeAccount(this.state.userEmail),
+                          style: 'default'
+                        }
+                      ],
+                      { cancelable: false }
+                    );
+                  }}>
+                  Cerrar mi cuenta
                 </Button>}
 
               </Card.Content>
