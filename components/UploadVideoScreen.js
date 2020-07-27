@@ -407,7 +407,7 @@ export class UploadVideoScreen extends React.Component {
                       style={{ marginTop: 10 }}
                       icon="upload"
                       mode="contained"
-                      disabled={this.state.uploadInProgress}
+                      disabled={(((this.state.videoTitle == '' ) || (this.state.videoDescription == '' ) || (this.state.uploadInProgress)) ? true : false)}
                       onPress={this.uploadSelectedFile}>
                       Subir Video
                       </Button>
