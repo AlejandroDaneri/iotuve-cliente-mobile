@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, SafeAreaView, View } from 'react-native';
+import { Text, SafeAreaView, View, StatusBar } from 'react-native';
 import {
   Button,
   TextInput,
@@ -130,6 +130,7 @@ export class SignUpScreen extends React.Component {
     return (
       <PaperProvider>
         <SafeAreaView style={styles.safearea}>
+        <StatusBar barStyle="light-content" />
           <View
             style={{ backgroundColor: 'midnightblue', flex: 1, paddingHorizontal: 20, paddingTop: 5 }}>
 
