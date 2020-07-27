@@ -417,9 +417,13 @@ export class ProfileScreen extends React.Component {
           </View>
 
           <View>
-            <Text style={{ fontSize: 30, marginHorizontal: 10, marginTop: 10 }}>
+            {this.isProfileSelectedUserLogged() && <Text style={{ fontSize: 30, marginHorizontal: 10, marginTop: 10 }}>
               Listado de tus videos
-            </Text>
+            </Text>}
+
+            {!this.isProfileSelectedUserLogged() && <Text style={{ fontSize: 30, marginHorizontal: 10, marginTop: 10 }}>
+              Listado de sus videos
+            </Text>}
 
             <View style={{ flex: 1, marginVertical: 10 }}>
 
