@@ -195,6 +195,31 @@ export class MuroScreen extends React.Component {
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
+    // TODO: DELETE del token en app-server
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    var myBody = JSON.stringify({ token: fcmToken, });
+
+    fetch(EndPoints.fcm, {
+      method: 'DELETE',
+      headers: myHeaders,
+      body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        console.log('------- DELETE Server FCM ------');
+        AppUtils.printResponseJson(responseJson);
+      })
+      .catch((error) => {
+        console.log('------- error DELETE Server FCM ------');
+        console.log(error);
+      });
+
+    // borro token de firebase
+    firebase.messaging().deleteToken();
+
+    // borro session en el app-server
     fetch(EndPoints.sessions, {
       method: 'DELETE',
       headers: myHeaders,
@@ -210,22 +235,10 @@ export class MuroScreen extends React.Component {
         console.log(error);
       })
       .finally(() => {
-        this.setState({ loadingWallVideos: false })
+        this.setState({ loadingWallVideos: false });
+        AppUtils.logout();
       });
     
-    
-       
-    
-    // DELETE del token en app-server
-
-
-
-    // delete en firebase
-    //       firebase.messaging().deleteToken();
-
-
-
-    AppUtils.logout();
   }
 
   async requestWallVideos() {
