@@ -16,7 +16,7 @@ class VideoEnLista extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.dateCreated);
+//    console.log(this.props.dateCreated);
   }
 
   async deleteVideo(videoId) {
