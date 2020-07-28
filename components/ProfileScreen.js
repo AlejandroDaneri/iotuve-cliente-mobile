@@ -5,6 +5,8 @@ import { ScrollView, StyleSheet, Image, Text, View, Alert } from 'react-native';
 import { Button, Divider, Chip, Card, Appbar, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { FlatList } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements';
+import AsyncStorage from '@react-native-community/async-storage';
+import firebase from "react-native-firebase";
 import axios from 'axios';
 
 /* Import Components */
@@ -25,6 +27,7 @@ export class ProfileScreen extends React.Component {
       snackBarText: '',
       snackBarBackgroundColor: '#CC0000',
 
+      fcmToken: '',
       loggedUsername: "",
 
       userFirstName: '',
@@ -225,10 +228,37 @@ export class ProfileScreen extends React.Component {
 
   async closeAccount(username) {
 
+    console.log('Cerrar cuenta');
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
-    console.log('Cerrar cuenta');
+    // DELETE del token en app-server
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    var myBody = JSON.stringify({ token: fcmToken, });
+
+    console.log('fcmToken: ' + fcmToken);
+
+    fetch(EndPoints.fcm, {
+      method: 'DELETE',
+      headers: myHeaders,
+      body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        console.log('------- DELETE Server FCM ------');
+        AppUtils.printResponseJson(responseJson);
+      })
+      .catch((error) => {
+        console.log('------- error DELETE Server FCM ------');
+        console.log(error);
+      });
+
+    // borro token de firebase
+    firebase.messaging().deleteToken();
+
+    // borro session en el app-server
     fetch(EndPoints.users + "/" + username, {
       method: 'DELETE',
       headers: myHeaders,
@@ -237,6 +267,7 @@ export class ProfileScreen extends React.Component {
         return { data: json, fullResponse: response }
       }))
       .then((responseJson) => {
+        console.log('Success!')
         AppUtils.printResponseJson(responseJson);
       })
       .catch((error) => {
@@ -244,7 +275,6 @@ export class ProfileScreen extends React.Component {
         console.log(error);
       })
       .finally(() => {
-        console.log('Success!')
         console.log('Navegacion -> Login');
         AppUtils.logout();
         const replaceAction = StackActions.replace('Login');
