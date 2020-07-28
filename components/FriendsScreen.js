@@ -32,7 +32,7 @@ export class FriendsScreen extends React.Component {
 
     tabSeleccionada: 'Amigos',
     colorTabAmigos: 'midnightblue',
-    colorTabSolicitudes: 'white',
+    colorTabSolicitudes: 'lightgrey',
 
     isLoadingFriends: true,
     isLoadingFriendsRequests: true,
@@ -43,13 +43,13 @@ export class FriendsScreen extends React.Component {
   _clickTabAmigos() {
     this.setState({
       colorTabAmigos: 'midnightblue',
-      colorTabSolicitudes: 'white',
+      colorTabSolicitudes: 'lightgrey',
       tabSeleccionada: 'Amigos',
     });
   }
   _clickTabSolicitudes() {
     this.setState({
-      colorTabAmigos: 'white',
+      colorTabAmigos: 'lightgrey',
       colorTabSolicitudes: 'midnightblue',
       tabSeleccionada: 'Solicitudes',
     });
@@ -83,11 +83,13 @@ export class FriendsScreen extends React.Component {
   }
 
   async requestFriends() {
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
     const authToken = await AppAsyncStorage.getTokenFromSession();
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
-    fetch('https://reqres.in/api/users?delay=3', {
+    fetch(EndPoints.friendships + '?status=approved&to_user=' + sessionDataJSON.session_data.username, {
       method: 'GET',
       headers: myHeaders,
     })
@@ -128,7 +130,7 @@ export class FriendsScreen extends React.Component {
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
-    fetch(EndPoints.friendships + '?to_user=' + sessionDataJSON.session_data.username, {
+    fetch(EndPoints.friendships + '?status=pending&to_user=' + sessionDataJSON.session_data.username, {
       method: 'GET',
       headers: myHeaders,
     })
@@ -201,7 +203,7 @@ export class FriendsScreen extends React.Component {
 
           <Button
             style={{ marginLeft: 10 }}
-            icon="voice"
+            icon="account-search"
             mode="contained"
             color={this.state.colorTabSolicitudes}
             onPress={this._clickTabSolicitudes}
@@ -225,9 +227,9 @@ export class FriendsScreen extends React.Component {
                     keyExtractor={({ id }, index) => id}
                     renderItem={({ item }) => (
                       <Amistad
-                        friendsCount={item.id}
-                        videoCount={item.id}
-                        userName={item.first_name}
+                        friendsCount={0}
+                        videoCount={0}
+                        userName={item.from_user}
                         userAvatar={item.avatar}
                       />
                     )}

@@ -6,6 +6,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class Amistad extends Component {
 
+  componentDidMount() {
+    console.log('componentDidMount (Amistad)');
+    console.log(this.props);
+  }
+
   handlePressAccept = () => {
     // Need to check to prevent null exception. 
     this.props.onPress?.(this.props.userName, '1'); // Same as this.props.onPress && this.props.onPress();

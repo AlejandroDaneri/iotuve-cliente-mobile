@@ -4,22 +4,72 @@ import { Chip, Avatar, Button, Card, Divider, Headline } from 'react-native-pape
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import EndPoints from './utils/EndPoints';
+import AppAsyncStorage from './utils/AppAsyncStorage';
+import AppUtils from './utils/AppUtils';
 
 class PedidoAmistad extends Component {
 
   handlePressAccept = () => {
+    this.acceptPedidoAmistad();
     // Need to check to prevent null exception. 
     this.props.onPress?.(this.props.fromUserName, '1'); // Same as this.props.onPress && this.props.onPress();
   }
 
   handlePressReject = () => {
-    console.log(this.props);
+    this.rejectPedidoAmistad();
     // Need to check to prevent null exception. 
     this.props.onPress?.(this.props.fromUserName, '0'); // Same as this.props.onPress && this.props.onPress();
   }
 
-  // approved, pending, rejected
+  async acceptPedidoAmistad() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+    var myBody = JSON.stringify({ status: "approved", });
 
+    let requestId = this.props.requestId;
+
+    fetch(EndPoints.friendships +'/'+ requestId, {
+      method: 'PUT',
+      headers: myHeaders,
+      body: myBody,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        console.log('------- ACCEPT Server Friendship ------');
+        AppUtils.printResponseJson(responseJson);
+      })
+      .catch((error) => {
+        console.log('------- error ACCEPT Server Friendship ------');
+        console.log(error);
+      });
+  }
+
+  async rejectPedidoAmistad() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    let requestId = this.props.requestId;
+
+    fetch(EndPoints.friendships +'/'+ requestId, {
+      method: 'DELETE',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        console.log('------- DELETE Server Friendship ------');
+        AppUtils.printResponseJson(responseJson);
+      })
+      .catch((error) => {
+        console.log('------- error DELETE Server Friendship ------');
+        console.log(error);
+      });
+  }
+
+  // creo que rejectRequest ... no va mas.
   async rejectRequest() {
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
