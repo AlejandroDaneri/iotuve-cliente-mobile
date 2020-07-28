@@ -66,15 +66,15 @@ export class ProfileScreen extends React.Component {
   async setLoggedUsername() {
     const sessionData = await AppAsyncStorage.getSession();
     const sessionDataJSON = JSON.parse(sessionData);
-    this.setState({loggedUsername: sessionDataJSON.session_data.username})
+    this.setState({ loggedUsername: sessionDataJSON.session_data.username })
   }
 
   isProfileSelectedUserLogged() {
     const { username } = this.props.route.params;
-    if(!username) {
+    if (!username) {
       return true
     }
-    if(username === this.state.loggedUsername) {
+    if (username === this.state.loggedUsername) {
       return true
     }
     return false
@@ -82,7 +82,7 @@ export class ProfileScreen extends React.Component {
 
   componentDidMount() {
     this.setLoggedUsername()
-    
+
     const { username } = this.props.route.params;
 
     if (username) {
@@ -96,19 +96,19 @@ export class ProfileScreen extends React.Component {
 
   async requestUser(username) {
     const authToken = await AppAsyncStorage.getTokenFromSession();
-    axios.get(EndPoints.users +  "/" + username, {
+    axios.get(EndPoints.users + "/" + username, {
       headers: { 'X-Auth-Token': authToken },
     })
-    .then(response => {
-      const {data} = response
-      this.updateUserData(data);
-    })
-    .catch(error => {
-      if (error.response.status === 401) {
-        AppUtils.logout()
-        this.props.navigation.navigate("Login")
-      }
-    })
+      .then(response => {
+        const { data } = response
+        this.updateUserData(data);
+      })
+      .catch(error => {
+        if (error.response.status === 401) {
+          AppUtils.logout()
+          this.props.navigation.navigate("Login")
+        }
+      })
   }
 
   async requestVideos(username) {
@@ -119,20 +119,20 @@ export class ProfileScreen extends React.Component {
         user: username
       }
     })
-    .then(response => {
-      const { data } = response
-      this.setState({
-        listUserVideos: data.data,
-        listUserVideosLoaded: true,
-        loadingUserVideos: false
-      });
-    })
-    .catch(error => {
-      if (error.response.status === 401) {
-        AppUtils.logout()
-        this.props.navigation.navigate("Login")
-      }
-    })
+      .then(response => {
+        const { data } = response
+        this.setState({
+          listUserVideos: data.data,
+          listUserVideosLoaded: true,
+          loadingUserVideos: false
+        });
+      })
+      .catch(error => {
+        if (error.response.status === 401) {
+          AppUtils.logout()
+          this.props.navigation.navigate("Login")
+        }
+      })
   }
 
   async requestUserData() {
@@ -229,7 +229,7 @@ export class ProfileScreen extends React.Component {
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
     console.log('Cerrar cuenta');
-    fetch(EndPoints.users +  "/" + username, {
+    fetch(EndPoints.users + "/" + username, {
       method: 'DELETE',
       headers: myHeaders,
     })
@@ -248,7 +248,7 @@ export class ProfileScreen extends React.Component {
         console.log('Navegacion -> Login');
         AppUtils.logout();
         const replaceAction = StackActions.replace('Login');
-        this.props.navigation.dispatch(replaceAction);    
+        this.props.navigation.dispatch(replaceAction);
       });
   }
 
@@ -304,19 +304,21 @@ export class ProfileScreen extends React.Component {
           {this.isProfileSelectedUserLogged() && <Appbar.Content title="Mi Perfil" />}
           {!this.isProfileSelectedUserLogged() && <Appbar.Content title="Perfil de usuario" />}
 
-          <Appbar.Action
-            icon="account-star"
-            onPress={() => {
-              console.log('Navegacion -> Friends'),
-                navigation.navigate('Friends');
-            }}
-          />
+          {this.isProfileSelectedUserLogged() &&
+            <Appbar.Action
+              icon="account-star"
+              onPress={() => {
+                console.log('Navegacion -> Friends'),
+                  navigation.navigate('Friends');
+              }}
+            />
+          }
 
           {this.isProfileSelectedUserLogged() && <Appbar.Action
             icon="pencil"
             onPress={() => {
               console.log('Navegacion -> EditProfile'),
-              navigation.navigate('EditProfile');
+                navigation.navigate('EditProfile');
             }}
           />
           }
@@ -400,8 +402,8 @@ export class ProfileScreen extends React.Component {
                           onPress: () => console.log('Cancelado por el usuario.'),
                           style: 'cancel'
                         },
-                        { 
-                          text: 'Sí', 
+                        {
+                          text: 'Sí',
                           onPress: () => this.closeAccount(this.state.userEmail),
                           style: 'default'
                         }
@@ -492,20 +494,20 @@ export class ProfileScreen extends React.Component {
         </ScrollView>
 
         <Snackbar
-            style={{ backgroundColor: this.state.snackBarBackgroundColor, elevation: 20 }}
-            visible={this.state.snackBarVisible}
-            duration={3000}
-            onDismiss={this._onDismissSnackBar}
-            action={{
-              onPress: () => {
-                // Do something
-                this._onDismissSnackBar();
-              },
-            }}
-          >
-            {this.state.snackBarText}
+          style={{ backgroundColor: this.state.snackBarBackgroundColor, elevation: 20 }}
+          visible={this.state.snackBarVisible}
+          duration={3000}
+          onDismiss={this._onDismissSnackBar}
+          action={{
+            onPress: () => {
+              // Do something
+              this._onDismissSnackBar();
+            },
+          }}
+        >
+          {this.state.snackBarText}
         </Snackbar>
-        
+
       </View>
     );
   }
