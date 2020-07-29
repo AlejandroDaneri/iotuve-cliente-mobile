@@ -65,6 +65,7 @@ class VideoEnLista extends Component {
                 dateCreated: this.props.dateCreated,
                 user: this.props.videoUser,
                 uri: this.props.videoURI,
+                videoLength: this.props.videoLength,
                 count_views: this.props.videoViewCount,
                 count_likes: this.props.favoritesCount,
                 count_dislikes: this.props.notFavoritesCount,

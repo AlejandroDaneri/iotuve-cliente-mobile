@@ -116,6 +116,29 @@ export default class AppUtils {
     return granted;
   }
 
+  // Parsea la duracion del video en ms y la convierte al formato mm:ss
+  static millisToMinutesAndSeconds(millis) {
+
+    var match = millis.match(/_ctd\[(\d+)\]_/g);
+    if (match == null) {
+
+      return '00:00';
+    }
+    else {
+
+      try {
+        var millis_int = parseInt(String(match).substring(5), 10);
+
+        var minutes = Math.floor(millis_int / 60000);
+        var seconds = ((millis_int % 60000) / 1000).toFixed(0);
+        return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+      }
+      catch {
+        return '00:00';
+      }
+    }
+  }
+
   /*
     static async requestPermissionsAndroid() {
       const granted1 = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);

@@ -154,6 +154,7 @@ PODS:
   - GTMSessionFetcher/Core (1.4.0)
   - GTMSessionFetcher/Full (1.4.0):
     - GTMSessionFetcher/Core (= 1.4.0)
+  - mobile-ffmpeg-min-gpl (4.3.1)
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
     - nanopb/encode (= 0.3.9011)
@@ -330,6 +331,9 @@ PODS:
   - React-jsinspector (0.62.2)
   - react-native-document-picker (3.3.3):
     - React
+  - react-native-ffmpeg/min-gpl (0.4.4):
+    - mobile-ffmpeg-min-gpl (= 4.3.1)
+    - React
   - react-native-safe-area-context (0.7.3):
     - React
   - react-native-video (4.4.5):
@@ -476,6 +480,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-ffmpeg/min-gpl (from `../node_modules/react-native-ffmpeg/react-native-ffmpeg.podspec`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -534,6 +539,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
+    - mobile-ffmpeg-min-gpl
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
@@ -572,6 +578,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-ffmpeg:
+    :podspec: "../node_modules/react-native-ffmpeg/react-native-ffmpeg.podspec"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-video:
@@ -659,6 +667,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 39530bc0ad980530298e9c4af8549e991fd033b1
   GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
+  mobile-ffmpeg-min-gpl: bfb94269cd6089201b30ca3ca857bf2916561bf5
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   Permission-PhotoLibrary: 3400b260e5f80e0dd9c04d00c2ceab233bf88427
@@ -673,6 +682,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 1540d1c01bb493ae3124ed83351b1b6a155db7da
   React-jsinspector: 512e560d0e985d0e8c479a54a4e5c147a9c83493
   react-native-document-picker: dd96ce05bf1453b110d7a3912097bf6d298d2cb6
+  react-native-ffmpeg: f9a60452aaa5d478aac205b248224994f3bde416
   react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
   react-native-video: aa527b0acb37f94c4491e70df0274cb26979405d
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
@@ -701,6 +711,6 @@ SPEC CHECKSUMS:
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: e3855b503e02c44f95a7c448d035c957fa6dd56e
+PODFILE CHECKSUM: d01e3ce682f84f471ebc46af3acf845cce2903bb
 
 COCOAPODS: 1.9.3

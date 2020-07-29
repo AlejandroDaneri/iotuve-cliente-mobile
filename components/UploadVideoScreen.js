@@ -11,6 +11,7 @@ import RNFS from 'react-native-fs';
 import EndPoints from '../utils/EndPoints.js';
 import AppAsyncStorage from '../utils/AppAsyncStorage.js';
 import { Image } from 'react-native-elements';
+import { LogLevel, RNFFmpegConfig, RNFFprobe } from 'react-native-ffmpeg';
 
 
 export class UploadVideoScreen extends React.Component {
@@ -171,10 +172,26 @@ export class UploadVideoScreen extends React.Component {
     if (this.state.appHasPermission) {
 
       const pathFileToUpload = this.state.selectedFilePath;
-      const firebaseReferenceName = AppUtils.generateRandomNumber() + '_' + this.state.selectedFile.name;
+      // Obtenemos la duration del video a subir
+      var videoDuration = 0;
+      try {
+        RNFFmpegConfig.setLogLevel(LogLevel.AV_LOG_ERROR);
+        await RNFFprobe.getMediaInformation(pathFileToUpload).then(function(info) { videoDuration = info.duration;});
+      }
+      catch {
+        // Hubo un error, videoDuration queda en 0
+        videoDuration = 0;
+      }
+      // No se pudo obtener, videoDuration queda en 0
+      if (!videoDuration) {
+        videoDuration = 0;
+      }
+      // Construimos el path con la duration
+      console.log('Video duration in ms: ' + videoDuration);
+      const firebaseReferenceName = AppUtils.generateRandomNumber() + '_ctd[' + videoDuration + ']_' + this.state.selectedFile.name;
       const firebaseReferencePath = '/uploads/videos/test/' + firebaseReferenceName;
+      console.log('Firebase path: ' + firebaseReferencePath);
 
-      console.log(firebaseReferencePath);
       const reference = firebase.storage().ref(firebaseReferencePath);
       console.log('REFERENCE: ');
       console.log(reference);
@@ -218,11 +235,10 @@ export class UploadVideoScreen extends React.Component {
 
       });
 
-
     } else {
       console.log('Dijo que no a otorgar permisos!');
     }
-
+ 
   }
 
   async selectOneFile() {

@@ -264,7 +264,7 @@ export class VideoScreen extends React.Component {
             <View style={{ marginTop: 8, justifyContent: 'space-between', flexDirection: 'row' }}>
               <View style={styles.actionsLeft}>
                 <Chip icon="eye" style={{ marginRight: 4 }}>{this.props.route.params.count_views}</Chip>
-                <Chip icon="alarm">00:00</Chip>
+                <Chip icon="alarm">{this.props.route.params.videoLength}</Chip>
               </View>
               <View style={styles.actionsRight}>
                 <Chip

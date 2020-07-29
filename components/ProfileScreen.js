@@ -477,7 +477,7 @@ export class ProfileScreen extends React.Component {
                         videoUser={item.user}
                         videoSnapshot={item.media.thumb}
                         videoURI={item.media.url}
-                        videoLength="00:00"
+                        videoLength={AppUtils.millisToMinutesAndSeconds(item.media.name)}
                         videoViewCount={item.count_views}
                         favoritesCount={item.count_likes}
                         notFavoritesCount={item.count_dislikes}
