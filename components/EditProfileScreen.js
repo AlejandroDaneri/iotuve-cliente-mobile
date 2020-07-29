@@ -375,7 +375,16 @@ export class EditProfileScreen extends React.Component {
       newUserEmail: data.contact.email,
       newUserPhone: data.contact.phone,
       newUserAvatar: data.avatar.url,
-    })
+    });
+
+    
+    const { route } = this.props;
+    const params = route.params;
+    let itemData = {
+      firstName: data.first_name,
+      lastName: data.last_name,
+      };
+    params.replaceDataAvatar(itemData);
   }
 
   async postFormData() {

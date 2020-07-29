@@ -355,6 +355,7 @@ export class ProfileScreen extends React.Component {
               console.log('Navegacion -> EditProfile'),
                 navigation.navigate('EditProfile', {
                   replaceProfileAvatar: item => this.setState({ userAvatar: item }),
+                  replaceDataAvatar: item => this.setState({ userFirstName: item.firstName, userLastName: item.lastName }),
                 });
             }}
           />
