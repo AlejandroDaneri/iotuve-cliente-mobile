@@ -1,7 +1,7 @@
 import React from 'react';
 import { StackActions } from '@react-navigation/native';
 
-import { SafeAreaView, View, TouchableWithoutFeedback, Keyboard, StatusBar } from 'react-native';
+import { Dimensions, SafeAreaView, View, TouchableWithoutFeedback, Keyboard, StatusBar } from 'react-native';
 import { Button, TextInput, Provider as PaperProvider, Snackbar } from 'react-native-paper';
 
 import { styles } from '../utils/AppStyles';
@@ -427,7 +427,7 @@ export class LoginScreen extends React.Component {
                 <View style={{ alignItems: 'center', paddingTop: 8 }}>
 
                   <GoogleSigninButton
-                    style={{ width: 250 }}
+                    style={{width: (Dimensions.get('window').width - 95 )}}
                     size={GoogleSigninButton.Size.Wide}
                     color={GoogleSigninButton.Color.Dark}
                     onPress={this._signIn}
