@@ -301,14 +301,16 @@ export class EditProfileScreen extends React.Component {
 
         this.postNewAvatar(appServerMetadata).then((resultAppServer) => {
           console.log('regreso del metodo del postNewAvatar();')
-          console.log('resultAppServer:');
-          console.log(resultAppServer);
-          console.log(resultAppServer.data);
-          console.log(resultAppServer.data.url);
+//          console.log('resultAppServer:');
+//          console.log(resultAppServer);
           this.setState({
             uploadPhase: 3,
             userAvatar: resultAppServer.data.url,
           });
+
+          const { route } = this.props;
+          const params = route.params;
+          params.replaceProfileAvatar(resultAppServer.data.url);
         });
 
 

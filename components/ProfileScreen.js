@@ -353,7 +353,9 @@ export class ProfileScreen extends React.Component {
             icon="pencil"
             onPress={() => {
               console.log('Navegacion -> EditProfile'),
-                navigation.navigate('EditProfile');
+                navigation.navigate('EditProfile', {
+                  replaceProfileAvatar: item => this.setState({ userAvatar: item }),
+                });
             }}
           />
           }
