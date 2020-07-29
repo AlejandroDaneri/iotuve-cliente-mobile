@@ -151,6 +151,11 @@ export class EditProfileScreen extends React.Component {
 
   }
 
+  delayedUpload = () =>
+    setTimeout(() => {
+      this.uploadSelectedFile();
+    }, 2000);
+
   async selectOneFile() {
 
     // reseteo el path si es que existia
@@ -162,7 +167,10 @@ export class EditProfileScreen extends React.Component {
         type: [DocumentPicker.types.images], // mp4
       });
 
-      this.setState({ selectedFile: res, uploadPhase: 1 });
+      this.setState({
+        selectedFile: res,
+        uploadPhase: 1
+      });
 
       //Printing the log related to the file
       console.log('res : ' + JSON.stringify(res));
@@ -174,6 +182,10 @@ export class EditProfileScreen extends React.Component {
       // esta linea setea el path que luego se usara en el upload!
 
       this.setPathToAvatar();
+
+      // timer o wait
+      this.delayedUpload();
+
 
     } catch (err) {
       //Handling any exception (If any)
@@ -193,13 +205,13 @@ export class EditProfileScreen extends React.Component {
     const sessionDataJSON = JSON.parse(sessionData);
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
-    var myBody = JSON.stringify({name: uploadMetadata.name,});
+    var myBody = JSON.stringify({ name: uploadMetadata.name, });
 
     console.log('postNewAvatar - 1');
 
     return new Promise((resolve, reject) => {
 
-      fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username +'/avatars', {
+      fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username + '/avatars', {
         method: 'POST',
         headers: myHeaders,
         body: myBody,
@@ -252,7 +264,7 @@ export class EditProfileScreen extends React.Component {
       console.log('pathFileToUpload: ' + pathFileToUpload);
 
       // Construimos el path con la duration
-      const firebaseReferenceName = AppUtils.generateRandomNumber() +'_'+ this.state.selectedFile.name;
+      const firebaseReferenceName = AppUtils.generateRandomNumber() + '_' + this.state.selectedFile.name;
       const firebaseReferencePath = '/uploads/videos/test/' + firebaseReferenceName;
       console.log('Firebase path: ' + firebaseReferencePath);
 
@@ -286,7 +298,7 @@ export class EditProfileScreen extends React.Component {
         var appServerMetadata = firebaseUploadResult.metadata;
         appServerMetadata.name = firebaseReferenceName;
 
-        
+
         this.postNewAvatar(appServerMetadata).then((resultAppServer) => {
           console.log('regreso del metodo del postNewAvatar();')
           console.log('resultAppServer:');
@@ -295,14 +307,14 @@ export class EditProfileScreen extends React.Component {
             uploadPhase: 3,
           });
         });
-        
+
 
       });
 
     } else {
       console.log('Dijo que no a otorgar permisos!');
     }
- 
+
   }
 
   async requestUserData() {
@@ -524,17 +536,8 @@ export class EditProfileScreen extends React.Component {
                         </Button>
                         }
 
-                        {this.state.uploadPhase == 1 &&
-                          <Button
-                            style={{ margin: 10 }}
-                            icon="image"
-                            mode="outlined"
-                            onPress={() => {
-                              this.uploadSelectedFile();
-                            }}
-                          >
-                            Subir Nuevo Avatar
-                        </Button>
+                        {((this.state.uploadPhase == 1) || (this.state.uploadPhase == 2)) &&
+                          <ActivityIndicator style={{ padding: 20 }} />
                         }
 
                         <Button
