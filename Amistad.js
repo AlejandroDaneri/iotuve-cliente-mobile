@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Chip, Avatar, Button, Card, Divider, Title, Headline } from 'react-native-paper';
-
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class Amistad extends Component {
 
@@ -22,6 +20,8 @@ class Amistad extends Component {
   }
 
   render() {
+
+    const { navigation } = this.props;
 
     return (
 
@@ -50,14 +50,7 @@ class Amistad extends Component {
                 </Chip>
 
               </View>
-              {/*
-              <Divider style={{ marginTop: 14 }}></Divider>
 
-              <Card elevation={1}>
-                <Card.Title title="Ni el loro"/>
-                <Card.Cover source={{ uri: "https://picsum.photos/701" }} />
-              </Card>
-*/}
             </View>
 
           </View>
@@ -71,7 +64,12 @@ class Amistad extends Component {
                 style={{ marginLeft: 10 }}
                 icon="account"
                 mode="outlined"
-              >
+                onPress={() => {
+                  console.log('Ir a perfil de usuario '+ this.props.userName);
+                  navigation.navigate("Profile", {
+                    username: this.props.userName
+                  });
+                }}>
                 Ver Perfil
               </Button>
 

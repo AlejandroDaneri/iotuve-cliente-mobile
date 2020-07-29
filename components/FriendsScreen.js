@@ -1,8 +1,7 @@
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { View, Image } from 'react-native';
 import { Button, Appbar, Snackbar, ActivityIndicator, Headline, Paragraph } from 'react-native-paper';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import PedidoAmistad from '../PedidoAmistad.js';
 import Amistad from '../Amistad.js';
@@ -89,7 +88,7 @@ export class FriendsScreen extends React.Component {
 
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
-    fetch(EndPoints.friendships + '?status=approved&to_user=' + sessionDataJSON.session_data.username, {
+    fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username + '/friends', {
       method: 'GET',
       headers: myHeaders,
     })
@@ -101,7 +100,7 @@ export class FriendsScreen extends React.Component {
 
         if (responseJson.fullResponse.ok) {
           this.setState({
-            dataFriends: responseJson.data.data,
+            dataFriends: responseJson.data.friends,
           });
         } else {
           if (responseJson.fullResponse.status == 401) {
@@ -213,7 +212,7 @@ export class FriendsScreen extends React.Component {
 
         </View>
 
-        <View style={{ flex: 1, marginVertical: 0 }}>
+        <View style={{ flex: 1, marginVertical: 0, backgroundColor: 'white' }}>
 
           {(this.state.isLoadingFriends || this.state.isLoadingFriendsRequests) && <ActivityIndicator style={{ padding: 20 }} />}
 
@@ -227,9 +226,10 @@ export class FriendsScreen extends React.Component {
                     keyExtractor={({ id }, index) => id}
                     renderItem={({ item }) => (
                       <Amistad
+                        navigation={this.props.navigation}
                         friendsCount={0}
                         videoCount={0}
-                        userName={item.from_user}
+                        userName={item.username}
                         userAvatar={item.avatar}
                       />
                     )}
@@ -237,10 +237,16 @@ export class FriendsScreen extends React.Component {
                 )}
 
                 {(this.state.dataFriends.length == 0 &&
-                  <View style={{ textAlign: 'center' }}>
+
+                  <View style={{ alignItems: 'center', padding: 20 }}>
                     <Headline>No hay amigos en tu lista</Headline>
                     <Paragraph>Empezá a conectarte con otros usuarios</Paragraph>
+                    <Image
+                      style={{ width: 300, height: 300 }}
+                      source={require('../images/undraw_friends_ocka.png')}
+                    />
                   </View>
+
                 )}
 
               </View>
@@ -270,9 +276,13 @@ export class FriendsScreen extends React.Component {
               )}
 
               {(this.state.dataFriendsRequest.length == 0 &&
-                <View>
-                  <Headline>No hay solicitudes de amistad pendientes</Headline>
-                  <Text>Cuando otro usuario solicite conectarse con vos, aparecerá aca</Text>
+                  <View style={{ alignItems: 'center', padding: 20 }}>
+                  <Headline>Nada por hacer</Headline>
+                  <Paragraph>No hay solicitudes pendientes</Paragraph>
+                  <Image
+                    style={{ width: 300, height: 300 }}
+                    source={require('../images/undraw_a_moment_to_relax_bbpa.png')}
+                  />
                 </View>
               )}
 
