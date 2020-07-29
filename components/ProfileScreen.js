@@ -87,6 +87,8 @@ export class ProfileScreen extends React.Component {
     this.setLoggedUsername()
 
     const { username } = this.props.route.params;
+    console.log("username");
+    console.log(username);
 
     if (username) {
       this.requestVideos(username)
