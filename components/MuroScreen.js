@@ -346,6 +346,7 @@ export class MuroScreen extends React.Component {
 
                   <VideoEnLista
                     videoId={item.id}
+                    videoVisibility={item.visibility}
                     dateCreated={item.date_created}
                     videoTitle={item.title}
                     videoDescription={item.description}

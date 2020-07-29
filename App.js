@@ -13,10 +13,10 @@ import { PasswordRecoveryScreen } from './components/PasswordRecoveryScreen';
 import { MuroScreen } from './components/MuroScreen';
 import { ProfileScreen } from './components/ProfileScreen';
 import { FriendsScreen } from './components/FriendsScreen';
-import { ChatScreen } from './components/ChatScreen';
 import { EditProfileScreen } from './components/EditProfileScreen';
 import { VideoScreen } from './components/VideoScreen';
 import { UploadVideoScreen } from './components/UploadVideoScreen';
+import { EditVideoScreen } from './components/EditVideoScreen';
 
 const Stack = createStackNavigator();
 
@@ -46,7 +46,7 @@ export default class ChotuveFiubaApp extends React.Component {
           <Stack.Screen options={{ headerShown: false }} name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen options={{ headerShown: false }} name="Friends" component={FriendsScreen} />
           <Stack.Screen options={{ headerShown: false }} name="UploadVideo" component={UploadVideoScreen} />
-          <Stack.Screen options={{ headerShown: false }} name="Chat" component={ChatScreen} />
+          <Stack.Screen options={{ headerShown: false }} name="EditVideo" component={EditVideoScreen} />
           <Stack.Screen options={{ headerShown: false }} name="Video" component={VideoScreen} />
           <Stack.Screen
             options={{

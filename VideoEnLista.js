@@ -100,8 +100,13 @@ class VideoEnLista extends Component {
                     <Divider />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10 }}>
                       <Button
-                        mode="contained"
-                        icon="video"
+                    mode="contained"
+                    icon="video"
+                    onPress={() => {
+                      navigation.navigate("EditVideo", {
+                        allVideoInfo: this.props
+                      });
+                    }}
                       >
                         Editar Video
                 </Button>
@@ -109,7 +114,7 @@ class VideoEnLista extends Component {
                       <Button
                         style={{ backgroundColor: '#CC0000' }}
                         mode="contained"
-                        icon="bucket"
+                        icon="delete"
                         onPress={() => {
                           Alert.alert(
                             'Borrar video',
@@ -130,7 +135,7 @@ class VideoEnLista extends Component {
                           );
                         }}
                       >
-                        Borrar Video
+                        Borrar
                 </Button>
                     </View>
                   </View>
