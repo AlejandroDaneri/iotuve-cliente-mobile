@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { Appbar, Card, Chip, Divider, IconButton, Colors, Button, TextInput } from 'react-native-paper';
+import { Text, View, StyleSheet, Image } from 'react-native';
+import { Appbar, Card, Chip, Divider, IconButton, Colors, Button, TextInput, Headline, Paragraph } from 'react-native-paper';
 import moment from 'moment';
 import PruebaPlayVideoFile from '../PruebaPlayVideoFile.js';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
@@ -336,7 +336,7 @@ export class VideoScreen extends React.Component {
                     mode='outlined'
                     icon="account"
                     onPress={() => {
-                      console.log('Ir a perfil de usuario');
+                      console.log('Ir a perfil de usuario ' + this.props.route.params.user);
                       navigation.navigate("Profile", {
                         username: this.props.route.params.user
                       });
@@ -386,7 +386,7 @@ export class VideoScreen extends React.Component {
 
           <View style={{ justifyContent: 'space-between', flexDirection: 'row', }}>
 
-            <View style={{ justifyContent: 'flex-start', flexDirection: 'row', marginHorizontal: 8, marginTop: 8 }}>
+            <View style={{ justifyContent: 'flex-start', flexDirection: 'row', marginHorizontal: 8, marginVertical: 8 }}>
               <IconButton
                 icon="comment"
                 color={Colors.grey500}
@@ -396,7 +396,7 @@ export class VideoScreen extends React.Component {
               <Text style={{ alignSelf: 'center', fontSize: 20 }}>Mensajes:</Text>
             </View>
 
-            <View style={{ justifyContent: 'flex-start', flexDirection: 'row', marginHorizontal: 8, marginTop: 8 }}>
+            <View style={{ justifyContent: 'flex-start', flexDirection: 'row', marginHorizontal: 8, marginVertical: 8 }}>
 
               <Button
                 style={{ marginLeft: 10 }}
@@ -450,17 +450,15 @@ export class VideoScreen extends React.Component {
 
           {(this.state.listCommentsVideosLoaded && this.state.listCommentsVideos != null && this.state.listCommentsVideos.length == 0 &&
 
-            <View style={{ margin: 16 }}>
-              <Divider></Divider>
-              <Text style={{ marginVertical: 8, fontSize: 16 }}>No hay comentarios!</Text>
-              <Text style={{ marginVertical: 8, fontSize: 14 }}>Podes agregar uno ahora mismo</Text>
-              <Divider></Divider>
+            <View style={{ alignItems: 'center', padding: 20, backgroundColor: 'white' }}>
+              <Headline>No hay comentarios</Headline>
+              <Paragraph>Podés dejar uno ahora mismo</Paragraph>
+              <Image
+                style={{ width: 300, height: 160 }}
+                source={require('../images/undraw_not_found_60pq.png')}
+              />
             </View>
-
           )}
-
-
-
 
         </ScrollView>
 
