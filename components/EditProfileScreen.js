@@ -6,6 +6,10 @@ import AppAsyncStorage from '../utils/AppAsyncStorage';
 import EndPoints from '../utils/EndPoints';
 import AppUtils from '../utils/AppUtils';
 
+import firebase from '@react-native-firebase/app';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
+
 import { styles } from '../utils/AppStyles';
 
 export class EditProfileScreen extends React.Component {
@@ -16,8 +20,19 @@ export class EditProfileScreen extends React.Component {
     this._onToggleSnackBar = this._onToggleSnackBar.bind(this);
     this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
 
+    //bindeo de funciones/eventos
+    this.clickElegirUnaImagen = this.clickElegirUnaImagen.bind(this);
+    this.uploadSelectedFile = this.uploadSelectedFile.bind(this);
+
     this.state = {
       processPhase: 0,
+      uploadPhase: 0, // 0 = nada, 1 = avatar seleccionado, 2 = avatar subiendo, 3 = avatar subido;
+
+      selectedFile: '',
+      selectedFilePath: '',
+      selectedFileSize: 0,
+      uploadPercent100: 0,
+
       initialLoading: true,
 
       snackBarVisible: false,
@@ -68,6 +83,226 @@ export class EditProfileScreen extends React.Component {
   componentDidMount() {
     console.log('componentDidMount (EditProfileScreen)');
     this.requestUserData();
+  }
+
+  async clickElegirUnaImagen() {
+    //var hasPermission = await AppUtils.requestPermissionsAndroid();
+    var hasPermission = await AppUtils.checkPermissionsLibrary();
+    if (hasPermission) {
+      console.log('hasPermission');
+      this.setState({ appHasPermission: true });
+      this.selectOneFile();
+    } else {
+      console.log('NO hasPermission');
+      this.setState({ appHasPermission: false });
+    }
+  }
+
+  setPathToAvatar() {
+
+    let pathToAvatar;
+
+    if (Platform.OS === 'ios') {
+      console.log('Set path to videos: iOS');
+      pathToAvatar = '';
+      this.setState({ selectedFilePath: this.state.selectedFile.uri, selectedFileSize: this.state.selectedFile.size });
+    } else {
+      console.log('Set path to videos: Android');
+      pathToAvatar = RNFS.DownloadDirectoryPath;
+      RNFS.readDir(pathToAvatar).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
+
+      pathToAvatar = RNFS.ExternalStorageDirectoryPath + "/DCIM/Camera";
+      RNFS.readDir(pathToAvatar).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
+
+      pathToAvatar = RNFS.ExternalStorageDirectoryPath;
+      RNFS.readDir(pathToAvatar).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
+
+      pathToAvatar = RNFS.DocumentDirectoryPath;
+      RNFS.readDir(pathToAvatar).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
+
+      pathToAvatar = RNFS.ExternalDirectoryPath;
+      RNFS.readDir(pathToAvatar).then((result) => {
+        var item = result.find(data => data.name === this.state.selectedFile.name);
+        if (typeof item !== 'undefined') {
+          this.setState({ selectedFilePath: item.path, selectedFileSize: item.size });
+        }
+      });
+    }
+
+  }
+
+  async selectOneFile() {
+
+    // reseteo el path si es que existia
+    this.setState({ uploadFilePath: '' });
+
+    //Opening Document Picker for selection of one file
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images], // mp4
+      });
+
+      this.setState({ selectedFile: res, uploadPhase: 1 });
+
+      //Printing the log related to the file
+      console.log('res : ' + JSON.stringify(res));
+      console.log('URI : ' + res.uri);
+      console.log('Type : ' + res.type);
+      console.log('File Name : ' + res.name);
+      console.log('File Size : ' + res.size);
+
+      // esta linea setea el path que luego se usara en el upload!
+
+      this.setPathToAvatar();
+
+    } catch (err) {
+      //Handling any exception (If any)
+      if (DocumentPicker.isCancel(err)) {
+        alert('Accion Canceleda');
+      } else {
+        //For Unknown Error
+        alert('Error desconocido: ' + JSON.stringify(err));
+        throw err;
+      }
+    }
+  }
+
+  async postNewAvatar(uploadMetadata) {
+
+    const sessionData = await AppAsyncStorage.getSession();
+    const sessionDataJSON = JSON.parse(sessionData);
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+    var myBody = JSON.stringify({name: uploadMetadata.name,});
+
+    console.log('postNewAvatar - 1');
+
+    return new Promise((resolve, reject) => {
+
+      fetch(EndPoints.users + '/' + sessionDataJSON.session_data.username +'/avatars', {
+        method: 'POST',
+        headers: myHeaders,
+        body: myBody,
+      })
+        .then((response) => response.json().then(json => {
+          return { data: json, fullResponse: response }
+        }))
+        .then((responseJson) => {
+          console.log('postNewAvatar - 2');
+          AppUtils.printResponseJson(responseJson);
+
+          if (responseJson.fullResponse.ok) {
+
+            // aca estoy cuando el app-server me respondio con exito sobre el post del video.
+            this.setState({
+              uploadPhase: 3,
+            });
+
+            resolve(responseJson);
+          } else {
+            if (responseJson.fullResponse.status == 401) {
+              AppUtils.logout();
+              this.props.navigation.navigate("Login");
+            } else {
+              // aca estoy cuando el app-server me respondio con error sobre el post del video.
+              this.setState({
+                uploadPhase: 3,
+              });
+
+              console.log('que hacer aqui?');
+            }
+          }
+
+        })
+        .catch((error) => {
+          console.log('------- error ------');
+          console.log(error);
+        })
+        .finally(() => {
+          this.setState({ isLoadingFriendsRequests: false })
+        });
+    })
+  }
+
+  async uploadSelectedFile() {
+
+    if (this.state.appHasPermission) {
+
+      const pathFileToUpload = this.state.selectedFilePath;
+      console.log('pathFileToUpload: ' + pathFileToUpload);
+
+      // Construimos el path con la duration
+      const firebaseReferenceName = AppUtils.generateRandomNumber() +'_'+ this.state.selectedFile.name;
+      const firebaseReferencePath = '/uploads/videos/test/' + firebaseReferenceName;
+      console.log('Firebase path: ' + firebaseReferencePath);
+
+      const reference = firebase.storage().ref(firebaseReferencePath);
+      console.log('REFERENCE: ');
+      console.log(reference);
+
+      this.setState({
+        uploadPhase: 2,
+      });
+
+      const putFileTask = reference.putFile(
+        pathFileToUpload
+      );
+
+      putFileTask.on('state_changed', taskSnapshot => {
+        console.log(`${taskSnapshot.bytesTransferred} transferred out of ` + this.state.selectedFileSize);
+        let currentUploadPercent = ((taskSnapshot.bytesTransferred / this.state.selectedFileSize).toFixed(2)) * 100;
+        currentUploadPercent = Math.round(currentUploadPercent);
+        this.setState({
+          uploadPercent100: currentUploadPercent,
+        })
+      });
+
+      putFileTask.then((firebaseUploadResult) => {
+        console.log('Avatar uploaded to the bucket!');
+        console.log(firebaseUploadResult);
+
+        //Sincronizamos la respuesta entre Android e iOS
+        console.log('Nombre a enviar a AppServer: ' + firebaseReferenceName);
+        var appServerMetadata = firebaseUploadResult.metadata;
+        appServerMetadata.name = firebaseReferenceName;
+
+        
+        this.postNewAvatar(appServerMetadata).then((resultAppServer) => {
+          console.log('regreso del metodo del postNewAvatar();')
+          console.log('resultAppServer:');
+          console.log(resultAppServer);
+          this.setState({
+            uploadPhase: 3,
+          });
+        });
+        
+
+      });
+
+    } else {
+      console.log('Dijo que no a otorgar permisos!');
+    }
+ 
   }
 
   async requestUserData() {
@@ -257,216 +492,247 @@ export class EditProfileScreen extends React.Component {
               <Appbar.Content title="Editar Mis Datos" />
             </Appbar.Header>
 
-            {this.state.initialLoading && <ActivityIndicator style={{ padding: 20 }} />}
-            
-            {this.state.editingUserPassword == false &&
-            <Card elevation={10} style={{ margin: 10 }}>
-              <Card.Title title="Datos Actuales" />
-              <Card.Content>
+            <View style={{ backgroundColor: 'white' }}>
 
-                {this.state.editingUserData == false && this.state.editingUserPassword == false &&
-                  <View>
-                    <UserData
-                      firstName={this.state.userFirstName}
-                      lastName={this.state.userLastName}
-                      email={this.state.userEmail}
-                      phone={this.state.userPhone}
-                      avatar={this.state.userAvatar}
-                    />
+              {this.state.initialLoading && <ActivityIndicator style={{ padding: 20 }} />}
 
-                    <Button
-                      style={{ margin: 10 }}
-                      icon="account"
-                      mode="outlined"
-                      onPress={() => {
-                        this.setState({ editingUserData: true, editingUserPassword: false });
-                      }}
-                    >
-                      Editar Datos
-                    </Button>
-                  </View>
-                }
+              {this.state.editingUserPassword == false &&
+                <Card elevation={10} style={{ margin: 10 }}>
+                  <Card.Title title="Datos Actuales" />
+                  <Card.Content>
 
-                {this.state.editingUserData == true &&
-                  <View>
-
-                    <View style={{ flexDirection: 'row' }}>
-                      <List.Icon color={Colors.blue500} icon="account" />
-
-                      <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TextInput
-                          style={{ padding: 2, flex: 1 }}
-                          dense="true"
-                          //label="Nombre"
-                          mode="outlined"
-                          value={this.state.newUserFirstName}
-                          onChangeText={(newUserFirstName) => this.setState({ newUserFirstName })}
-
+                    {this.state.editingUserData == false && this.state.editingUserPassword == false &&
+                      <View>
+                        <UserData
+                          firstName={this.state.userFirstName}
+                          lastName={this.state.userLastName}
+                          email={this.state.userEmail}
+                          phone={this.state.userPhone}
+                          avatar={this.state.userAvatar}
                         />
-                      </View>
-                    </View>
 
-                    <Divider />
+                        {this.state.uploadPhase == 0 &&
+                          <Button
+                            style={{ margin: 10 }}
+                            icon="image"
+                            mode="outlined"
+                            onPress={() => {
+                              this.clickElegirUnaImagen();
+                            }}
+                          >
+                            Elegir Nuevo Avatar
+                        </Button>
+                        }
 
-                    <View style={{ flexDirection: 'row' }}>
-                      <List.Icon color={Colors.blue500} icon="account" />
+                        {this.state.uploadPhase == 1 &&
+                          <Button
+                            style={{ margin: 10 }}
+                            icon="image"
+                            mode="outlined"
+                            onPress={() => {
+                              this.uploadSelectedFile();
+                            }}
+                          >
+                            Subir Nuevo Avatar
+                        </Button>
+                        }
 
-                      <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TextInput
-                          style={{ padding: 2, flex: 1 }}
-                          dense="true"
-                          //label="Apellido"
+                        <Button
+                          style={{ margin: 10 }}
+                          icon="account"
                           mode="outlined"
-                          value={this.state.newUserLastName}
-                          onChangeText={(newUserLastName) => this.setState({ newUserLastName })}
-                        />
+                          onPress={() => {
+                            this.setState({ editingUserData: true, editingUserPassword: false });
+                          }}
+                        >
+                          Editar Datos
+                        </Button>
+
                       </View>
-                    </View>
+                    }
 
-                    <Divider />
+                    {this.state.editingUserData == true &&
+                      <View>
 
-                    <View style={{ flexDirection: 'row' }}>
-                      <List.Icon color={Colors.blue500} icon="email" />
+                        <View style={{ flexDirection: 'row' }}>
+                          <List.Icon color={Colors.blue500} icon="account" />
 
-                      <TextInput
-                        style={{ padding: 2, flex: 1 }}
-                        disabled="true"
-                        dense="true"
-                        //label="Email"
-                        mode="outlined"
-                        value={this.state.newUserEmail}
-                        onChangeText={(newUserEmail) => this.setState({ newUserEmail })}
-                      />
-                    </View>
+                          <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <TextInput
+                              style={{ padding: 2, flex: 1 }}
+                              dense="true"
+                              //label="Nombre"
+                              mode="outlined"
+                              value={this.state.newUserFirstName}
+                              onChangeText={(newUserFirstName) => this.setState({ newUserFirstName })}
 
-                    <Divider />
+                            />
+                          </View>
+                        </View>
 
-                    <View style={{ flexDirection: 'row' }}>
-                      <List.Icon color={Colors.blue500} icon="phone" />
+                        <Divider />
 
-                      <TextInput
-                        style={{ padding: 2, flex: 1 }}
-                        dense="true"
-                        //label="Teléfono"
-                        mode="outlined"
-                        value={this.state.newUserPhone}
-                        onChangeText={(newUserPhone) => this.setState({ newUserPhone })}
-                      />
-                    </View>
+                        <View style={{ flexDirection: 'row' }}>
+                          <List.Icon color={Colors.blue500} icon="account" />
 
+                          <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <TextInput
+                              style={{ padding: 2, flex: 1 }}
+                              dense="true"
+                              //label="Apellido"
+                              mode="outlined"
+                              value={this.state.newUserLastName}
+                              onChangeText={(newUserLastName) => this.setState({ newUserLastName })}
+                            />
+                          </View>
+                        </View>
 
-                    <Button
-                      style={{ margin: 10 }}
-                      mode="contained"
-                      onPress={() => {
-                        this.postFormData();
-                        this.setState({ editingUserData: false, editingUserPassword: false });
-                      }}>
-                      Confirmar Datos
-                    </Button>
+                        <Divider />
 
-                    <Button
-                      style={{ margin: 10 }}
-                      mode="contained"
-                      color="#CC0000"
-                      onPress={() => {
-                        this.setState({ editingUserData: false, editingUserPassword: false });
-                      }}>
-                      Cancelar
-                    </Button>
-                  </View>
-                }
+                        <View style={{ flexDirection: 'row' }}>
+                          <List.Icon color={Colors.blue500} icon="email" />
 
-              </Card.Content>
-            </Card>
-            }
-
-            {((this.state.editingUserData == false) && (this.state.userLoginService == false)) &&
-
-              <Card elevation={10} style={{ margin: 10 }}>
-                <Card.Title title="Cambio de Clave" />
-                <Card.Content>
-
-                  {this.state.editingUserPassword == false && this.state.editingUserData == false &&
-                    <Button
-                      style={{ margin: 10 }}
-                      icon="key"
-                      mode="outlined"
-                      onPress={() => {
-                        this.setState({ editingUserPassword: true, editingUserData: false });
-                      }}>
-                      Cambiar Mi Clave
-                  </Button>
-                  }
-
-                  {this.state.editingUserPassword == true &&
-                    <View>
-
-                      <View style={{ flexDirection: 'row' }}>
-                        <List.Icon color={Colors.blue500} icon="key" />
-
-                        <View style={{ flex: 1, flexDirection: 'row' }}>
                           <TextInput
                             style={{ padding: 2, flex: 1 }}
-                            secureTextEntry={true}
-                            autoCapitalize="none"
+                            disabled="true"
                             dense="true"
-                            label="Nueva contraseña"
+                            //label="Email"
                             mode="outlined"
-                            onChangeText={(newUserPassword) => this.setState({ newUserPassword })}
+                            value={this.state.newUserEmail}
+                            onChangeText={(newUserEmail) => this.setState({ newUserEmail })}
                           />
                         </View>
-                      </View>
 
-                      <View style={{ flexDirection: 'row' }}>
-                        <List.Icon color={Colors.blue500} icon="key" />
+                        <Divider />
 
-                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row' }}>
+                          <List.Icon color={Colors.blue500} icon="phone" />
+
                           <TextInput
                             style={{ padding: 2, flex: 1 }}
-                            secureTextEntry={true}
-                            autoCapitalize="none"
                             dense="true"
-                            label="Confirmar contraseña"
+                            //label="Teléfono"
                             mode="outlined"
-                            onChangeText={(newUserPasswordConfirm) => this.setState({ newUserPasswordConfirm })}
+                            value={this.state.newUserPhone}
+                            onChangeText={(newUserPhone) => this.setState({ newUserPhone })}
                           />
                         </View>
-                      </View>
 
-                      <Button
-                        style={{ margin: 10 }}
-                        mode="contained"
-                        disabled={(((this.state.newUserPassword == '' ) || (this.state.newUserPasswordConfirm == '' )) ? true : false)}
-                        onPress={() => {
-                          if (this.state.newUserPassword === this.state.newUserPasswordConfirm) {
-                            this.postFormDataPassword();
+
+                        <Button
+                          style={{ margin: 10 }}
+                          mode="contained"
+                          onPress={() => {
+                            this.postFormData();
                             this.setState({ editingUserData: false, editingUserPassword: false });
-                          }
-                          else {
-                            console.log('Las claves ingresadas no coinciden');
-                            this._onToggleSnackBar('Las claves ingresadas no coinciden');
-                          }
-                        }}>
-                        Confirmar Clave
-                    </Button>
-                      <Button
-                        style={{ margin: 10 }}
-                        mode="contained"
-                        color="#CC0000"
-                        onPress={() => {
-                          this.state.newUserPassword = '';
-                          this.state.newUserPasswordConfirm = '';
-                          this.setState({ editingUserData: false, editingUserPassword: false });
-                        }}>
-                        Cancelar
+                          }}>
+                          Confirmar Datos
                     </Button>
 
-                    </View >
-                  }
-                </Card.Content>
-              </Card>
-            }
+                        <Button
+                          style={{ margin: 10 }}
+                          mode="contained"
+                          color="#CC0000"
+                          onPress={() => {
+                            this.setState({ editingUserData: false, editingUserPassword: false });
+                          }}>
+                          Cancelar
+                    </Button>
+                      </View>
+                    }
+
+                  </Card.Content>
+                </Card>
+              }
+
+              {((this.state.editingUserData == false) && (this.state.userLoginService == false)) &&
+
+                <Card elevation={10} style={{ margin: 10 }}>
+                  <Card.Title title="Cambio de Clave" />
+                  <Card.Content>
+
+                    {this.state.editingUserPassword == false && this.state.editingUserData == false &&
+                      <Button
+                        style={{ margin: 10 }}
+                        icon="key"
+                        mode="outlined"
+                        onPress={() => {
+                          this.setState({ editingUserPassword: true, editingUserData: false });
+                        }}>
+                        Cambiar Mi Clave
+                  </Button>
+                    }
+
+                    {this.state.editingUserPassword == true &&
+                      <View>
+
+                        <View style={{ flexDirection: 'row' }}>
+                          <List.Icon color={Colors.blue500} icon="key" />
+
+                          <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <TextInput
+                              style={{ padding: 2, flex: 1 }}
+                              secureTextEntry={true}
+                              autoCapitalize="none"
+                              dense="true"
+                              label="Nueva contraseña"
+                              mode="outlined"
+                              onChangeText={(newUserPassword) => this.setState({ newUserPassword })}
+                            />
+                          </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row' }}>
+                          <List.Icon color={Colors.blue500} icon="key" />
+
+                          <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <TextInput
+                              style={{ padding: 2, flex: 1 }}
+                              secureTextEntry={true}
+                              autoCapitalize="none"
+                              dense="true"
+                              label="Confirmar contraseña"
+                              mode="outlined"
+                              onChangeText={(newUserPasswordConfirm) => this.setState({ newUserPasswordConfirm })}
+                            />
+                          </View>
+                        </View>
+
+                        <Button
+                          style={{ margin: 10 }}
+                          mode="contained"
+                          disabled={(((this.state.newUserPassword == '') || (this.state.newUserPasswordConfirm == '')) ? true : false)}
+                          onPress={() => {
+                            if (this.state.newUserPassword === this.state.newUserPasswordConfirm) {
+                              this.postFormDataPassword();
+                              this.setState({ editingUserData: false, editingUserPassword: false });
+                            }
+                            else {
+                              console.log('Las claves ingresadas no coinciden');
+                              this._onToggleSnackBar('Las claves ingresadas no coinciden');
+                            }
+                          }}>
+                          Confirmar Clave
+                    </Button>
+                        <Button
+                          style={{ margin: 10 }}
+                          mode="contained"
+                          color="#CC0000"
+                          onPress={() => {
+                            this.state.newUserPassword = '';
+                            this.state.newUserPasswordConfirm = '';
+                            this.setState({ editingUserData: false, editingUserPassword: false });
+                          }}>
+                          Cancelar
+                    </Button>
+
+                      </View >
+                    }
+                  </Card.Content>
+                </Card>
+              }
+
+            </View>
 
             <Snackbar
               style={{ backgroundColor: this.state.snackBarBackgroundColor, elevation: 20 }}
