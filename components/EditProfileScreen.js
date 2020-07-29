@@ -303,8 +303,11 @@ export class EditProfileScreen extends React.Component {
           console.log('regreso del metodo del postNewAvatar();')
           console.log('resultAppServer:');
           console.log(resultAppServer);
+          console.log(resultAppServer.data);
+          console.log(resultAppServer.data.url);
           this.setState({
             uploadPhase: 3,
+            userAvatar: resultAppServer.data.url,
           });
         });
 
