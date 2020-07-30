@@ -2,23 +2,28 @@ import React, { Component } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { Chip, Avatar, Button, Card, Divider, Headline } from 'react-native-paper';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import EndPoints from './utils/EndPoints';
 import AppAsyncStorage from './utils/AppAsyncStorage';
 import AppUtils from './utils/AppUtils';
 
-class PedidoAmistad extends Component {
+class PedidoAmistad extends React.Component {
+
+  state = { showCard: true }
 
   handlePressAccept = () => {
     this.acceptPedidoAmistad();
     // Need to check to prevent null exception. 
     this.props.onPress?.(this.props.fromUserName, '1'); // Same as this.props.onPress && this.props.onPress();
+
+    this.setState({ showCard: false })
   }
 
   handlePressReject = () => {
     this.rejectPedidoAmistad();
     // Need to check to prevent null exception. 
     this.props.onPress?.(this.props.fromUserName, '0'); // Same as this.props.onPress && this.props.onPress();
+
+    this.setState({ showCard: false })
   }
 
   async acceptPedidoAmistad() {
@@ -116,64 +121,68 @@ class PedidoAmistad extends Component {
 
       <View>
 
-        <Card
-          elevation={10}
-          style={styles.cardContainer}
-        >
+        {this.state.showCard &&
 
-          <View style={{ flexDirection: 'row', }}>
-            <Avatar.Image size={56} source={{ uri: this.props.userAvatar }} />
+          <Card
+            elevation={10}
+            style={styles.cardContainer}
+          >
 
-            <View style={{ flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'row', }}>
+              <Avatar.Image size={56} source={{ uri: this.props.userAvatar }} />
 
-              <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.fromUserName}</Headline>
+              <View style={{ flexDirection: 'column' }}>
 
-              <View style={{ flexDirection: 'row', }}>
-                <Chip icon="video" style={{ marginLeft: 10 }}>
-                  {this.props.videoCount} Videos
+                <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.fromUserName}</Headline>
+
+                <View style={{ flexDirection: 'row', }}>
+                  <Chip icon="video" style={{ marginLeft: 10 }}>
+                    {this.props.videoCount} Videos
                 </Chip>
 
-                <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
-                  {this.props.friendsCount} Amigos
+                  <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
+                    {this.props.friendsCount} Amigos
+                </Chip>
+
+                </View>
+
+                <Chip icon="calendar" style={{ marginLeft: 10, marginTop: 8 }}>
+                  {this.props.requestDate}
                 </Chip>
 
               </View>
 
-              <Chip icon="calendar" style={{ marginLeft: 10, marginTop: 8 }}>
-                {this.props.requestDate}
-              </Chip>
-
             </View>
 
-          </View>
+            <Divider style={{ marginTop: 14 }}></Divider>
 
-          <Divider style={{ marginTop: 14 }}></Divider>
+            <Card.Actions>
+              <View style={styles.actionsRight}>
 
-          <Card.Actions>
-            <View style={styles.actionsRight}>
-
-              <Button
-                style={{ marginLeft: 10 }}
-                icon="close"
-                color="red"
-                mode="outlined"
-                onPress={this.handlePressReject}
-              >
-                Rechazar
+                <Button
+                  style={{ marginLeft: 10 }}
+                  icon="close"
+                  color="red"
+                  mode="outlined"
+                  onPress={this.handlePressReject}
+                >
+                  Rechazar
               </Button>
 
-              <Button
-                style={{ marginLeft: 10 }}
-                icon="check"
-                mode="outlined"
-                onPress={this.handlePressAccept}
-              >
-                Aceptar
+                <Button
+                  style={{ marginLeft: 10 }}
+                  icon="check"
+                  mode="outlined"
+                  onPress={this.handlePressAccept}
+                >
+                  Aceptar
               </Button>
 
-            </View>
-          </Card.Actions>
-        </Card>
+              </View>
+            </Card.Actions>
+          </Card>
+
+        }
 
       </View>
     );

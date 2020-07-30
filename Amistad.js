@@ -1,22 +1,49 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Chip, Avatar, Button, Card, Divider, Title, Headline } from 'react-native-paper';
+import AppAsyncStorage from './utils/AppAsyncStorage';
+import EndPoints from './utils/EndPoints';
+import AppUtils from './utils/AppUtils';
 
-class Amistad extends Component {
+class Amistad extends React.Component {
 
-  componentDidMount() {
-    //console.log('componentDidMount (Amistad)');
-    //console.log(this.props);
-  }
+  constructor(props) {
+    super(props);
 
-  handlePressAccept = () => {
-    // Need to check to prevent null exception. 
-    this.props.onPress?.(this.props.userName, '1'); // Same as this.props.onPress && this.props.onPress();
-  }
+    this.deleteFriendship = this.deleteFriendship.bind(this);
+  };
 
-  handlePressReject = () => {
-    // Need to check to prevent null exception. 
-    this.props.onPress?.(this.props.userName, '0'); // Same as this.props.onPress && this.props.onPress();
+  state = { showCard: true }
+
+  async deleteFriendship() {
+    const authToken = await AppAsyncStorage.getTokenFromSession();
+    var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
+
+    let friendshipId = this.props.friendshipId;
+    console.log(friendshipId);
+
+    fetch(EndPoints.friendships + '/' + friendshipId, {
+      method: 'DELETE',
+      headers: myHeaders,
+    })
+      .then((response) => response.json().then(json => {
+        return { data: json, fullResponse: response }
+      }))
+      .then((responseJson) => {
+        console.log('------- DELETE Server Friendship ------');
+        AppUtils.printResponseJson(responseJson);
+
+        this.setState({ showCard: false });
+        
+        // Need to check to prevent null exception. 
+        this.props.onPress?.(); // Same as this.props.onPress && this.props.onPress();
+
+      })
+      .catch((error) => {
+        console.log('------- error DELETE Server Friendship ------');
+        console.log(error);
+      });
+
   }
 
   render() {
@@ -26,56 +53,70 @@ class Amistad extends Component {
     return (
 
       <View>
+        
+        {this.state.showCard &&
+          
+          <Card
+            elevation={10}
+            style={styles.cardContainer}
+          >
 
-        <Card
-          elevation={10}
-          style={styles.cardContainer}
-        >
+            <View style={{ flexDirection: 'row', }}>
 
-          <View style={{ flexDirection: 'row', }}>
+              <Avatar.Image size={56} source={{ uri: this.props.userAvatar }} />
 
-            <Avatar.Image size={56} source={{ uri: this.props.userAvatar }} />
+              <View style={{ flex: 1, flexDirection: 'column' }}>
 
-            <View style={{ flex: 1, flexDirection: 'column' }}>
+                <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.userName}</Headline>
 
-              <Headline style={{ fontSize: 22, paddingLeft: 16, paddingVertical: 10 }}>{this.props.userName}</Headline>
-
-              <View style={{ flexDirection: 'row', }}>
-                <Chip icon="video" style={{ marginLeft: 10 }}>
-                  {this.props.videoCount} Videos
+                <View style={{ flexDirection: 'row', }}>
+                  <Chip icon="video" style={{ marginLeft: 10 }}>
+                    {this.props.videoCount} Videos
                 </Chip>
 
-                <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
-                  {this.props.friendsCount} Amigos
+                  <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
+                    {this.props.friendsCount} Amigos
                 </Chip>
+
+                </View>
 
               </View>
 
             </View>
 
-          </View>
+            <Divider style={{ marginTop: 14 }}></Divider>
 
-          <Divider style={{ marginTop: 14 }}></Divider>
+            <Card.Actions>
+              <View style={styles.actionsRight}>
 
-          <Card.Actions>
-            <View style={styles.actionsRight}>
-
-              <Button
-                style={{ marginLeft: 10 }}
-                icon="account"
-                mode="outlined"
-                onPress={() => {
-                  console.log('Ir a perfil de usuario '+ this.props.userName);
-                  navigation.navigate("Profile", {
-                    username: this.props.userName
-                  });
-                }}>
-                Ver Perfil
+                <Button
+                  style={{ marginLeft: 10 }}
+                  icon="close"
+                  color="red"
+                  mode="outlined"
+                  onPress={this.deleteFriendship}
+                >
+                  Borrar Amistad
               </Button>
 
-            </View>
-          </Card.Actions>
-        </Card>
+                <Button
+                  style={{ marginLeft: 10 }}
+                  icon="account"
+                  mode="outlined"
+                  onPress={() => {
+                    console.log('Ir a perfil de usuario ' + this.props.userName);
+                    navigation.navigate("Profile", {
+                      username: this.props.userName
+                    });
+                  }}>
+                  Ver Perfil
+              </Button>
+
+              </View>
+            </Card.Actions>
+          </Card>
+
+        }
 
       </View>
     );

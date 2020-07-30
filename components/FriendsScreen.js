@@ -16,6 +16,7 @@ export class FriendsScreen extends React.Component {
     super(props);
 
     this._onToggleSnackBar = this._onToggleSnackBar.bind(this);
+    this._onDeleteFriend = this._onDeleteFriend.bind(this);
     this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
     this._clickTabSolicitudes = this._clickTabSolicitudes.bind(this);
     this._clickTabAmigos = this._clickTabAmigos.bind(this);
@@ -46,12 +47,34 @@ export class FriendsScreen extends React.Component {
       tabSeleccionada: 'Amigos',
     });
   }
+
   _clickTabSolicitudes() {
     this.setState({
       colorTabAmigos: 'lightgrey',
       colorTabSolicitudes: 'midnightblue',
       tabSeleccionada: 'Solicitudes',
     });
+  }
+
+  delayedRequestUpdate = () =>
+  setTimeout(() => {
+    this.requestFriends();
+    this.requestFriendsRequests();
+  }, 1500);
+
+  _onDeleteFriend() {
+    this._onDismissSnackBar();
+
+    let color = 'blue';
+    let texto = 'Amistad eliminada';
+
+    this.setState({
+      snackBarBackgroundColor: color,
+      snackBarVisible: !this.state.snackBarVisible,
+      snackBarText: texto,
+    });
+
+    this.delayedRequestUpdate();
   }
 
   _onToggleSnackBar(name, action) {
@@ -73,6 +96,11 @@ export class FriendsScreen extends React.Component {
       snackBarVisible: !this.state.snackBarVisible,
       snackBarText: texto,
     });
+
+    // cuando fue aceptado o rechazado una request de amistad
+    // refresco ambos arrays, de friends y friendsRequests
+    this.delayedRequestUpdate();
+
   }
 
   _onDismissSnackBar() {
@@ -222,11 +250,13 @@ export class FriendsScreen extends React.Component {
                     keyExtractor={({ id }, index) => id}
                     renderItem={({ item }) => (
                       <Amistad
+                        friendshipId={item.friendship_id}
                         navigation={this.props.navigation}
                         friendsCount={item.user.statistics.friends}
                         videoCount={item.user.statistics.uploaded}
                         userName={item.user.first_name +' '+ item.user.last_name}
                         userAvatar={item.user.avatar.url}
+                        onPress={this._onDeleteFriend}
                       />
                     )}
                   />
@@ -267,7 +297,7 @@ export class FriendsScreen extends React.Component {
                       fromUserName={item.from_user.first_name + ' ' + item.from_user.last_name}
                       userAvatar={item.from_user.avatar.url}
                       //message={item.message}
-                      //onPress={this._onToggleSnackBar}
+                      onPress={this._onToggleSnackBar}
                     />
 
                   )}
@@ -275,7 +305,7 @@ export class FriendsScreen extends React.Component {
               )}
 
               {(this.state.dataFriendsRequest.length == 0 &&
-                  <View style={{ alignItems: 'center', padding: 20 }}>
+                <View style={{ alignItems: 'center', padding: 20 }}>
                   <Headline>Nada por hacer</Headline>
                   <Paragraph>No hay solicitudes pendientes</Paragraph>
                   <Image
