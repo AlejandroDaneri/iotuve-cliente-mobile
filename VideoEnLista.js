@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { Chip, Card, Button, Divider } from 'react-native-paper';
+import { Chip, Card, Button, Divider, List } from 'react-native-paper';
 import EndPoints from './utils/EndPoints';
 import AppAsyncStorage from './utils/AppAsyncStorage';
 import AppUtils from './utils/AppUtils';
@@ -16,7 +16,7 @@ class VideoEnLista extends Component {
   }
 
   componentDidMount() {
-//    console.log(this.props.dateCreated);
+    //console.log(this.props.dateCreated);
   }
 
   async deleteVideo(videoId) {
@@ -99,18 +99,26 @@ class VideoEnLista extends Component {
                 {this.props.ownerVideo &&
                   <View style={{ paddingVertical: 10 }}>
                     <Divider />
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10 }}>
+                    
+                    <View>
+                      <List.Item
+                        title={(this.props.videoVisibility == 'public' ? 'Video Público' : 'Video Privado')}
+                        left={props => <List.Icon {...props} icon="lock" />}
+                      />
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 4 }}>
                       <Button
-                    mode="contained"
-                    icon="video"
-                    onPress={() => {
-                      navigation.navigate("EditVideo", {
-                        allVideoInfo: this.props
-                      });
-                    }}
+                        mode="contained"
+                        icon="video"
+                        onPress={() => {
+                          navigation.navigate("EditVideo", {
+                            allVideoInfo: this.props
+                          });
+                        }}
                       >
                         Editar Video
-                </Button>
+                      </Button>
 
                       <Button
                         style={{ backgroundColor: '#CC0000' }}
@@ -137,7 +145,7 @@ class VideoEnLista extends Component {
                         }}
                       >
                         Borrar
-                </Button>
+                      </Button>
                     </View>
                   </View>
                 }
