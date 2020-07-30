@@ -28,7 +28,7 @@ class PedidoAmistad extends Component {
 
     let requestId = this.props.requestId;
 
-    fetch(EndPoints.friendships +'/'+ requestId, {
+    fetch(EndPoints.friendships + '/' + requestId, {
       method: 'PUT',
       headers: myHeaders,
       body: myBody,
@@ -52,7 +52,7 @@ class PedidoAmistad extends Component {
 
     let requestId = this.props.requestId;
 
-    fetch(EndPoints.friendships +'/'+ requestId, {
+    fetch(EndPoints.friendships + '/' + requestId, {
       method: 'DELETE',
       headers: myHeaders,
     })
@@ -74,7 +74,7 @@ class PedidoAmistad extends Component {
     const authToken = await AppAsyncStorage.getTokenFromSession();
     var myHeaders = new Headers({ 'X-Auth-Token': authToken, });
 
-    fetch(EndPoints.friendships +'/', {
+    fetch(EndPoints.friendships + '/', {
       method: 'PUT',
       headers: myHeaders,
       //body: myBody,
@@ -109,7 +109,7 @@ class PedidoAmistad extends Component {
 
   }
 
-  
+
   render() {
 
     return (
@@ -122,7 +122,7 @@ class PedidoAmistad extends Component {
         >
 
           <View style={{ flexDirection: 'row', }}>
-            <Avatar.Image size={56} source={{ uri: 'http://2.bp.blogspot.com/-YUV22Vr-eJQ/U90_xPOgBZI/AAAAAAAAAGA/A-s5lx3uMKU/s1600/bob02.png', }} />
+            <Avatar.Image size={56} source={{ uri: this.props.userAvatar }} />
 
             <View style={{ flexDirection: 'column' }}>
 
@@ -130,11 +130,11 @@ class PedidoAmistad extends Component {
 
               <View style={{ flexDirection: 'row', }}>
                 <Chip icon="video" style={{ marginLeft: 10 }}>
-                  12 Videos
+                  {this.props.videoCount} Videos
                 </Chip>
 
                 <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
-                  154 Amigos
+                  {this.props.friendsCount} Amigos
                 </Chip>
 
               </View>

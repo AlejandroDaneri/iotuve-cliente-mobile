@@ -5,8 +5,8 @@ import { Chip, Avatar, Button, Card, Divider, Title, Headline } from 'react-nati
 class Amistad extends Component {
 
   componentDidMount() {
-    console.log('componentDidMount (Amistad)');
-    console.log(this.props);
+    //console.log('componentDidMount (Amistad)');
+    //console.log(this.props);
   }
 
   handlePressAccept = () => {

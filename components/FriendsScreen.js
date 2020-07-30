@@ -97,7 +97,6 @@ export class FriendsScreen extends React.Component {
       }))
       .then((responseJson) => {
         AppUtils.printResponseJson(responseJson);
-
         if (responseJson.fullResponse.ok) {
           this.setState({
             dataFriends: responseJson.data.friends,
@@ -143,9 +142,6 @@ export class FriendsScreen extends React.Component {
           this.setState({
             dataFriendsRequest: responseJson.data.data,
           });
-
-          console.log(responseJson.data.data);
-
         } else {
           if (responseJson.fullResponse.status == 401) {
             AppUtils.logout();
@@ -192,7 +188,7 @@ export class FriendsScreen extends React.Component {
           <Button
             style={{ marginLeft: 10 }}
             icon="account-multiple"
-            mode="contained"
+            mode={this.state.tabSeleccionada.toLowerCase() == "amigos" ? "contained" : "outlined"}
             color={this.state.colorTabAmigos}
             backgroundColor="black"
             onPress={this._clickTabAmigos}
@@ -203,7 +199,7 @@ export class FriendsScreen extends React.Component {
           <Button
             style={{ marginLeft: 10 }}
             icon="account-search"
-            mode="contained"
+            mode={this.state.tabSeleccionada.toLowerCase() == "solicitudes" ? "contained" : "outlined"}
             color={this.state.colorTabSolicitudes}
             onPress={this._clickTabSolicitudes}
           >
@@ -227,10 +223,10 @@ export class FriendsScreen extends React.Component {
                     renderItem={({ item }) => (
                       <Amistad
                         navigation={this.props.navigation}
-                        friendsCount={0}
-                        videoCount={0}
-                        userName={item.username}
-                        userAvatar={item.avatar}
+                        friendsCount={item.user.statistics.friends}
+                        videoCount={item.user.statistics.uploaded}
+                        userName={item.user.first_name +' '+ item.user.last_name}
+                        userAvatar={item.user.avatar.url}
                       />
                     )}
                   />
@@ -264,11 +260,14 @@ export class FriendsScreen extends React.Component {
 
                     <PedidoAmistad
                       requestId={item.id}
+                      friendsCount={item.from_user.statistics.friends}
+                      videoCount={item.from_user.statistics.uploaded}
                       requestStatus={item.status}
                       requestDate={moment(item.date_created).format("DD-MM-YYYY  hh:mm:ss")}
-                      fromUserName={item.from_user}
-                      message={item.message}
-                      onPress={this._onToggleSnackBar}
+                      fromUserName={item.from_user.first_name + ' ' + item.from_user.last_name}
+                      userAvatar={item.from_user.avatar.url}
+                      //message={item.message}
+                      //onPress={this._onToggleSnackBar}
                     />
 
                   )}
