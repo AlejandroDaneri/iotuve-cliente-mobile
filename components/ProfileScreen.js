@@ -308,7 +308,8 @@ export class ProfileScreen extends React.Component {
         AppUtils.printResponseJson(responseJson);
 
         if (responseJson.fullResponse.ok) {
-
+          this.state.login_error_msg = 'Solicitud enviada con éxito!';
+          this._onToggleSnackBar(this.state.login_error_msg);
         } else {
           if (responseJson.fullResponse.status == 401) {
             AppUtils.logout();
