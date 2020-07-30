@@ -539,7 +539,7 @@ export class EditProfileScreen extends React.Component {
 
                         {this.state.uploadPhase == 0 &&
                           <Button
-                            style={{ margin: 10 }}
+                            style={{ margin: 6 }}
                             icon="image"
                             mode="outlined"
                             onPress={() => {
@@ -551,11 +551,11 @@ export class EditProfileScreen extends React.Component {
                         }
 
                         {((this.state.uploadPhase == 1) || (this.state.uploadPhase == 2)) &&
-                          <ActivityIndicator style={{ padding: 20 }} />
+                          <ActivityIndicator style={{ padding: 10 }} />
                         }
 
                         <Button
-                          style={{ margin: 10 }}
+                          style={{ margin: 6 }}
                           icon="account"
                           mode="outlined"
                           onPress={() => {
