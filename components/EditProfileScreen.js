@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, View, Keyboard } from 'react-native';
+import { View, Keyboard } from 'react-native';
 import { Snackbar, Provider as PaperProvider, Divider, Card, List, Appbar, Button, TextInput, Colors, ActivityIndicator } from 'react-native-paper';
 import UserData from '../UserData';
 import AppAsyncStorage from '../utils/AppAsyncStorage';
@@ -9,8 +9,6 @@ import AppUtils from '../utils/AppUtils';
 import firebase from '@react-native-firebase/app';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
-
-import { styles } from '../utils/AppStyles';
 
 export class EditProfileScreen extends React.Component {
 
@@ -507,7 +505,6 @@ export class EditProfileScreen extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <PaperProvider>
-          <SafeAreaView style={styles.safearea}>
             <Appbar.Header style={{ backgroundColor: 'midnightblue' }}>
               <Appbar.BackAction
                 onPress={(props) => {
@@ -765,7 +762,7 @@ export class EditProfileScreen extends React.Component {
             >
               {this.state.snackBarText}
             </Snackbar>
-          </SafeAreaView>
+
         </PaperProvider>
       </View >
     );
