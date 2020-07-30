@@ -65,6 +65,17 @@ export class EditVideoScreen extends React.Component {
       .then((responseJson) => {
         console.log('------- EDIT Server Video ------');
         AppUtils.printResponseJson(responseJson);
+        
+        // devolucion de datos a la pantalla de perfil (que es la unica por la cual se llega aca)
+        let itemData = {
+          videoVisibility: responseJson.data.visibility,
+          videoTitle: responseJson.data.title,
+          videoDescription: responseJson.data.description,
+        };
+        const { route } = this.props;
+        const params = route.params;
+        params.updateVideoInfo(itemData);
+
         this.setState({
           editPhase: 1,
         })

@@ -12,6 +12,11 @@ class VideoEnLista extends Component {
     super(props);
     this.state = {
       videoVisible: true,
+
+      videoTitle: props.videoTitle,
+      videoDescription: props.videoDescription,
+      videoVisibility: props.videoVisibility,
+      
     }
   }
 
@@ -60,8 +65,8 @@ class VideoEnLista extends Component {
               console.log('press Card');
               navigation.navigate('Video', {
                 id: this.props.videoId,
-                title: this.props.videoTitle,
-                description: this.props.videoDescription,
+                title: this.state.videoTitle,
+                description: this.state.videoDescription,
                 dateCreated: this.props.dateCreated,
                 user: this.props.videoUser,
                 uri: this.props.videoURI,
@@ -74,7 +79,7 @@ class VideoEnLista extends Component {
               });
             }}>
             <Card.Title
-              title={this.props.videoTitle}
+              title={this.state.videoTitle}
               subtitle={this.props.videoAuthor}
             />
             <Card.Cover source={{ uri: this.props.videoSnapshot }} />
@@ -109,7 +114,7 @@ class VideoEnLista extends Component {
 
                     <View>
                       <List.Item
-                        title={(this.props.videoVisibility == 'public' ? 'Video Público' : 'Video Privado')}
+                        title={(this.state.videoVisibility == 'public' ? 'Video Público' : 'Video Privado')}
                         left={props => <List.Icon {...props} icon="lock" />}
                       />
                     </View>
@@ -120,7 +125,14 @@ class VideoEnLista extends Component {
                         icon="video"
                         onPress={() => {
                           navigation.navigate("EditVideo", {
-                            allVideoInfo: this.props
+                            allVideoInfo: this.props,
+                            updateVideoInfo: item => {
+                              this.setState({
+                                videoVisibility: item.videoVisibility,
+                                videoTitle: item.videoTitle,
+                                videoDescription: item.videoDescription
+                              })
+                            },
                           });
                         }}
                       >
