@@ -34,7 +34,7 @@ class Amistad extends React.Component {
         AppUtils.printResponseJson(responseJson);
 
         this.setState({ showCard: false });
-        
+
         // Need to check to prevent null exception. 
         this.props.onPress?.(); // Same as this.props.onPress && this.props.onPress();
 
@@ -53,9 +53,9 @@ class Amistad extends React.Component {
     return (
 
       <View>
-        
+
         {this.state.showCard &&
-          
+
           <Card
             elevation={10}
             style={styles.cardContainer}
@@ -71,12 +71,12 @@ class Amistad extends React.Component {
 
                 <View style={{ flexDirection: 'row', }}>
                   <Chip icon="video" style={{ marginLeft: 10 }}>
-                    {this.props.videoCount} Videos
-                </Chip>
+                    {(this.props.videoCount == 1) ? this.props.videoCount + ' Video' : this.props.videoCount + ' Videos'}
+                  </Chip>
 
                   <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
-                    {this.props.friendsCount} Amigos
-                </Chip>
+                    {(this.props.friendsCount == 1) ? this.props.friendsCount + ' Video' : this.props.friendsCount + ' Videos'}
+                  </Chip>
 
                 </View>
 
@@ -96,7 +96,7 @@ class Amistad extends React.Component {
                   mode="outlined"
                   onPress={this.deleteFriendship}
                 >
-                  Borrar Amistad
+                  Borrar
               </Button>
 
                 <Button

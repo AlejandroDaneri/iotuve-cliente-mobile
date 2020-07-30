@@ -137,11 +137,11 @@ class PedidoAmistad extends React.Component {
 
                 <View style={{ flexDirection: 'row', }}>
                   <Chip icon="video" style={{ marginLeft: 10 }}>
-                    {this.props.videoCount} Videos
+                  {(this.props.videoCount == 1) ? this.props.videoCount + ' Video' : this.props.videoCount + ' Videos'}
                 </Chip>
 
                   <Chip icon="account-multiple" style={{ marginLeft: 10 }}>
-                    {this.props.friendsCount} Amigos
+                  {(this.props.friendsCount == 1) ? this.props.friendsCount + ' Amigo' : this.props.friendsCount + ' Amigos'}
                 </Chip>
 
                 </View>
