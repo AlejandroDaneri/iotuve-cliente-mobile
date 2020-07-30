@@ -104,9 +104,9 @@ class Amistad extends React.Component {
                   icon="account"
                   mode="outlined"
                   onPress={() => {
-                    console.log('Ir a perfil de usuario ' + this.props.userName);
-                    navigation.navigate("Profile", {
-                      username: this.props.userName
+                    console.log('Ir a perfil de usuario ' + this.props.userNameEmail);
+                    navigation.push("Profile", {
+                      username: this.props.userNameEmail
                     });
                   }}>
                   Ver Perfil

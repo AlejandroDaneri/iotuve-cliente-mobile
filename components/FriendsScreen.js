@@ -255,6 +255,7 @@ export class FriendsScreen extends React.Component {
                         friendsCount={item.user.statistics.friends}
                         videoCount={item.user.statistics.uploaded}
                         userName={item.user.first_name +' '+ item.user.last_name}
+                        userNameEmail={item.user.username}
                         userAvatar={item.user.avatar.url}
                         onPress={this._onDeleteFriend}
                       />
