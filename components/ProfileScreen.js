@@ -47,6 +47,8 @@ export class ProfileScreen extends React.Component {
     };
 
     this._onToggleSnackBar = this._onToggleSnackBar.bind(this);
+    this._onToggleSnackBarRed = this._onToggleSnackBarRed.bind(this);
+    this._onToggleSnackBarBlue = this._onToggleSnackBarBlue.bind(this);
     this._onDismissSnackBar = this._onDismissSnackBar.bind(this);
 
     this.requestUserData = this.requestUserData.bind(this);
@@ -54,11 +56,20 @@ export class ProfileScreen extends React.Component {
     this.requestFriendship = this.requestFriendship.bind(this);
   }
 
-  _onToggleSnackBar(texto) {
+  _onToggleSnackBar(texto, color) {
     this.setState({
       snackBarVisible: !this.state.snackBarVisible,
       snackBarText: texto,
+      snackBarBackgroundColor: color,
     });
+  }
+
+  _onToggleSnackBarRed(texto) {
+    this._onToggleSnackBar(texto, '#CC0000');
+  }
+
+  _onToggleSnackBarBlue(texto) {
+    this._onToggleSnackBar(texto, 'blue');
   }
 
   _onDismissSnackBar() {
@@ -309,7 +320,7 @@ export class ProfileScreen extends React.Component {
 
         if (responseJson.fullResponse.ok) {
           this.state.login_error_msg = 'Solicitud enviada con éxito!';
-          this._onToggleSnackBar(this.state.login_error_msg);
+          this._onToggleSnackBarBlue(this.state.login_error_msg);
         } else {
           if (responseJson.fullResponse.status == 401) {
             AppUtils.logout();
@@ -317,7 +328,7 @@ export class ProfileScreen extends React.Component {
           } else {
             // error 400 dice "Friend request already exist";
             this.state.login_error_msg = 'Ya hay una solicitud de amistad pendiente';
-            this._onToggleSnackBar(this.state.login_error_msg);
+            this._onToggleSnackBarRed(this.state.login_error_msg);
           }
         }
       })
