@@ -89,17 +89,24 @@ class VideoEnLista extends Component {
                     <Chip icon="alarm">{this.props.videoLength}</Chip>
                   </View>
                   <View style={styles.actionsRight}>
-                    <Chip icon="heart" style={{ marginRight: 4 }}>
+                    <Chip
+                      style={{ marginRight: 4 }}
+                      icon="heart"
+                      selectedColor={(this.props.userLike) ? 'blue' : 'black'}
+                    >
                       {this.props.favoritesCount}
                     </Chip>
-                    <Chip icon="heart-broken">{this.props.notFavoritesCount}</Chip>
+                    <Chip
+                      icon="heart-broken"
+                      selectedColor={(this.props.userDislike) ? 'blue' : 'black'}
+                    >{this.props.notFavoritesCount}</Chip>
                   </View>
                 </View>
 
                 {this.props.ownerVideo &&
                   <View style={{ paddingVertical: 10 }}>
                     <Divider />
-                    
+
                     <View>
                       <List.Item
                         title={(this.props.videoVisibility == 'public' ? 'Video Público' : 'Video Privado')}
