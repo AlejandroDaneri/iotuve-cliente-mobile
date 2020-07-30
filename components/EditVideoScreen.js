@@ -157,7 +157,7 @@ export class EditVideoScreen extends React.Component {
                   icon="video"
                   mode="outlined">
                   Video Actualizado con Exito
-                    </Button>
+                </Button>
 
                 <Button
                   style={{ marginTop: 15 }}
@@ -167,7 +167,7 @@ export class EditVideoScreen extends React.Component {
                       navigation.navigate('Profile');
                   }}>
                   Volver a mi perfil
-            </Button>
+                </Button>
 
               </View>
             </Card.Content>
