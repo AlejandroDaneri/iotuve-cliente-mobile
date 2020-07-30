@@ -511,7 +511,7 @@ export class ProfileScreen extends React.Component {
                   />
                 )}
 
-                {(this.state.listUserVideosLoaded && this.state.listUserVideos.length == 0 &&
+                {(this.isProfileSelectedUserLogged() && this.state.listUserVideosLoaded && this.state.listUserVideos.length == 0 &&
                   <View style={{ textAlign: 'center' }}>
 
                     <Card elevation={10} style={styles.cardContainer}>
@@ -537,6 +537,18 @@ export class ProfileScreen extends React.Component {
                         </Button>
 
                       </Card.Content>
+                    </Card>
+                  </View>
+                )}
+
+                {(!this.isProfileSelectedUserLogged() && this.state.listUserVideosLoaded && this.state.listUserVideos.length == 0 &&
+                  <View style={{ textAlign: 'center' }}>
+
+                    <Card elevation={10} style={styles.cardContainer}>
+                      <Card.Title
+                        title="El usuario no tiene videos propios"
+                        subtitle="Es momento de agregar contenido!"
+                      />
                     </Card>
                   </View>
                 )}
