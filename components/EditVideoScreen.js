@@ -130,7 +130,7 @@ export class EditVideoScreen extends React.Component {
                   onValueChange={this._onToggleSwitch}
                 />}
               />
-              <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+              {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> */}
                 <Button
                   style={{ marginTop: 10 }}
                   icon="video"
@@ -139,7 +139,7 @@ export class EditVideoScreen extends React.Component {
                   onPress={this.editVideoMetaData}>
                   Actualizar Video
                       </Button>
-              </TouchableWithoutFeedback>
+              {/* </TouchableWithoutFeedback> */}
 
             </View>
           </Card.Content>
