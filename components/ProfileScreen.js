@@ -371,7 +371,22 @@ export class ProfileScreen extends React.Component {
                   size: 'large',
                   source: { uri: this.state.userAvatar },
                   showEditButton: false,
-                  onPress: () => { console.log('Navegacion -> EditProfile'); navigation.navigate('EditProfile') }
+                  onPress: () => {
+                    if (this.isProfileSelectedUserLogged()) {
+                      console.log('Navegacion -> EditProfile');
+                      navigation.navigate('EditProfile', {
+                        replaceProfileAvatar: (item) =>
+                          this.setState({ userAvatar: item }),
+                        replaceDataAvatar: (item) =>
+                          this.setState({
+                            userFirstName: item.firstName,
+                            userLastName: item.lastName,
+                          }),
+                      });
+                    } else {
+                      console.log('Es el perfil de otro usuario. Cancelado.');
+                    }
+                  },
                 }}
                 title={AppUtils.capitalize(this.state.userFirstName) + ' ' + AppUtils.capitalize(this.state.userLastName)}
                 titleStyle={{ fontSize: 20, fontWeight: "bold" }}
